@@ -1,0 +1,39 @@
+<app-page-breadcrumb  />
+
+<div class="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+
+  <ng-container *ngIf="userDetails as user">
+
+   
+
+    <!-- GRID PRINCIPAL -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- META CARD (FULL WIDTH) -->
+      <div class="lg:col-span-2">
+        <app-user-meta-card [user]="user" [isAdminView]="true"></app-user-meta-card>
+      </div>
+
+      <!-- INFO (LEFT) -->
+      <div>
+        <app-user-info-card [user]="user" [isAdminView]="true"></app-user-info-card>
+      </div>
+
+      <!-- ADDRESS (RIGHT) -->
+      <div>
+        <app-user-adress-card [user]="user" [isAdminView]="true"></app-user-adress-card>
+      </div>
+
+      <!-- SECURITY (FULL WIDTH) -->
+      
+
+    </div>
+
+  </ng-container>
+  <div *ngIf="notFound" class="flex flex-col items-center justify-center h-64 gap-3">
+    <span class="text-6xl">⚠️</span>
+    <p class="text-xl font-semibold text-gray-600">Utilisateur introuvable</p>
+    <p class="text-gray-400">L'identifiant fourni ne correspond à aucun utilisateur.</p>
+  </div>
+
+</div>

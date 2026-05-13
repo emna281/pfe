@@ -1,0 +1,314 @@
+<div class="min-h-screen bg-gray-100">
+  <div class="max-w-6xl mx-auto px-6 py-8">
+
+    <!-- Back -->
+    <button (click)="annuler()"
+            class="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-6">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+      </svg>
+      Retour au tableau de bord
+    </button>
+
+    <!-- Page title -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-semibold text-gray-900 mb-1">Créer une facture</h1>
+      <p class="text-sm text-gray-500">Générez une facture pour une inscription non encore facturée.</p>
+    </div>
+
+    <!-- Error banner -->
+    <div *ngIf="errorMessage"
+         class="bg-red-50 border border-red-200 text-red-800 text-sm px-4 py-3 rounded-lg mb-6">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="soumettre()">
+      <div class="grid grid-cols-3 gap-6 items-start">
+
+
+        <div class="col-span-2 flex flex-col gap-6">
+          <div *ngIf="showSearch"
+               class="bg-white rounded-xl border border-gray-200">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded-full bg-blue-50 text-blue-700 text-xs font-medium flex items-center justify-center">1</span>
+                <div>
+                  <h2 class="text-sm font-semibold text-gray-900">Sélectionner une inscription</h2>
+                  <p class="text-xs text-gray-400 mt-0.5">Choisissez l'inscription à facturer</p>
+                </div>
+              </div>
+            </div>
+            <div class="px-6 py-4">
+              <div class="relative mb-4">
+                <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text"
+                       [(ngModel)]="searchQuery"
+                       [ngModelOptions]="{standalone: true}"
+                       placeholder="Rechercher par apprenant ou formation..."
+                       class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              </div>
+
+              <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100">
+                      <th class="text-left px-4 py-2 text-xs font-medium text-gray-500">Apprenant</th>
+                      <th class="text-left px-4 py-2 text-xs font-medium text-gray-500">Formation</th>
+                      <th class="text-left px-4 py-2 text-xs font-medium text-gray-500">Date inscr.</th>
+                      <th class="text-left px-4 py-2 text-xs font-medium text-gray-500">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    <tr *ngFor="let insc of inscriptionsFiltrees"
+                        class="hover:bg-blue-50 cursor-pointer"
+                        (click)="selectionnerInscription(insc)">
+                      <td class="px-4 py-3">
+                        <p class="font-medium text-gray-900">{{ insc.apprenantPrenom }} {{ insc.apprenantNom }}</p>
+                        <p class="text-xs text-gray-400">{{ insc.apprenantEmail }}</p>
+                      </td>
+                      <td class="px-4 py-3 text-gray-600">{{ insc.sessionNom }}</td>
+                      <td class="px-4 py-3 text-gray-500 text-xs">{{ insc.dateInscription | date:'dd/MM/yyyy' }}</td>
+                      <td class="px-4 py-3">
+                        <button type="button"
+                                class="text-xs text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1 rounded-lg hover:bg-blue-100">
+                          Sélectionner
+                        </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="!inscriptionsFiltrees?.length">
+                      <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-400">
+                        Aucune inscription non facturée trouvée
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="inscription"
+               class="bg-white rounded-xl border border-gray-200">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="w-6 h-6 rounded-full bg-blue-50 text-blue-700 text-xs font-medium flex items-center justify-center">
+                    {{ showSearch ? '2' : '1' }}
+                  </span>
+                  <div>
+                    <h2 class="text-sm font-semibold text-gray-900">Inscription concernée</h2>
+                    <p class="text-xs text-gray-400 mt-0.5">Informations en lecture seule</p>
+                  </div>
+                </div>
+                <!-- Bouton changer si pas pré-sélectionnée -->
+                <button *ngIf="showSearch"
+                        type="button"
+                        (click)="inscription = null; showSearch = true"
+                        class="text-xs text-gray-500 hover:text-gray-800 underline">
+                  Changer
+                </button>
+              </div>
+            </div>
+            <div class="px-6 py-5">
+
+              <!-- Apprenant -->
+              <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Apprenant</p>
+              <div class="grid grid-cols-2 gap-3 mb-5">
+                <div class="bg-gray-50 rounded-lg p-3">
+                  <p class="text-xs text-gray-400 mb-1">Nom complet</p>
+                  <p class="text-sm font-medium text-gray-900">{{ inscription.apprenantPrenom }} {{ inscription.apprenantNom }}</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3">
+                  <p class="text-xs text-gray-400 mb-1">Email</p>
+                  <p class="text-sm font-medium text-gray-900">{{ inscription.apprenantEmail }}</p>
+                </div>
+              </div>
+
+              <!-- Formation -->
+              <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Formation</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="bg-gray-50 rounded-lg p-3">
+                  <p class="text-xs text-gray-400 mb-1">Formation</p>
+                  <p class="text-sm font-medium text-gray-900">{{ inscription.sessionNom }}</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3">
+                  <p class="text-xs text-gray-400 mb-1">Date d'inscription</p>
+                  <p class="text-sm font-medium text-gray-900">{{ inscription.dateInscription | date:'dd MMMM yyyy' }}</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3">
+                  <p class="text-xs text-gray-400 mb-1">Statut inscription</p>
+                  <span class="text-xs bg-green-50 text-green-700 border border-green-100 px-2 py-0.5 rounded-full font-medium">
+                    {{ inscription.statut }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== ETAPE 2 (ou 3) : Paramètres facture ===== -->
+          <div class="bg-white rounded-xl border border-gray-200"
+               [class.opacity-40]="!inscription"
+               [class.pointer-events-none]="!inscription">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded-full bg-blue-50 text-blue-700 text-xs font-medium flex items-center justify-center">
+                  {{ showSearch ? '3' : '2' }}
+                </span>
+                <div>
+                  <h2 class="text-sm font-semibold text-gray-900">Paramètres de la facture</h2>
+                  <p class="text-xs text-gray-400 mt-0.5">Champs à renseigner par le responsable financier</p>
+                </div>
+              </div>
+            </div>
+            <div class="px-6 py-5">
+
+              <div class="grid grid-cols-2 gap-4 mb-4">
+                <!-- Date émission readonly -->
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 mb-1.5">
+                    Date d'émission
+                  </label>
+                  <input type="text"
+                         [value]="today"
+                         readonly
+                         class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed">
+                </div>
+
+                <!-- Date échéance -->
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                    Date d'échéance <span class="text-red-500">*</span>
+                  </label>
+                  <input type="date"
+                         formControlName="dateEcheance"
+                         class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                         [class.border-red-300]="form.get('dateEcheance')?.invalid && form.get('dateEcheance')?.touched">
+                  <p *ngIf="form.get('dateEcheance')?.invalid && form.get('dateEcheance')?.touched"
+                     class="text-xs text-red-500 mt-1">
+                    La date d'échéance est obligatoire
+                  </p>
+                </div>
+              </div>
+
+              <!-- Remise -->
+              <div class="mb-4">
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                  Remise (%)
+                  <span class="text-gray-400 font-normal ml-1">— optionnel, entre 0 et 100</span>
+                </label>
+                <div class="flex items-center gap-3">
+                  <input type="number"
+                         formControlName="remise"
+                         min="0"
+                         max="100"
+                         step="1"
+                         placeholder="0"
+                         class="w-32 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <span class="text-sm text-gray-500">%</span>
+                  <span *ngIf="remiseMontant > 0"
+                        class="text-sm text-red-600 font-medium">
+                    = - {{ formatCurrency(remiseMontant) }}
+                  </span>
+                </div>
+                <p *ngIf="form.get('remise')?.hasError('max')"
+                   class="text-xs text-red-500 mt-1">La remise ne peut pas dépasser 100%</p>
+              </div>
+
+              <!-- Notes -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                  Notes / conditions de paiement
+                  <span class="text-gray-400 font-normal ml-1">— optionnel</span>
+                </label>
+                <textarea formControlName="notes"
+                          rows="3"
+                          placeholder="Ex: Paiement en 2 fois autorisé. Règlement par virement uniquement."
+                          class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                <div class="flex justify-end mt-1">
+                  <span class="text-xs text-gray-400">{{ notesLength }}/500</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COL : Récapitulatif sticky -->
+        <div class="flex flex-col gap-4" style="position:sticky;top:24px">
+
+          <!-- Récap financier -->
+          <div class="bg-white rounded-xl border border-gray-200">
+            <div class="px-5 py-4 border-b border-gray-100">
+              <h2 class="text-sm font-semibold text-gray-900">Récapitulatif</h2>
+              <p class="text-xs text-gray-400 mt-0.5">Calculé depuis le prix de la session</p>
+            </div>
+            <div class="px-5 py-4">
+
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-500">Prix session (HT brut)</span>
+                  <span class="font-medium">{{ formatCurrency(prixBase) }}</span>
+                </div>
+                <div class="flex justify-between" *ngIf="remiseMontant > 0">
+                  <span class="text-gray-500">Remise ({{ form.get('remise')?.value }}%)</span>
+                  <span class="font-medium text-red-600">- {{ formatCurrency(remiseMontant) }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">Montant HT net</span>
+                  <span class="font-medium">{{ formatCurrency(montantHT) }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">TVA (20%)</span>
+                  <span class="font-medium">{{ formatCurrency(montantTVA) }}</span>
+                </div>
+                <div class="border-t border-gray-100 pt-3 flex justify-between">
+                  <span class="font-semibold text-gray-900 text-base">Total TTC</span>
+                  <span class="font-semibold text-blue-700 text-base">{{ formatCurrency(montantTTC) }}</span>
+                </div>
+              </div>
+
+              <!-- Numéro facture -->
+              <div class="mt-4 bg-gray-50 rounded-lg p-3">
+                <p class="text-xs text-gray-400 mb-1">N° facture généré</p>
+                <p class="font-mono text-xs font-medium text-gray-700">{{ numeroFacture }}</p>
+              </div>
+
+              <!-- Boutons -->
+              <button type="submit"
+                      [disabled]="form.invalid || !inscription || loading"
+                      class="mt-4 w-full py-2.5 bg-blue-700 text-white text-sm font-medium rounded-lg hover:bg-blue-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                <span *ngIf="!loading">Créer la facture</span>
+                <span *ngIf="loading" class="flex items-center justify-center gap-2">
+                  <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                  </svg>
+                  Création en cours...
+                </span>
+              </button>
+
+              <button type="button"
+                      (click)="annuler()"
+                      class="mt-2 w-full py-2.5 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                Annuler
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Info box -->
+          <div class="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+            <p class="text-xs font-medium text-blue-800 mb-1">Champs automatiques</p>
+            <p class="text-xs text-blue-700 leading-relaxed">
+              Le montant HT est tiré du prix de la session. La TVA à 20% et le TTC sont calculés automatiquement. Seule la remise peut modifier ces valeurs.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>

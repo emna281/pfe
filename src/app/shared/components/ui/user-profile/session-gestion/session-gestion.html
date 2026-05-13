@@ -1,0 +1,55 @@
+<div *ngIf="ouvert" class="min-h-screen bg-white">
+
+  <!-- Header -->
+ <div class="flex items-center gap-3 px-6 py-4 border-b border-gray-100">
+  <button (click)="fermer.emit()"
+    class="flex items-center justify-center w-8 h-8 rounded-lg
+           text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+  </button>
+  <div>
+    <h3 class="font-semibold text-gray-800">{{ session?.nom }}</h3>
+    <p class="text-xs text-gray-400 mt-0.5">{{ session?.dateDebut | date:'dd/MM/yyyy' }}</p>
+  </div>
+</div>
+
+  <!-- Tabs -->
+  <div class="flex border-b border-gray-100">
+    <button
+      (click)="setPanelTab('presences')"
+      class="px-6 py-3 text-sm font-medium transition-colors border-b-2"
+      [ngClass]="panelTab === 'presences'
+        ? 'border-violet-500 text-violet-600'
+        : 'border-transparent text-gray-500 hover:text-gray-700'">
+      Présences
+    </button>
+    <button
+      (click)="setPanelTab('notes')"
+      class="px-6 py-3 text-sm font-medium transition-colors border-b-2"
+      [ngClass]="panelTab === 'notes'
+        ? 'border-violet-500 text-violet-600'
+        : 'border-transparent text-gray-500 hover:text-gray-700'">
+      Notes
+    </button>
+  </div>
+
+  <!-- Contenu -->
+  <div class="p-6">
+    <div *ngIf="panelTab === 'presences' && session">
+      <app-presence-component
+        [sessionId]="session.id"
+        [role]="'FORMATEUR'">
+      </app-presence-component>
+    </div>
+
+    <div *ngIf="panelTab === 'notes' && session">
+      <app-note-component
+        [sessionId]="session.id"
+        [role]="'FORMATEUR'">
+      </app-note-component>
+    </div>
+  </div>
+
+</div>

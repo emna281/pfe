@@ -1,0 +1,232 @@
+<!-- Zone action : initialiser (PLANIFICATEUR seulement) -->
+<div class="flex items-center justify-between mb-4">
+  <div>
+    <span *ngIf="ficheInitialisee"
+          class="inline-flex items-center gap-1.5 text-xs text-green-700
+                 bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5 13l4 4L19 7"/>
+      </svg>
+      Fiche initialisée
+    </span>
+    <span *ngIf="!ficheInitialisee && !loading && !initLoading"
+          class="text-xs text-amber-600 bg-amber-50 border border-amber-200
+                 px-3 py-1.5 rounded-lg">
+      Fiche non initialisée
+    </span>
+  </div>
+
+  <button *ngIf="peutInitialiser && !loading"
+          (click)="initialiserFiche()"
+          [disabled]="initLoading"
+          class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white
+                 text-sm font-medium rounded-lg hover:bg-blue-700 transition
+                 disabled:opacity-50 disabled:cursor-not-allowed">
+    <svg *ngIf="!initLoading" xmlns="http://www.w3.org/2000/svg"
+         class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7
+               a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+    </svg>
+    <svg *ngIf="initLoading" class="w-4 h-4 animate-spin"
+         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10"
+              stroke="currentColor" stroke-width="4"/>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+    </svg>
+    {{ initLoading ? 'Initialisation...' : 'Initialiser la fiche' }}
+  </button>
+</div>
+
+<!-- Messages -->
+<div *ngIf="successMsg"
+     class="mb-4 p-3 bg-green-50 border border-green-200
+            text-green-700 text-sm rounded-lg">
+  {{ successMsg }}
+</div>
+<div *ngIf="errorMsg"
+     class="mb-4 p-3 bg-red-50 border border-red-200
+            text-red-700 text-sm rounded-lg">
+  {{ errorMsg }}
+</div>
+
+<!-- État : fiche non initialisée -->
+<div *ngIf="!ficheInitialisee && !loading"
+     class="flex flex-col items-center justify-center py-16 text-center">
+  <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center
+              justify-center mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-400"
+         fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7
+               a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2
+               M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+    </svg>
+  </div>
+  <p class="text-gray-600 font-medium">Fiche de présence non initialisée</p>
+  <p class="text-gray-400 text-sm mt-1" *ngIf="role !== 'PLANIFICATEUR'">
+    Le planificateur doit initialiser la fiche.
+  </p>
+</div>
+
+<!-- Loading -->
+<div *ngIf="loading"
+     class="flex justify-center items-center py-16">
+  <div class="animate-spin w-8 h-8 border-4 border-blue-500
+              border-t-transparent rounded-full"></div>
+</div>
+
+<!-- Tableau -->
+<div *ngIf="!loading && ficheInitialisee && tableau"
+     class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+
+  <!-- Stats -->
+  <div class="grid grid-cols-3 gap-4 p-4 border-b border-gray-100 bg-gray-50">
+    <div class="text-center">
+      <div class="text-xl font-semibold text-gray-800">
+        {{ tableau.lignes.length }}
+      </div>
+      <div class="text-xs text-gray-500 mt-0.5">Apprenants</div>
+    </div>
+    <div class="text-center">
+      <div class="text-xl font-semibold text-gray-800">
+        {{ tableau.dureeJours }}
+      </div>
+      <div class="text-xs text-gray-500 mt-0.5">Jours</div>
+    </div>
+    <div class="text-center">
+      <div class="text-xl font-semibold text-blue-600">
+        {{ tableau.lignes.length * tableau.dureeJours }}
+      </div>
+      <div class="text-xs text-gray-500 mt-0.5">Total à saisir</div>
+    </div>
+  </div>
+
+  <!-- Badge lecture seule -->
+  <div *ngIf="!peutModifier"
+       class="px-4 py-2 bg-amber-50 border-b border-amber-100
+              text-amber-700 text-xs flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6
+               a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+    </svg>
+    Mode lecture seule — seul le formateur peut modifier les présences
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm border-collapse">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="text-left px-4 py-3 font-medium text-gray-600
+                     border-b border-gray-200 sticky left-0 bg-gray-50
+                     min-w-[200px] z-10">
+            Apprenant
+          </th>
+          <th *ngFor="let label of tableau.joursLabels"
+              class="px-2 py-3 border-b border-gray-200 min-w-[90px]">
+            <div class="text-center text-xs font-medium text-gray-600">
+              {{ label }}
+            </div>
+            <div class="flex justify-center gap-3 mt-1">
+              <span class="text-[10px] text-green-600 font-medium">P</span>
+              <span class="text-[10px] text-red-500 font-medium">A</span>
+            </div>
+          </th>
+          <th class="px-4 py-3 font-medium text-gray-600 border-b
+                     border-gray-200 text-center min-w-[70px]">
+            Taux
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ligne of tableau.lignes; trackBy: trackByInscription"
+            class="border-b border-gray-100 hover:bg-gray-50 transition">
+
+          <!-- Nom -->
+          <td class="px-4 py-3 sticky left-0 bg-white z-10 border-r border-gray-100">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center
+                          justify-center text-blue-700 text-xs font-medium flex-shrink-0">
+                {{ ligne.nomApprenant[0] }}{{ ligne.prenomApprenant[0] }}
+              </div>
+              <div>
+                <div class="font-medium text-gray-800 text-sm">
+                  {{ ligne.nomApprenant }} {{ ligne.prenomApprenant }}
+                </div>
+                <div class="text-xs text-gray-400">
+                  {{ getNombrePresents(ligne) }}/{{ tableau.dureeJours }} présences
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <!-- Cases par jour -->
+          <td *ngFor="let jour of joursArray"
+              class="px-2 py-3 text-center">
+            <div class="flex justify-center items-center gap-3">
+
+              <!-- Spinner -->
+              <div *ngIf="isSaving(ligne, jour)"
+                   class="w-4 h-4 border-2 border-blue-400
+                          border-t-transparent rounded-full animate-spin">
+              </div>
+
+              <!-- Checkboxes -->
+              <ng-container *ngIf="!isSaving(ligne, jour)">
+                <input type="checkbox"
+                       [checked]="getStatut(ligne, jour) === 'PRESENT'"
+                       [disabled]="!peutModifier"
+                       (change)="onCheckboxChange(ligne, jour, 'PRESENT')"
+                       class="w-4 h-4 accent-green-500 cursor-pointer
+                              disabled:cursor-not-allowed disabled:opacity-60"/>
+
+                <input type="checkbox"
+                       [checked]="getStatut(ligne, jour) === 'ABSENT'"
+                       [disabled]="!peutModifier"
+                       (change)="onCheckboxChange(ligne, jour, 'ABSENT')"
+                       class="w-4 h-4 accent-red-500 cursor-pointer
+                              disabled:cursor-not-allowed disabled:opacity-60"/>
+              </ng-container>
+            </div>
+          </td>
+
+          <!-- Taux -->
+          <td class="px-4 py-3 text-center">
+            <span class="inline-block px-2 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="getBadgeClass(getTaux(ligne))">
+              {{ getTaux(ligne) }}%
+            </span>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Légende -->
+  <div class="px-4 py-3 border-t border-gray-100 bg-gray-50
+              flex flex-wrap items-center gap-5 text-xs text-gray-500">
+    <div class="flex items-center gap-1.5">
+      <input type="checkbox" checked class="w-3.5 h-3.5 accent-green-500" disabled/>
+      <span>Présent (P)</span>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <input type="checkbox" checked class="w-3.5 h-3.5 accent-red-500" disabled/>
+      <span>Absent (A)</span>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <input type="checkbox" class="w-3.5 h-3.5" disabled/>
+      <span>Non saisi</span>
+    </div>
+    <div class="flex items-center gap-3 ml-auto">
+      <span class="px-2 py-0.5 rounded-full bg-green-100 text-green-700">≥ 75%</span>
+      <span class="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700">50–74%</span>
+      <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700">&lt; 50%</span>
+    </div>
+  </div>
+</div>

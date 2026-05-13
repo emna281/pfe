@@ -1,0 +1,217 @@
+<div class="flex h-screen bg-gray-50 font-sans">
+  <!-- Main -->
+  <main class="flex-1 overflow-y-auto p-6 text-base">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-xl font-medium text-gray-900">Bonjour, Manager</h1>
+        <p class="text-base text-gray-500">Voici l'état actuel de votre centre pour aujourd'hui.</p>
+      </div>
+      <a routerLink="/financier/creerFacture"
+         class="bg-blue-700 text-white text-base px-4 py-2 rounded-lg hover:bg-blue-800">
+        + Créer facture
+      </a>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-4 gap-3 mb-6">
+      <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition">
+        <p class="text-base text-gray-500 mb-1">Facturation en attente</p>
+        <p class="text-xl font-medium text-gray-900">{{ formatCurrency(totalFacturationAttente) }}</p>
+      </div>
+      <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition">
+        <p class="text-base text-gray-500 mb-1">Revenu du mois</p>
+        <p class="text-xl font-medium text-gray-900">{{ formatCurrency(revenuMois) }}</p>
+      </div>
+      <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition">
+        <p class="text-base text-gray-500 mb-1">Factures planifiées</p>
+        <p class="text-xl font-medium text-gray-900">{{ nbFactures }}</p>
+      </div>
+      <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition">
+        <p class="text-base text-gray-500 mb-1">Taux de recouvrement</p>
+        <p class="text-xl font-medium text-gray-900">{{ tauxRecouvrement }}%</p>
+      </div>
+    </div>
+
+    <!-- Inscriptions non facturées -->
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-xl font-medium text-gray-900">Inscriptions non facturées</h2>
+      <span class="text-base text-blue-700">{{ inscriptionsNonFacturees?.length  ?? 0 }} dossiers</span>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
+      <table class="w-full text-base">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">ID</th>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">Apprenant</th>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">Formation</th>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">Date inscr.</th>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let insc of currentInscriptions"
+              class="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+            <td class="px-4 py-2 font-mono text-base text-blue-700">{{ insc.id }}</td>
+            <td class="px-4 py-2 text-gray-900">{{ insc.apprenantPrenom }} {{ insc.apprenantNom }}</td>
+            <td class="px-4 py-2 text-gray-600">{{ insc.sessionNom }}</td>
+            <td class="px-4 py-2 text-gray-500 text-base">{{ insc.dateInscription | date:'dd MMM yyyy' }}</td>
+            <td class="px-4 py-2">
+              <button (click)="creerFacturePour(insc)"
+                      class="text-base bg-blue-50 text-blue-800 border border-blue-200 px-3 py-1 rounded-md hover:bg-blue-100">
+                Créer facture
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="!inscriptionsNonFacturees?.length">
+            <td colspan="5" class="px-4 py-6 text-center text-base text-gray-400">
+              Aucune inscription non facturée
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Pagination Inscriptions -->
+<div class="px-6 py-4 border-t border-gray-200">
+  <div class="flex items-center justify-center gap-2">
+
+    <button (click)="goToPageInsc(currentPageInsc - 1)" [disabled]="currentPageInsc === 1"
+      class="px-2 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-40">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
+    </button>
+
+    <span class="block text-sm font-medium text-gray-700 sm:hidden">
+      Page {{ currentPageInsc }} sur {{ totalPagesInsc }}
+    </span>
+
+    <ul class="hidden items-center gap-0.5 sm:flex">
+      @for (page of [].constructor(totalPagesInsc || 1); track $index; let idx = $index) {
+        <li>
+          <button (click)="goToPageInsc(idx + 1)"
+            class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium"
+            [ngClass]="{
+              'bg-blue-600 text-white': currentPageInsc === idx + 1,
+              'text-gray-700 hover:bg-gray-100': currentPageInsc !== idx + 1
+            }">
+            {{ idx + 1 }}
+          </button>
+        </li>
+      }
+    </ul>
+
+    <button (click)="goToPageInsc(currentPageInsc + 1)" [disabled]="currentPageInsc === totalPagesInsc"
+      class="px-2 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-40">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+      </svg>
+    </button>
+
+  </div>
+</div>
+
+    <!-- Factures récentes -->
+    <div class="flex justify-between items-center mb-3">
+      <div>
+        <h2 class="text-xl font-medium text-gray-900">Factures récentes & impayées</h2>
+        <p class="text-sm text-gray-500">Factures avec solde en attente de règlement</p>
+      </div>
+      <a [routerLink]="['/financier/facture']" class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition">Voir tout</a>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <table class="w-full text-base">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">N° facture</th>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">Apprenant</th>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">Date échéance</th>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">Montant</th>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">Statut</th>
+            <th class="text-left px-4 py-2 text-base text-gray-500 font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let facture of currentItems"
+              class="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+            <td class="px-4 py-2 font-mono text-base text-blue-700">{{ facture.numeroFacture }}</td>
+            <td class="px-4 py-2 text-gray-900">{{ facture.apprenantPrenom }} {{ facture.apprenantNom }}</td>
+            <td class="px-4 py-2 text-gray-500 text-base">{{ facture.dateEcheance | date:'dd MMM yyyy' }}</td>
+            <td class="px-4 py-2 font-medium text-gray-900">{{ formatCurrency(facture.montantTTC) }}</td>
+            <td class="px-4 py-2">
+              <span class="text-base px-2 py-1 rounded-full font-medium"
+                    [ngClass]="getStatutClass(facture.statut)">
+                {{ getStatutLabel(facture.statut) }}
+              </span>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex gap-2">
+                <a [routerLink]="['/financier/detailFacture', facture.id]"
+                   class="text-base text-gray-500 hover:text-gray-800 bg-gray-100 px-2 py-1 rounded">
+                  Voir
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!allFactures?.length">
+            <td colspan="6" class="px-4 py-6 text-center text-base text-gray-400">
+              Aucune facture
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-white/[0.05]">
+    <div class="flex items-center justify-center gap-2">
+      <!-- Previous Button -->
+      <app-boutton
+        size="sm"
+        variant="outline"
+        (btnClick)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1"
+      >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
+ 
+      </app-boutton>
+      <!-- Page Info -->
+      <span class="block text-sm font-medium text-gray-700 dark:text-gray-400 sm:hidden">
+        Page {{ currentPage }} of {{ totalPages }}
+      </span>
+      <!-- Page Numbers -->
+      <ul class="hidden items-center gap-0.5 sm:flex">
+        @for (page of [].constructor(totalPages || 1); track $index; let idx = $index) {
+        <li>
+          <button
+            (click)="goToPage(idx + 1)"
+            class="flex h-10 w-10 items-center justify-center rounded-lg text-theme-sm font-medium"
+            [ngClass]="{
+              'bg-brand-500 text-white': currentPage === idx + 1,
+              'text-gray-700 hover:bg-brand-500/[0.08] dark:hover:bg-brand-500 dark:hover:text-white hover:text-brand-500 dark:text-gray-400': currentPage !== idx + 1
+            }"
+          >
+            {{ idx + 1 }}
+          </button>
+        </li>
+        }
+      </ul>
+      <!-- Next Button -->
+      <app-boutton
+        (btnClick)="goToPage(currentPage + 1)"
+        size="sm"
+        variant="outline"
+        [disabled]="currentPage === totalPages"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+
+      </app-boutton>
+    </div>
+    
+  </div>
+
+  </main>
+</div>

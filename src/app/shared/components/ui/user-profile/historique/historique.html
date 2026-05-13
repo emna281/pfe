@@ -1,0 +1,50 @@
+<div class="relative">
+
+  <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+    Historique des formations
+  </h2>
+
+  <div *ngIf="loading" class="text-center py-12 text-gray-400">Chargement...</div>
+
+  <!-- Liste -->
+  <div *ngIf="!loading">
+    <div *ngIf="inscriptionsTerminees.length === 0"
+      class="text-center py-12 text-gray-400 bg-white rounded-xl border border-gray-100">
+      Aucune formation terminée.
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div *ngFor="let i of inscriptionsTerminees"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 p-5 shadow-sm flex items-center justify-between">
+        <div>
+          <h3 class="font-semibold text-gray-800 dark:text-white">{{ i.sessionNom }}</h3>
+          <p class="text-base text-gray-400 mt-1">
+            Inscrit le {{ i.dateInscription | date:'dd/MM/yyyy' }}
+          </p>
+          <div class="flex gap-4 mt-2" *ngIf="i.noteFormateur || i.noteFormation">
+            <span class="text-sm text-gray-500">
+              ⭐ Formateur : {{ i.noteFormateur ?? '—' }}/20
+            </span>
+            <span class="text-sm text-gray-500">
+              ⭐ Formation : {{ i.noteFormation ?? '—' }}/20
+            </span>
+          </div>
+        </div>
+        <button (click)="ouvrirPanel(i)"
+          class="text-base text-blue-600 border border-blue-200 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">
+          Voir détails
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<app-session-panel
+  [ouvert]="panelOuvert"
+  [session]="sessionSelectionnee"
+  [inscription]="inscriptionSelectionnee"
+  [facture]="factureSelectionnee"
+  (fermer)="fermerPanel()"
+  (notesSauvegardees)="notesSauvegardees()">
+</app-session-panel>

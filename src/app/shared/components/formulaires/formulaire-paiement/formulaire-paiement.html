@@ -1,0 +1,143 @@
+<div class="flex flex-col gap-4 px-2">
+
+  <h5 class="font-semibold text-gray-800 text-theme-xl dark:text-white/90 lg:text-2xl">
+    Ajouter un paiement
+  </h5>
+
+  <!-- Résumé montants -->
+  <div *ngIf="selectedFacture"
+       class="rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200
+              dark:border-gray-700 p-4">
+    <div class="grid grid-cols-2 gap-3 text-sm">
+      <div>
+        <span class="text-gray-500">Montant TTC</span>
+        <p class="font-medium text-gray-800 dark:text-white">
+          {{ getMontantTTC() | number:'1.2-2' }} TND
+          <span *ngIf="codeApplique"
+                class="text-xs text-green-600 ml-1">(remise appliquée)</span>
+        </p>
+      </div>
+      <div>
+        <span class="text-gray-500">Restant à payer</span>
+        <p class="font-semibold text-red-500">
+          {{ getMontantRestant() | number:'1.2-2' }} TND
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section code remise -->
+  <div class="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100
+              dark:border-blue-800 p-4">
+    <p class="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2">
+      Code Remise (optionnel)
+    </p>
+
+    <!-- Remise déjà en base -->
+    <div *ngIf="remiseDejaAppliquee"
+         class="flex items-center gap-2 bg-green-50 border border-green-200
+                rounded-lg px-3 py-2 text-green-700 text-sm">
+      <span>✓</span>
+      <span>Remise de {{ selectedFacture?.remise }}% déjà appliquée</span>
+    </div>
+
+    <!-- Code appliqué maintenant -->
+    <div *ngIf="!remiseDejaAppliquee && codeApplique"
+         class="flex items-center gap-2 bg-green-50 border border-green-200
+                rounded-lg px-3 py-2 text-green-700 text-sm">
+      <span>✓</span>
+      <span>
+        Code <strong class="font-mono">{{ codeRemiseSaisi }}</strong> appliqué
+        → Nouveau TTC : {{ getMontantTTC() | number:'1.2-2' }} TND
+      </span>
+    </div>
+
+    <!-- Saisie du code -->
+    <div *ngIf="!remiseDejaAppliquee && !codeApplique">
+      <div class="flex gap-2">
+        <input
+          type="text"
+          [(ngModel)]="codeRemiseSaisi"
+          (ngModelChange)="codeRemiseSaisi = $event.toUpperCase()"
+          placeholder="Ex: REMISE-2026-X7K2"
+          class="flex-1 h-9 rounded-lg border border-gray-300 bg-white px-3
+                 text-sm font-mono text-gray-800 focus:border-blue-300
+                 focus:outline-none focus:ring-2 focus:ring-blue-200
+                 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
+        <button
+          type="button"
+          (click)="appliquerCode()"
+          [disabled]="!codeRemiseSaisi.trim() || loadingCode"
+          class="px-4 h-9 bg-blue-600 text-white text-sm rounded-lg
+                 hover:bg-blue-700 disabled:opacity-50 transition whitespace-nowrap">
+          {{ loadingCode ? '...' : 'Appliquer' }}
+        </button>
+      </div>
+      <p *ngIf="erreurCode" class="mt-1 text-xs text-red-500">
+        ✕ {{ erreurCode }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Formulaire paiement -->
+  <form #paiementForm="ngForm" class="flex flex-col gap-4">
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+        Montant (TND) <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="number"
+        name="montant"
+        [(ngModel)]="paiementData.montant"
+        (ngModelChange)="onChampChange()"
+        [max]="getMontantRestant()"
+        min="0.01"
+        step="0.01"
+        placeholder="0.00"
+        class="h-9 w-full rounded-lg border border-gray-300 bg-transparent px-4
+               py-2.5 text-sm text-gray-800 focus:border-brand-300
+               focus:outline-hidden focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+    </div>
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+        Date de paiement <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="date"
+        name="datePaiement"
+        [(ngModel)]="paiementData.datePaiement"
+        (ngModelChange)="onChampChange()"
+        class="h-9 w-full rounded-lg border border-gray-300 bg-transparent px-4
+               py-2.5 text-sm text-gray-800 focus:border-brand-300
+               focus:outline-hidden focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+    </div>
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+        Mode de paiement <span class="text-red-500">*</span>
+      </label>
+      <select
+        name="modePaiement"
+        [(ngModel)]="paiementData.modePaiement"
+        (ngModelChange)="onChampChange()"
+        class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2
+               text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900
+               dark:text-white">
+        <option value="">Choisir...</option>
+        <option *ngFor="let mode of modesPaiement" [value]="mode">{{ mode }}</option>
+      </select>
+    </div>
+
+    <div *ngIf="errorMessage"
+         class="rounded-lg bg-red-50 border border-red-200 px-4 py-3
+                text-sm text-red-600">
+      {{ errorMessage }}
+    </div>
+
+  </form>
+
+</div>

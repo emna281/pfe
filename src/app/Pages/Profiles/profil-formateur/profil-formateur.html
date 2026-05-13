@@ -1,0 +1,47 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+
+  <app-formateur-header
+    *ngIf="profil()"
+    [profil]="profil()!"
+    [nombreSessions]="nombreSessions()"
+    [activeTab]="activeTab()"
+    [tabs]="tabs"
+    (tabChange)="changerOnglet($event)">
+  </app-formateur-header>
+
+  <div *ngIf="!profil()" class="flex items-center justify-center h-64">
+    <p class="text-gray-400">Chargement du profil...</p>
+  </div>
+
+  <div [class]="sessionSelectionnee() 
+  ? 'w-full mt-6' 
+  : 'max-w-screen-xl mx-auto px-6 py-6'">
+
+    <ng-container *ngIf="activeTab() === 'sessions'">
+
+
+      <!-- Liste sessions -->
+      <app-mes-session
+        *ngIf="!sessionSelectionnee()"
+        (openPanel)="onOpenPanel($event)">
+      </app-mes-session>
+
+      <!-- SessionGestion plein largeur -->
+      <app-session-gestion
+        *ngIf="sessionSelectionnee()"
+        [session]="sessionSelectionnee()"
+        [ouvert]="true"
+        (fermer)="fermerPanel()">
+      </app-session-gestion>
+
+    </ng-container>
+
+    <ng-container *ngIf="activeTab() === 'parametres'">
+  <app-formateur-parametres
+    *ngIf="profil()"
+    [user]="profil()!">
+  </app-formateur-parametres>
+</ng-container>
+
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+
+  <!-- TOPBAR -->
+  <header class="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+    <div class="w-full px-4 md:px-6 flex items-center justify-between h-16">
+
+      <!-- Logo + Nom -->
+      <div class="flex items-center gap-3">
+        <a routerLink="/" class="flex items-center gap-2">
+          <img src="/images/logo/logo.jpg" class="dark:hidden h-16" alt="Logo" />
+          
+        </a>
+        <span class="hidden md:block text-base font-bold text-gray-700 dark:text-gray-200">
+          First Code
+        </span>
+      </div>
+
+      <!-- Navigation centrale -->
+      <nav class="hidden md:flex items-center gap-1">
+        <a routerLink="/apprenant" routerLinkActive="bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+          class="px-4 py-2 rounded-lg text-base font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          Accueil
+        </a>apprenant
+        <a routerLink="nouveautes" routerLinkActive="bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+          class="px-4 py-2 rounded-lg text-base font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          Nouveautés
+        </a>
+        <a routerLink="contact" routerLinkActive="bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+          class="px-4 py-2 rounded-lg text-base font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          Contact
+        </a>
+        <a routerLink="/formateur/profilFormateur" routerLinkActive="bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+          class="px-4 py-2 rounded-lg text-base font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          Profil
+        </a>
+      </nav>
+
+      <!-- Droite : thème + notifs + profil -->
+      <div class="flex items-center gap-2">
+        <app-theme-toggle />
+        <app-notification-dropdown />
+        <app-user-dropdown />
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTENU -->
+  <main class="flex-1 w-full px-6 py-6 max-w-none">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

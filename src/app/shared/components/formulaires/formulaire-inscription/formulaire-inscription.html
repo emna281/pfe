@@ -1,0 +1,123 @@
+<div class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
+  <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Inscription à une session</h2>
+
+  <form (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-4">
+
+    <input 
+      type="text" 
+      name="nom" 
+      [(ngModel)]="demande.nom" 
+      placeholder="Nom" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+
+    <input 
+      type="text" 
+      name="prenom" 
+      [(ngModel)]="demande.prenom" 
+      placeholder="Prénom" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+
+    <input 
+      type="email" 
+      name="email" 
+      [(ngModel)]="demande.email" 
+      placeholder="Email" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+
+    <!-- Genre -->
+    <select 
+      name="genre" 
+      [(ngModel)]="demande.genre" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    >
+      <option value="">-- Genre --</option>
+      <option value="HOMME">Homme</option>
+      <option value="FEMME">Femme</option>
+    </select>
+
+    <input 
+      type="text" 
+      name="posteActuel" 
+      [(ngModel)]="demande.posteActuel" 
+      placeholder="Poste actuel"
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+
+    <input 
+      type="text" 
+      name="entreprise" 
+      [(ngModel)]="demande.entreprise" 
+      placeholder="Entreprise"
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+
+    <!-- Niveau -->
+    <select 
+      name="niveauDeclare" 
+      [(ngModel)]="demande.niveauDeclare" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    >
+      <option value="">-- Niveau --</option>
+      <option value="DEBUTANT">Débutant</option>
+      <option value="INTERMEDIAIRE">Intermédiaire</option>
+      <option value="AVANCE">Avancé</option>
+    </select>
+
+    <!-- Prérequis -->
+    <textarea 
+      name="maitrisePrerequis" 
+      [(ngModel)]="demande.maitrisePrerequis"
+      placeholder="Maîtrise des prérequis" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    ></textarea>
+
+    <!-- Moyen inscription -->
+    <select 
+      name="moyenInscription" 
+      [(ngModel)]="demande.moyenInscription" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    >
+      <option value="">-- Moyen d'inscription --</option>
+      <option value="EN_LIGNE">En ligne</option>
+      <option value="SUR_PLACE">Sur place</option>
+    </select>
+
+    <textarea 
+      name="commentaires" 
+      [(ngModel)]="demande.commentaires"
+      placeholder="Commentaires"
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    ></textarea>
+
+    <button 
+      type="submit"
+      class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
+    >
+      S'inscrire
+    </button>
+  </form>
+
+  <p class="mt-4 text-center text-green-600">{{ message }}</p>
+
+
+</div>
+<app-confirmation-modal
+  [visible]="showWarningModal"
+  [titre]="modalTitle"
+  [message]="modalMessage"
+  type="warning"
+  labelConfirmer="OK"
+  labelAnnuler="Fermer"
+  (confirmer)="fermerWarning()"
+  (annuler)="fermerWarning()">
+</app-confirmation-modal>

@@ -1,0 +1,220 @@
+<app-modal
+    [isOpen]="isOpen"
+    (close)="closeModal()"
+    className="max-w-[700px] w-full max-h-[90vh] overflow-hidden p-4 lg:p-6 rounded-2xl 
+    bg-gradient-to-b from-[#f5faff] to-white
+    shadow-[0_10px_40px_rgba(0,0,0,0.01)]  shadow-blue-100/40"
+>
+    <div class="flex flex-col px-2 overflow-y-auto custom-scrollbar">
+      <div class="flex items-center gap-4 sticky top-0  z-10 pb-3 bg-transparent">
+        
+        <div class="flex flex-col">
+          <h6 class="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-3xl  pt-4">
+          {{ selectedUtilisateur  ? 'Modifier ' : 'Ajouter ' }}
+          </h6>
+          <h5 class=" text-gray-500 text-sm">
+          remplissez le formulaire pour ajouter un utilisateur
+          </h5>
+        </div>
+      </div>
+      <div class="col-span-1 md:col-span-2 my-2 h-px w-full bg-gray-200"></div>
+      <div class="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[75vh] ">
+      <form #sessionForm="ngForm" class="mt-8" >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h6 class="col-span-1 md:col-span-2 text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-1">Informations personnelles</h6>
+      
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700">
+            Nom de l'utilisateur
+          </label>
+
+          <div class="flex items-center border border-gray-300 rounded-lg px-3 h-9">
+          <lucide-icon name="user" class="w-5 h-5 text-gray-600 mr-2"></lucide-icon>
+
+          <input
+          type="text"
+          name="nom"
+          [(ngModel)]="utilisateurData.nom"
+          placeholder="Entrer le nom de l'utilisateur"
+          class="w-full bg-transparent outline-none text-sm"
+          />
+          </div>
+        </div>
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            Prénom de l'utilisateur
+          </label>
+          <div class="relative">
+            <lucide-icon name="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600"></lucide-icon>
+            <input
+            id="utilisateur-prenom"
+            type="text"
+            name="prenom"
+            [(ngModel)]="utilisateurData.prenom"
+            placeholder="Entrer le prenom de l'utilisateur"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-12 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+          </div>
+        </div> 
+        <h6 class="col-span-1 md:col-span-2 text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-6">Coordonnées</h6>
+      
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            Email
+          </label>
+          <div class="relative">
+            <lucide-icon name="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600"></lucide-icon>
+            <input
+              id="utilisateur-email"
+              type="Email" 
+              name="email"
+              [(ngModel)]="utilisateurData.email"
+              placeholder="Ex : nom@email.com"
+              class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-12 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+            />
+          </div>
+          
+        </div>  
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            Télèphone
+          </label>
+          <div class="relative">
+            <lucide-icon name="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600"></lucide-icon>
+          <input
+            id="session-telephone"
+            type="telephone"
+            name="telephone"
+            [(ngModel)]="utilisateurData.telephone"
+            placeholder="Entrer le numéro de téléphone"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-12 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+          </div>
+        </div> 
+        <div *ngIf="!roleFixe">
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            Role
+          </label>
+          <div class="relative">
+            <lucide-icon name="briefcase" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600"></lucide-icon>
+            <select
+            id="utilisateur-role"
+            type="text"
+            name="role"
+            [(ngModel)]="utilisateurData.role"
+            
+            class="w-full rounded-lg border border-gray-300 bg-white pl-12 px-3 py-2 text-sm text-gray-800 shadow-sm placeholder-gray-400 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 dark:focus:border-brand-500 dark:focus:ring-1 dark:focus:ring-brand-500"
+          >
+          <option value="" disabled >Sélectionner un role</option>
+          <option value="PLANIFICATEUR">PLANIFICATEUR</option>
+          <option value="MANAGER">MANAGER</option>
+          <option value="FINANCIER">FINANCIER</option>
+          
+        </select>
+        </div>
+        </div> 
+        <div *ngIf="roleFixe" class="flex items-center gap-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+          <lucide-icon name="briefcase" class="w-4 h-4 text-blue-500"/>
+          <span class="text-sm font-medium text-blue-700">{{ roleFixe }}</span>
+        </div> 
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            Spécialité
+          </label>
+          <div class="relative">
+            <lucide-icon name="graduation-cap" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600"/>
+            <input
+            id="utilisateur-specialite"
+            type="text"
+            name="specialite"
+            [(ngModel)]="utilisateurData.specialite"
+            placeholder="Entrer specialité"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-12 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+          </div>
+          
+        </div> 
+        <div >
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            Années Experience
+          </label>
+          <div class="relative">
+            <lucide-icon name="clock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600"></lucide-icon>
+            <input
+            id="utilisateur"
+            type="number"
+            name="anneesExperience"
+            [(ngModel)]="utilisateurData.anneesExperience"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-12 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+        </div> 
+          </div>
+          <div *ngIf="roleFixe==='FORMATEUR'" class="md:col-span-2 mt-3">
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Sélectionner les compétences
+          </label>
+          <select
+            multiple
+            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+            style="height: 160px"
+            (change)="onCompetenceChange($event)"
+          >
+          <option
+            *ngFor="let comp of competences"
+            [value]="comp.nom"
+            [selected]="selectedCompetenceNoms.includes(comp.nom)"
+           
+          >
+          {{ comp.nom }} — {{ comp.categorie }}
+          </option>
+          </select>
+            <p class="text-xs text-gray-400 mt-1">
+              Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs compétences
+            </p>
+        </div>
+        <div class="md:col-span-2 flex flex-wrap gap-2 mt-2" *ngIf="selectedCompetenceNoms.length > 0">
+          <span
+            *ngFor="let nom of selectedCompetenceNoms"
+            class="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full border border-blue-200"
+          >
+            {{ nom }}
+            <button type="button" class="hover:text-red-500">✕</button>
+          </span>
+        </div>
+          
+        
+        <h6 class="col-span-1 md:col-span-2 text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-6">Informations professionnelles</h6>
+  
+        <div class="col-span-1 md:col-span-2 w-full">
+            <div class="flex items-center gap-2 mb-2">
+                <lucide-icon name="file-text" class="w-5 h-5 text-gray-600"></lucide-icon>
+                <span class="text-sm font-medium text-gray-700">CV</span>
+            </div>
+
+            <app-dropzone class="w-full" (fileSelected)="onCvSelected($event)"></app-dropzone>
+        </div>
+        
+       <div class="col-span-1 md:col-span-2 my-6 h-px w-full bg-gray-200"></div>
+       
+        <div class="col-span-1 md:col-span-2 flex items-center gap-3 mt-6 modal-footer sm:justify-end">
+            <button
+          (click)="closeModal()"
+          type="button"
+          class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 sm:w-auto"
+        >
+          Close
+            </button>
+            <button
+          (click)="handleAddOrUpdateEvent()"
+          type="button"
+          class="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+          
+          >
+          {{ selectedUtilisateur  ? 'Modifier' : '+ Ajouter ' }}
+            </button>
+        </div>
+        </div>
+      </form>
+      </div>
+    </div>
+  </app-modal>
