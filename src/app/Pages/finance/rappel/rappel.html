@@ -1,0 +1,140 @@
+<div class="p-6 space-y-8">
+
+  <!-- ===================== TABLE 1 : FACTURES EN RETARD ===================== -->
+  <div>
+    <div class="flex justify-between items-center mb-3">
+      <div>
+        <h2 class="text-xl font-medium text-gray-900">⚠️ Factures en retard</h2>
+        <p class="text-sm text-gray-500">Factures dont la date d'échéance est dépassée</p>
+      </div>
+      <span class="text-sm text-red-600 font-medium">{{ allFacturesRetard.length }} facture(s)</span>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <table class="w-full text-base">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">N° facture</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Apprenant</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Date échéance</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Montant TTC</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Retard</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let facture of currentItemsRetard"
+              class="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+            <td class="px-4 py-2 font-mono text-blue-700">{{ facture.numeroFacture }}</td>
+            <td class="px-4 py-2 text-gray-900">{{ facture.apprenantPrenom }} {{ facture.apprenantNom }}</td>
+            <td class="px-4 py-2 text-gray-500">{{ facture.dateEcheance | date:'dd MMM yyyy' }}</td>
+            <td class="px-4 py-2 font-medium text-gray-900">{{ formatCurrency(facture.montantTTC) }}</td>
+            <td class="px-4 py-2">
+              <span class="px-2 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                {{ joursRetard(facture.dateEcheance) }} jours
+              </span>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex gap-2">
+                <button (click)="relancer(facture.id)"
+                  class="text-sm bg-blue-50 text-blue-800 border border-blue-200 px-3 py-1 rounded-md hover:bg-blue-100">
+                  Relancer
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="allFacturesRetard.length === 0">
+            <td colspan="6" class="px-4 py-6 text-center text-gray-400">
+              Aucune facture en retard
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Retard -->
+    <div class="px-6 py-4 border-t border-gray-200">
+      <div class="flex items-center justify-center gap-2">
+        <button (click)="goToPageRetard(currentPageRetard - 1)" [disabled]="currentPageRetard === 1"
+          class="px-2 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-40">
+          &#8249;
+        </button>
+        <span class="text-sm text-gray-700">Page {{ currentPageRetard }} sur {{ totalPagesRetard }}</span>
+        <button (click)="goToPageRetard(currentPageRetard + 1)" [disabled]="currentPageRetard === totalPagesRetard"
+          class="px-2 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-40">
+          &#8250;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TABLE 2 : ÉCHÉANCES PROCHES ===================== -->
+  <div>
+    <div class="flex justify-between items-center mb-3">
+      <div>
+        <h2 class="text-xl font-medium text-gray-900">🕐 Échéances proches</h2>
+        <p class="text-sm text-gray-500">Factures arrivant à échéance dans les 7 prochains jours</p>
+      </div>
+      <span class="text-sm text-orange-600 font-medium">{{ allEcheances.length }} facture(s)</span>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <table class="w-full text-base">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">N° facture</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Apprenant</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Date échéance</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Montant TTC</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Urgence</th>
+            <th class="text-left px-4 py-2 text-gray-500 font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let facture of currentItemsEcheance"
+              class="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+            <td class="px-4 py-2 font-mono text-blue-700">{{ facture.numeroFacture }}</td>
+            <td class="px-4 py-2 text-gray-900">{{ facture.apprenantPrenom }} {{ facture.apprenantNom }}</td>
+            <td class="px-4 py-2 text-gray-500">{{ facture.dateEcheance | date:'dd MMM yyyy' }}</td>
+            <td class="px-4 py-2 font-medium text-gray-900">{{ formatCurrency(facture.montantTTC) }}</td>
+            <td class="px-4 py-2">
+              <span class="px-2 py-1 rounded-full text-sm font-medium"
+                    [ngClass]="getUrgenceClass(facture.dateEcheance)">
+                {{ getUrgenceLabel(facture.dateEcheance) }}
+              </span>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex gap-2">
+                <button (click)="envoyerAlerte(facture.id)"
+                  class="text-sm bg-red-50 text-red-800 border border-red-200 px-3 py-1 rounded-md hover:bg-red-100">
+                  ⚠️ Envoyer alerte
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="allEcheances.length === 0">
+            <td colspan="6" class="px-4 py-6 text-center text-gray-400">
+              Aucune échéance proche
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Échéances -->
+    <div class="px-6 py-4 border-t border-gray-200">
+      <div class="flex items-center justify-center gap-2">
+        <button (click)="goToPageEcheance(currentPageEcheance - 1)" [disabled]="currentPageEcheance === 1"
+          class="px-2 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-40">
+          &#8249;
+        </button>
+        <span class="text-sm text-gray-700">Page {{ currentPageEcheance }} sur {{ totalPagesEcheance }}</span>
+        <button (click)="goToPageEcheance(currentPageEcheance + 1)" [disabled]="currentPageEcheance === totalPagesEcheance"
+          class="px-2 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-40">
+          &#8250;
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

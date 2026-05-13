@@ -1,0 +1,286 @@
+<app-modal
+  [isOpen]="isOpen"
+  (close)="closeModal()"
+  className="max-w-[580px] p-0 overflow-hidden"
+>
+  <div class="flex flex-col">
+
+    <!-- ══════════════════════════════════
+         HEADER — KPIs toujours visibles
+    ══════════════════════════════════ -->
+    <div class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-5">
+
+      <!-- Titre + bouton fermer -->
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h5 class="text-base font-semibold text-gray-800 dark:text-white">
+            Détail de la Facture
+          </h5>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            {{ facture?.numeroFacture }}
+          </p>
+        </div>
+      </div>
+
+      <!-- 4 KPI cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2.5">
+          <p class="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Apprenant</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white truncate">
+            {{ facture?.apprenantPrenom  }} {{ facture?.apprenantNom  }}
+          </p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2.5">
+          <p class="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Montant TTC</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white">
+            {{ facture?.montantTTC | number:'1.2-2' }} TND
+          </p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2.5">
+          <p class="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Restant</p>
+          <p class="text-sm font-medium"
+             [class.text-red-500]="(facture?.montantRestant || 0) > 0"
+             [class.text-green-600]="(facture?.montantRestant || 0) === 0">
+            {{ facture?.montantRestant | number:'1.2-2' }} TND
+          </p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2.5">
+          <p class="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Statut</p>
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium"
+            [class.bg-yellow-100]="facture?.statut === 'EN_ATTENTE'"
+            [class.text-yellow-800]="facture?.statut === 'EN_ATTENTE'"
+            [class.bg-green-100]="facture?.statut === 'PAYEE'"
+            [class.text-green-800]="facture?.statut === 'PAYEE'"
+            [class.bg-blue-100]="facture?.statut === 'EMISE'"
+            [class.text-blue-800]="facture?.statut === 'EMISE'"
+            [class.bg-red-100]="facture?.statut === 'ANNULEE'"
+            [class.text-red-800]="facture?.statut === 'ANNULEE'"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+            {{ facture?.statut  }}
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         ONGLETS NAVIGATION
+    ══════════════════════════════════ -->
+    <div class="border-b border-gray-200 dark:border-gray-700 px-6">
+      <nav class="flex">
+
+        <button
+          type="button"
+          (click)="activeDetailTab = 'general'"
+          class="px-4 py-3 text-xs font-medium border-b-2 transition-colors duration-150"
+          [class.border-brand-500]="activeDetailTab === 'general'"
+          [class.text-brand-500]="activeDetailTab === 'general'"
+          [class.border-transparent]="activeDetailTab !== 'general'"
+          [class.text-gray-500]="activeDetailTab !== 'general'"
+        >
+          Général
+        </button>
+
+        <button
+          type="button"
+          (click)="activeDetailTab = 'apprenant'"
+          class="px-4 py-3 text-xs font-medium border-b-2 transition-colors duration-150"
+          [class.border-brand-500]="activeDetailTab === 'apprenant'"
+          [class.text-brand-500]="activeDetailTab === 'apprenant'"
+          [class.border-transparent]="activeDetailTab !== 'apprenant'"
+          [class.text-gray-500]="activeDetailTab !== 'apprenant'"
+        >
+          Apprenant
+        </button>
+
+        <button
+          type="button"
+          (click)="activeDetailTab = 'montants'"
+          class="px-4 py-3 text-xs font-medium border-b-2 transition-colors duration-150"
+          [class.border-brand-500]="activeDetailTab === 'montants'"
+          [class.text-brand-500]="activeDetailTab === 'montants'"
+          [class.border-transparent]="activeDetailTab !== 'montants'"
+          [class.text-gray-500]="activeDetailTab !== 'montants'"
+        >
+          Montants
+        </button>
+
+      </nav>
+    </div>
+
+    <!-- ══════════════════════════════════
+         ONGLET 1 — GÉNÉRAL
+    ══════════════════════════════════ -->
+    <div *ngIf="activeDetailTab === 'general'" class="px-6 py-5 flex flex-col gap-4">
+
+      <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700 pb-2">
+        Informations générales
+      </p>
+
+      <div class="grid grid-cols-2 gap-3">
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">N° Facture</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.numeroFacture }}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Statut</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.statut }}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Date d'émission</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.dateEmission | date:'dd/MM/yyyy' }}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Date d'échéance</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.dateEcheance | date:'dd/MM/yyyy' }}
+          </div>
+        </div>
+
+        <div class="col-span-2 flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Notes</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white min-h-[36px]">
+            {{ facture?.notes || '-' }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         ONGLET 2 — APPRENANT
+    ══════════════════════════════════ -->
+    <div *ngIf="activeDetailTab === 'apprenant'" class="px-6 py-5 flex flex-col gap-4">
+
+      <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700 pb-2">
+        Apprenant & formation
+      </p>
+
+      <div class="grid grid-cols-2 gap-3">
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Nom</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.apprenantNom }}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Prénom</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.apprenantPrenom }}
+          </div>
+        </div>
+
+        <div class="col-span-2 flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Email</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.apprenantEmail || '-' }}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Session</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.sessionNom }}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Formation</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.formationTitre }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         ONGLET 3 — MONTANTS
+    ══════════════════════════════════ -->
+    <div *ngIf="activeDetailTab === 'montants'" class="px-6 py-5 flex flex-col gap-4">
+
+      <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700 pb-2">
+        Détail des montants
+      </p>
+
+      <div class="grid grid-cols-2 gap-3">
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Montant HT</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.montantHT | number:'1.2-2' }} TND
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Montant TVA</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.montantTVA | number:'1.2-2' }} TND
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Montant TTC</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm font-medium text-gray-800 dark:text-white">
+            {{ facture?.montantTTC | number:'1.2-2' }} TND
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Remise</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.remise ? (facture?.remise + '%') : 'Aucune' }}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Montant payé</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white">
+            {{ facture?.montantPaye | number:'1.2-2' }} TND
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Montant restant</span>
+          <div class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm font-medium"
+               [class.text-red-500]="(facture?.montantRestant || 0) > 0"
+               [class.text-green-600]="(facture?.montantRestant || 0) === 0">
+            {{ facture?.montantRestant | number:'1.2-2' }} TND
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         FOOTER
+    ══════════════════════════════════ -->
+    <div class="border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-end">
+      <button
+        type="button"
+        (click)="closeModal()"
+        class="rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+      >
+        Fermer
+      </button>
+    </div>
+
+  </div>
+</app-modal>

@@ -1,0 +1,246 @@
+
+<app-modal
+  [isOpen]="isOpen"
+  (close)="closeModal()"
+  className="max-w-[700px] w-full max-h-[90vh] overflow-hidden p-4 lg:p-6 rounded-2xl 
+  bg-gradient-to-b from-[#f5faff] to-white
+  
+  shadow-[0_10px_40px_rgba(0,0,0,0.01)] 
+  shadow-blue-100/40"
+
+
+>
+  
+    <div class="sticky top-0  z-10 pb-3 bg-transparent">
+      <h6 class="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-3xl text-center pt-4">
+        {{ selectedFormation ? 'Modifier une formation' : 'Ajouter une formation' }}
+      </h6>
+    </div>
+<div class="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[75vh] ">
+    <form #formationForm="ngForm" class="mt-8" (ngSubmit)="handleAddOrUpdateEvent()" novalidate>
+
+      <!-- ✅ Section : Informations générales -->
+      <h6 class="text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-6">Informations générales</h6>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <div>
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Titre
+          </label>
+          <input
+            id="formation-titre"
+            type="text"
+            name="titre"
+            [(ngModel)]="formationData.titre"
+            required
+            #titre="ngModel"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+          <div *ngIf="titre.invalid && titre.touched" class="text-red-500 text-sm">
+            Le titre est obligatoire
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Prix public
+          </label>
+          <input
+            id="formation-prix"
+            type="text"
+            name="prixPublic"
+            [(ngModel)]="formationData.prixPublic"
+            required
+            #prix="ngModel"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+          <div *ngIf="prix.invalid && prix.touched" class="text-red-500 text-sm">
+            Champ obligatoire
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Description
+          </label>
+          <textarea
+            name="description"
+            [(ngModel)]="formationData.description"
+            rows="2"
+            placeholder="Décrire la formation..."
+            class="dark:bg-dark-900 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          ></textarea>
+        </div>
+      </div>
+      <!-- ✅ Fin : Informations générales -->
+
+      <!-- ✅ Section : Durée -->
+      <h6 class="text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-6">Durée</h6>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <div>
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Durée en jours
+          </label>
+          <input
+            id="formation-DJour"
+            type="number"
+            name="dureeJours"
+            [(ngModel)]="formationData.dureeJours"
+            placeholder="Ex: 5"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+        </div>
+
+        <div>
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Durée en heures
+          </label>
+          <input
+            id="formation-DHeure"
+            type="number"
+            name="dureeHeures"
+            [(ngModel)]="formationData.dureeHeures"
+            placeholder="Ex: 35"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+        </div>
+      </div>
+      <!-- ✅ Fin : Durée -->
+
+      <!-- ✅ Section : Détails pédagogiques -->
+      <h6 class="text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-6">Détails pédagogiques</h6>
+      
+      <div class=" md:col-span-2 gap-4 mt-3">
+        <div>
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Public cible
+          </label>
+          <input
+            id="formation-public"
+            type="text"
+            name="publicCible"
+            [(ngModel)]="formationData.publicCible"
+            placeholder="Ex: Développeurs débutants"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Prérequis
+          </label>
+          <input
+            id="formation-prerequis"
+            type="text"
+            name="prerequis"
+            [(ngModel)]="formationData.prerequis"
+            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+        </div>
+
+        <!-- ✅ Corrigé : name et ngModel pointent sur "programme" -->
+        <div class="md:col-span-2">
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Programme
+          </label>
+          <textarea
+            name="programme"
+            [(ngModel)]="formationData.programme"
+            rows="2"
+            placeholder="Ex: Bases en JavaScript"
+            class="dark:bg-dark-900 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Version
+          </label>
+          <input
+            id="formation-version"
+            type="text"
+            name="version"
+            [(ngModel)]="formationData.version"
+            placeholder="Ex: v1.0"
+            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+        </div>
+        <div class="md:col-span-2 mt-3">
+          <label class="mb-1.5 block text-base font-bold text-black dark:text-gray-400">
+            Sélectionner les compétences
+          </label>
+          <select
+            multiple
+            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+            style="height: 160px"
+          >
+          <option
+            *ngFor="let comp of competences"
+            [value]="comp.nom"
+            [selected]="selectedCompetenceNoms.includes(comp.nom)"
+            (click)="toggleCompetence(comp.nom)"
+          >
+          {{ comp.nom }} — {{ comp.categorie }}
+          </option>
+          </select>
+            <p class="text-xs text-gray-400 mt-1">
+              Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs compétences
+            </p>
+        </div>
+        <div class="md:col-span-2 flex flex-wrap gap-2 mt-2" *ngIf="selectedCompetenceNoms.length > 0">
+          <span
+            *ngFor="let nom of selectedCompetenceNoms"
+            class="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full border border-blue-200"
+          >
+            {{ nom }}
+            <button type="button" (click)="toggleCompetence(nom)" class="hover:text-red-500">✕</button>
+          </span>
+        </div>
+
+
+      </div>
+      <!-- ✅ Fin : Détails pédagogiques -->
+
+      <!-- ✅ Séparateur visuel corrigé -->
+      <hr class="my-6 border-t border-gray-200 dark:border-gray-700" />
+
+      <!-- Switch actif -->
+      <div class="mt-2 flex items-center gap-2">
+        <app-switch
+          name="actif"
+          
+          [defaultChecked]="formationData.actif"
+          color="blue"
+          (valueChange)="formationData.actif = $event"
+        ></app-switch>
+        <span class="text-base font-bold">
+          {{ formationData.actif ? 'Active' : 'Inactive' }}
+        </span>
+      </div>
+
+
+
+      <!-- Footer -->
+      <div class="flex items-center gap-3 mt-6 modal-footer sm:justify-end">
+        <button
+          (click)="closeModal()"
+          type="button"
+          class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 sm:w-auto"
+        >
+          Fermer
+        </button>
+        <button
+          type="submit"
+          class="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+          [disabled]="formationForm.invalid || isLoading"
+        >
+          {{ isLoading ? 'Chargement...' : (selectedFormation ? 'Mettre à jour' : 'Créer') }}
+        </button>
+      </div>
+
+    </form>
+   </div>
+    
+  
+</app-modal>

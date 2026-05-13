@@ -1,0 +1,166 @@
+<div *ngIf="loading" class="text-center py-12 text-gray-400">Chargement...</div>
+
+<div *ngIf="!loading" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+  <!-- COLONNE GAUCHE — Sessions -->
+  <div class="lg:col-span-2">
+
+    <!-- Header + Filtre -->
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+        Sessions de la semaine
+      </h2>
+      <select
+        [(ngModel)]="filterStatut"
+        class="text-base border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+        <option *ngFor="let s of statuts" [value]="s">
+          {{ s === 'TOUS' ? 'Tous les statuts' : s }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Vide -->
+    <div *ngIf="sessionsFiltrees.length === 0"
+      class="text-center py-12 text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-100">
+      Aucune session trouvée.
+    </div>
+
+    <!-- Liste sessions -->
+    <div class="flex flex-col gap-4">
+      <div *ngFor="let s of sessionsFiltrees"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+
+        <div class="flex gap-4">
+
+          <!-- Date -->
+          <div class="flex-shrink-0 text-center w-14">
+            <p class="text-sm text-gray-400 uppercase">
+              {{ s.dateDebut | date:'MMM' }}
+            </p>
+            <p class="text-3xl font-bold text-blue-600">
+              {{ s.dateDebut | date:'dd' }}
+            </p>
+            <p class="text-sm text-gray-400">
+              {{ s.heureDebut?.slice(0,5) }}
+            </p>
+          </div>
+
+          <!-- Séparateur -->
+          <div class="w-px bg-gray-100"></div>
+
+          <!-- Infos -->
+          <div class="flex-1">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <p class="text-sm font-semibold text-blue-500 uppercase mb-1">
+                  {{ s.formationNom }}
+                </p>
+                <h3 class="font-semibold text-gray-800 dark:text-white">
+                  {{ s.nom }}
+                </h3>
+              </div>
+              <span class="text-sm px-2 py-1 rounded-full font-medium flex-shrink-0"
+                [ngClass]="getStatutClass(s.statut)">
+                {{ s.statut }}
+              </span>
+            </div>
+
+            <!-- Horaire + lieu -->
+            <div class="flex flex-wrap gap-3 mt-2 text-base text-gray-500">
+              <span>🕐 {{ s.heureDebut?.slice(0,5) }} – {{ s.heureFin?.slice(0,5) }}</span>
+              <span *ngIf="s.mode !== 'DISTANCIEL'">📍 {{ s.lieu }}</span>
+              <span *ngIf="s.mode === 'DISTANCIEL'">
+                🎥 <a [href]="s.lienVisio" target="_blank"
+                  class="text-blue-500 underline">Lien Zoom</a>
+              </span>
+            </div>
+
+            <!-- Formateur + bouton -->
+            <div class="flex items-center justify-between mt-3">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
+                  {{ s.formateurNom?.[0] ?? '?' }}
+                </div>
+                <span class="text-base text-gray-600 dark:text-gray-300">
+                  {{ s.formateurNom ?? 'Formateur non assigné' }}
+                </span>
+              </div>
+              <button (click)="ouvrirPanel(s)" class="text-base text-blue-600 border border-blue-200 hover:bg-blue-50 px-3 py-1 rounded-lg transition-colors">
+                Voir détails
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COLONNE DROITE — Sidebar -->
+  <div class="flex flex-col gap-4">
+
+    <!-- Stats -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 p-5 shadow-sm">
+      <h3 class="font-semibold text-gray-700 dark:text-white mb-4">Mes statistiques</h3>
+      <div class="flex flex-col gap-3">
+        <div class="flex justify-between items-center">
+          <span class="text-base text-gray-500">Total inscriptions</span>
+          <span class="font-bold text-gray-800 dark:text-white">{{ inscriptions.length }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-base text-gray-500">En cours</span>
+          <span class="font-bold text-blue-600">{{ enCours.length }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-base text-gray-500">Terminées</span>
+          <span class="font-bold text-green-600">{{ terminees.length }}</span>
+        </div>
+        <!-- Barre progression -->
+        <div class="mt-2">
+          <div class="flex justify-between text-base text-gray-400 mb-1">
+            <span>Progression</span>
+            <span>{{ progressionPct }}%</span>
+          </div>
+          <div class="w-full h-2 bg-gray-100 rounded-full">
+            <div class="h-2 bg-blue-500 rounded-full transition-all duration-500"
+              [style.width.%]="progressionPct">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prochaine session -->
+    <div *ngIf="prochaineSession"
+      class="bg-blue-600 text-white rounded-xl p-5 shadow-sm">
+      <h3 class="font-semibold mb-3">⏰ Prochainement</h3>
+      <p class="font-bold text-xl">{{ prochaineSession.nom }}</p>
+      <p class="text-blue-200 text-base mt-1">
+        {{ prochaineSession.dateDebut | date:'dd MMM yyyy' }}
+        à {{ prochaineSession.heureDebut?.slice(0,5) }}
+      </p>
+      <p class="text-blue-200 text-base">
+        {{ getModeIcon(prochaineSession.mode) }}
+        {{ prochaineSession.mode === 'DISTANCIEL' ? 'En ligne' : prochaineSession.lieu }}
+      </p>
+    </div>
+
+    <!-- Aucune prochaine session -->
+    <div *ngIf="!prochaineSession"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 p-5 shadow-base text-center text-gray-400">
+      Aucune session à venir.
+    </div>
+
+  </div>
+
+</div>
+
+<app-session-panel
+  [ouvert]="panelOuvert"
+  [session]="sessionSelectionnee"
+  [inscription]="inscriptionSelectionnee"
+  [facture]="factureSelectionnee"
+  (fermer)="fermerPanel()"
+  (notesSauvegardees)="notesSauvegardees()">
+</app-session-panel>

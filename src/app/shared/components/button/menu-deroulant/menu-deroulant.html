@@ -1,0 +1,16 @@
+<div class="relative" #dropdownRef>
+      <!-- Bouton cliquable -->
+      <div (click)="toggleMenu()" class="cursor-pointer dropdown-toggle">
+        <!-- Affiche le template du bouton -->
+        <ng-container *ngTemplateOutlet="buttonTemplate"></ng-container>
+      </div>
+      
+      <!-- Menu déroulant (affiché seulement si ouvert) -->
+      @if (isOpen) {
+        <div class="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg">
+          <!-- Affiche le template du contenu -->
+          <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+        </div>
+      }
+</div>
+

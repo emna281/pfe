@@ -1,0 +1,48 @@
+<div
+  *ngIf="visible"
+  class="fixed inset-0  flex items-center justify-center z-50"
+  (click)="annuler.emit()">
+
+  <div
+    class="bg-white dark:bg-gray-900 rounded-2xl p-8 max-w-sm w-[90%] text-center shadow-2xl"
+    (click)="$event.stopPropagation()">
+
+    <!-- Icône -->
+    <div class="text-4xl mb-4">
+      <span *ngIf="type === 'danger'">🗑️</span>
+      <span *ngIf="type === 'warning'">⚠️</span>
+      <span *ngIf="type === 'info'">ℹ️</span>
+    </div>
+
+    <!-- Titre -->
+    <h3 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+      {{ titre }}
+    </h3>
+
+    <!-- Message -->
+    <p class="text-xl text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
+      {{ message }}
+    </p>
+
+    <!-- Boutons -->
+    <div class="flex gap-3">
+      <button
+        class="flex-1 px-5 py-3.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+        (click)="annuler.emit()">
+        {{ labelAnnuler }}
+      </button>
+
+      <button
+        class="flex-1 px-5 py-3.5 rounded-lg text-xl font-medium text-white transition-opacity hover:opacity-85"
+        [ngClass]="{
+          'bg-red-500':   type === 'danger',
+          'bg-amber-500': type === 'warning',
+          'bg-blue-500':  type === 'info'
+        }"
+        (click)="confirmer.emit()">
+        {{ labelConfirmer }}
+      </button>
+    </div>
+
+  </div>
+</div>

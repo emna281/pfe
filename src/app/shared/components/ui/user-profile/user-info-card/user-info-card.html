@@ -1,0 +1,130 @@
+<div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+
+  <!-- HEADER -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100">
+          <lucide-icon name="user" class="w-5 h-5 text-blue-700"></lucide-icon>
+        </div>
+        <h4 class="text-xl font-semibold text-gray-800 dark:text-white ">
+        Informations personnelles
+        </h4>
+      </div>
+      <p class="text-sm text-gray-500 ml-12">
+        Gérez votre mot de passe
+      </p>
+    </div>
+    
+
+    <button
+      *ngIf="isAdminView"
+      (click)="openModal()"
+      class="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-700"
+    >
+    <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
+    Modifier
+    </button>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+    <!-- Prenom -->
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">Prénom</p>
+      <p class="text-sm font-semibold text-gray-800 dark:text-white">
+        {{ user?.prenom || '-' }}
+      </p>
+    </div>
+
+    <!-- Nom -->
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">Nom</p>
+      <p class="text-sm font-semibold text-gray-800 dark:text-white">
+        {{ user?.nom || '-' }}
+      </p>
+    </div>
+
+    <!-- Email -->
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">Email</p>
+      <p class="text-sm font-semibold text-gray-800 dark:text-white">
+        {{ user?.email || '-' }}
+      </p>
+    </div>
+
+    <!-- Téléphone -->
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">Téléphone</p>
+      <p class="text-sm font-semibold text-gray-800 dark:text-white">
+        {{ user?.telephone || '-' }}
+      </p>
+    </div>
+
+  </div>
+
+  <!-- MODAL -->
+  <app-modal
+    [isOpen]="isOpen"
+    (close)="closeModal()"
+    className="max-w-[600px] m-4"
+  >
+
+    <div class="rounded-2xl bg-white p-6 dark:bg-gray-900">
+
+      <!-- TITLE -->
+      <div class="mb-6">
+        <h4 class="text-xl font-semibold text-gray-800 dark:text-white">
+          Modifier les informations
+        </h4>
+        <p class="text-sm text-gray-500">
+          Mettez à jour vos données personnelles
+        </p>
+      </div>
+
+      <!-- FORM -->
+      <form (ngSubmit)="handleSave()" class="space-y-5">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+          <div>
+            <app-label>Nom</app-label>
+            <app-input-field [(ngModel)]="user.nom" name="nom"></app-input-field>
+          </div>
+
+          <div>
+            <app-label>Prénom</app-label>
+            <app-input-field [(ngModel)]="user.prenom" name="prenom"></app-input-field>
+          </div>
+
+          <div>
+            <app-label>Email</app-label>
+            <app-input-field [(ngModel)]="user.email" name="email"></app-input-field>
+          </div>
+
+          <div>
+            <app-label>Téléphone</app-label>
+            <app-input-field [(ngModel)]="user.telephone" name="telephone"></app-input-field>
+          </div>
+
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="flex justify-end gap-3 pt-4">
+          <app-boutton size="sm" variant="outline" (btnClick)="closeModal()">
+            Annuler
+          </app-boutton>
+
+          <app-boutton size="sm" (btnClick)="handleSave()">
+            Sauvegarder
+          </app-boutton>
+        </div>
+
+      </form>
+
+    </div>
+
+  </app-modal>
+
+</div>

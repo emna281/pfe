@@ -1,0 +1,49 @@
+ <nav class="px-8 py-4 flex items-center justify-between ">
+    
+        <a href="" class="flex flex-col items-center   ml-11">
+            <img src="/images/logo/logo.jpg" class="h-36"  />
+            <span class="text-sm font-bold  text-heading -mt-10">FIRSTCODE</span>
+        </a>
+        <div id="mega-menu-full" class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 mr-36">
+            <ul class="flex flex-col mt-4 font-medium md:flex-row md:mt-0 md:space-x-8 rtl:space-x-reverse">
+                <li>
+                    <a href="#" class="nav-link  relative block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0" aria-current="page"
+                    [class.active]="activeLink === 'home'" (click)="setActive('home')">Acceuil</a>
+                </li>
+                <li>
+                    <button id="mega-menu-full-dropdown-button" data-collapse-toggle="mega-menu-full-dropdown" class="flex items-center justify-between w-full py-2 px-3 font-medium text-heading text-xl border-b border-light md:w-auto hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0">
+                        Formations 
+                        <svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
+                    </button>
+                </li>
+                <li>
+                    <a href="#" class="nav-link block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0"
+                    [class.active]="activeLink === 'Calendrier'" (click)="setActive('Calendrier')">
+                      Calendrier
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0"
+                    [class.active]="activeLink === 'Offres'" (click)="setActive('Offres')">
+                      Offres Emplois
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0"
+                    [class.active]="activeLink === 'Nouveaute'" (click)="setActive('Nouveaute')">
+                      Nouveauté
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0"
+                    [class.active]="activeLink === 'Contact'" (click)="setActive('Contact')">
+                      Contact
+                    </a>
+                </li>
+                <li>
+                  <button type="button" routerLink="/signin" class="text-white bg-[#517FB0] box-border border border-[#517FB0] hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-xl text-lg px-4 py-2.5 focus:outline-none">Connexion</button>
+                </li>
+            </ul>
+        </div>
+    
+  </nav>
