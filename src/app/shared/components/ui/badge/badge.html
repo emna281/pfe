@@ -1,9 +1,9 @@
-<span [ngClass]="baseStyles + ' ' + sizeClass + ' ' + colorStyles">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold" [ngClass]="baseStyles + ' ' + sizeClass + ' ' + colorStyles">
   @if (startIcon) {
-  <span class="mr-1" [innerHTML]="startIcon | safeHtml"></span>
+  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold" [innerHTML]="startIcon | safeHtml"></span>
   }
   <ng-content></ng-content>
   @if (endIcon) {
-  <span class="ml-1" [innerHTML]="endIcon"></span>
+  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold" [innerHTML]="endIcon"></span>
   }
 </span>

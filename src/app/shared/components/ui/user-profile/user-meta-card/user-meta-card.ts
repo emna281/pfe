@@ -5,10 +5,11 @@ import { Boutton } from '../../../button/boutton/boutton';
 import { ModalService } from '../../../../services/modal.service';
 import { Apprenant, BaseUser, Formateur } from '../../../../services/auth.service';
 import { LucideAngularModule ,Pencil ,Mail} from 'lucide-angular';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-user-meta-card',
-  imports: [Modal,InputFieldComponent,Boutton,LucideAngularModule],
+  imports: [Modal,InputFieldComponent,Boutton,LucideAngularModule,CommonModule],
   templateUrl: './user-meta-card.html',
   styleUrl: './user-meta-card.css',
 })

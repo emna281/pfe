@@ -11,7 +11,7 @@ export type TypeCharge =
   | 'SALLE'
   | 'AUTRE';
 
-export type StatutCharge = 'EN_ATTENTE' | 'PAYEE' | 'EN_RETARD';
+export type StatutCharge = 'ANNULEE' | 'ACTIVE'     ;
 
 export interface ChargeResponse {
   id: number;
@@ -22,10 +22,11 @@ export interface ChargeResponse {
   dateCharge: string;
   periode: string;
   montant: number;
-  facturable: boolean;
+
   justificatifPath: string;
   sessionId: number | null;
   sessionNom: string | null;
+ 
 }
 
 export interface ChargeRequest {
@@ -34,9 +35,10 @@ export interface ChargeRequest {
   dateCharge: string;
   periode?: string;
   montant: number;
-  facturable: boolean;
-  justificatifPath?: string;
+
+  justificatifPath?: string|null;
   sessionId?: number | null;
+  statut?: StatutCharge;
 }
 
 @Injectable({
@@ -96,7 +98,7 @@ export class ChargeService {
       c.montant.toString().replace('.', ','),
       c.sessionNom ?? 'Générale',
       c.statut,
-      c.facturable ? 'Oui' : 'Non'
+      
     ]);
 
     const csvContent = [headers, ...rows]

@@ -195,31 +195,62 @@
         </div>
 
         <!-- Historique paiements -->
-        <div class="mb-4">
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">
-            Paiements réalisés
-          </p>
-          <div *ngIf="selectedFacture.paiements && selectedFacture.paiements.length > 0"
-               class="space-y-2">
-            <div *ngFor="let p of selectedFacture.paiements"
-                 class="flex items-center gap-3 py-2.5 px-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div class="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
-              <div class="flex-1">
-                <div class="flex justify-between items-center">
-                  <span class="text-sm font-semibold text-gray-900 dark:text-white">
-                    {{ formatCurrency(p.montant) }}
-                  </span>
-                  <span class="text-xs text-gray-400">{{ formatDate(p.datePaiement) }}</span>
-                </div>
-                <p class="text-xs text-gray-400 mt-0.5">{{ p.modePaiement }}</p>
-              </div>
-            </div>
-          </div>
-          <div *ngIf="!selectedFacture.paiements || selectedFacture.paiements.length === 0"
-               class="bg-gray-50 dark:bg-gray-700 rounded-lg px-4 py-4 text-sm text-gray-400 text-center">
-            Aucun paiement enregistré pour cette facture
-          </div>
+        <!-- ══ PAIEMENT EN LIGNE ══ -->
+
+<!-- Bouton payer -->
+<button
+  *ngIf="selectedFacture.statut !== 'PAYEE' && selectedFacture.statut !== 'ANNULEE' && !showPaymentForm"
+  (click)="ouvrirPaiement()"
+  class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg px-4 py-3 transition-colors">
+  💳 Payer {{ formatCurrency(selectedFacture.montantRestant) }} en ligne
+</button>
+
+<!-- Formulaire Stripe -->
+<div *ngIf="showPaymentForm"
+     class="border border-gray-200 dark:border-gray-600 rounded-xl p-4 bg-gray-50 dark:bg-gray-700 flex flex-col gap-3">
+
+  <div class="flex items-center gap-2">
+    <span class="text-gray-600 dark:text-gray-300 text-sm font-semibold">🔒 Paiement sécurisé</span>
+    <span class="text-xs text-gray-400">via Stripe</span>
+  </div>
+
+  <!-- Zone carte -->
+  <div id="card-stripe"
+       class="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-500 rounded-lg px-3 py-3 min-h-[44px]">
+  </div>
+
+  <!-- Message retour -->
+  <p *ngIf="paymentMessage"
+     class="text-sm font-medium"
+     [class.text-green-600]="paymentMessageType === 'success'"
+     [class.text-red-500]="paymentMessageType === 'error'">
+    {{ paymentMessageType === 'success' ? '✅' : '❌' }} {{ paymentMessage }}
+  </p>
+
+  <!-- Boutons -->
+        <div class="flex gap-2">
+          <button (click)="showPaymentForm = false; paymentMessage = ''"
+            [disabled]="paymentLoading"
+            class="flex-1 text-sm border border-gray-300 dark:border-gray-500 rounded-lg px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-50 transition-colors">
+          Annuler
+          </button>
+          <button (click)="payer()"
+            [disabled]="paymentLoading"
+            class="flex-1 text-sm bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            {{ paymentLoading ? '⏳ Traitement...' : 'Confirmer' }}
+          </button>
         </div>
+
+        <p class="text-xs text-center text-gray-400">
+          🧪 Test : <strong>4242 4242 4242 4242</strong> — date future — CVC 123
+        </p>
+      </div>
+
+<!-- Payée -->
+      <div *ngIf="selectedFacture.statut === 'PAYEE' && paymentMessage"
+        class="bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-sm text-green-700 font-medium text-center">
+          ✅ {{ paymentMessage }}
+      </div>
 
         
       </div>

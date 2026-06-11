@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+export interface SeanceColonneDTO {
+  id: number;
+  numero: number;
+  date: string;      
+  heureDebut: string;  
+  heureFin: string;   
+  label: string;      
+}
 export interface PresenceResponseDTO {
   id: number | null;
   jourNumero: number;
@@ -13,6 +20,11 @@ export interface PresenceResponseDTO {
   valideParFormateur: boolean;
   commentaireFormateur: string | null;
   justificatifAbsence: string | null;
+  seanceId: number;
+  seanceDate: string;
+  seanceHeureDebut: string;
+  seanceHeureFin: string;
+  salleNumero: string;
 }
 
 export interface LignePresenceResponseDTO {
@@ -20,25 +32,30 @@ export interface LignePresenceResponseDTO {
   apprenantId: number;
   nomApprenant: string;
   prenomApprenant: string;
-  presencesParJour: { [jourNumero: number]: PresenceResponseDTO };
+  presencesParSeance: { [seanceId: number]: PresenceResponseDTO }; 
 }
 
 export interface TableauPresenceResponseDTO {
   sessionId: number;
   nomFormation: string;
-  dureeJours: number;
-  joursLabels: string[];
+  nombreSeances: number;      
+  seances: SeanceColonneDTO[];   
   lignes: LignePresenceResponseDTO[];
 }
 
 export interface PresenceRequestDTO {
   inscriptionId: number;
-  jourNumero: number;
+  seanceId: number;  
   statut: StatutPresence;
   commentaireFormateur?: string;
   justificatifAbsence?: string;
 }
-
+export interface InitPresenceResultDTO {
+  message: string;
+  apprenants: number;
+  seances: number;
+  lignesCrees: number;
+}
 
 export type RoleUser ='FORMATEUR'|'APPRENANT'|'ADMIN'|'PLANIFICATEUR';
 
@@ -47,19 +64,15 @@ export type StatutPresence ='NON_SAISI'|'PRESENT'|'ABSENT'|'RETARD'|'EXCUSE';
   providedIn: 'root',
 })
 export class PresenceService {
-  private api = '/api/presences';
-  private planificateurApi='/api/planificateur/presences';
-  private formateurApi='/api/formateur/presences';
+  private planificateurApi = '/api/planificateur/presences';
+  private formateurApi     = 'http://localhost:8081/api/formateur/presences';
+  private presencesApi     = '/api/presences';
 
   constructor(private http: HttpClient) {}
 
-  initialiserFiche(sessionId: number): Observable<any> {
-    return this.http.post(`${this.planificateurApi}/session/${sessionId}/initialiser`, {});
-  }
-
-  initialiserFicheFormateur(sessionId: number): Observable<any> {
-    return this.http.post(
-      `${this.formateurApi}/session/${sessionId}/initialiser`, {}
+  initialiserFiche(sessionId: number): Observable<InitPresenceResultDTO> {
+    return this.http.post<InitPresenceResultDTO>(
+      `${this.planificateurApi}/session/${sessionId}/initialiser`, {}
     );
   }
 
@@ -69,14 +82,25 @@ export class PresenceService {
     );
   }
 
+  // Formateur
+  initialiserFicheFormateur(sessionId: number): Observable<InitPresenceResultDTO> {
+    return this.http.post<InitPresenceResultDTO>(
+      `${this.formateurApi}/session/${sessionId}/initialiser`, {}
+    );
+  }
+
   getTableauFormateur(sessionId: number): Observable<TableauPresenceResponseDTO> {
     return this.http.get<TableauPresenceResponseDTO>(
       `${this.formateurApi}/session/${sessionId}/tableau`
     );
   }
 
+
+  
   marquerPresence(dto: PresenceRequestDTO): Observable<PresenceResponseDTO> {
-    return this.http.put<PresenceResponseDTO>(`${this.api}/marquer`, dto);
-  }
+  return this.http.post<PresenceResponseDTO>(
+    `${this.formateurApi}/marquer`, dto  // ✅ /api/formateur/presences/marquer
+  );
+}
   
 }

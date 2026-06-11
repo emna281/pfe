@@ -1,3 +1,12 @@
+@if (!afficherListe && totalCount > 5 && !loading) {
+  <div class="flex flex-col items-center justify-center py-16 gap-4 text-center">
+    <span class="text-5xl">🔍</span>
+    <h3 class="text-lg font-semibold text-gray-700">{{ totalCount }} planificateurs trouvés</h3>
+    <p class="text-sm text-gray-400 max-w-sm">
+      La liste est trop grande pour être affichée. Utilisez la barre de recherche pour trouver un planificateur.
+    </p>
+  </div>
+}
 <app-user-list-page
       [config]="config"
       [users]="planificateurs"

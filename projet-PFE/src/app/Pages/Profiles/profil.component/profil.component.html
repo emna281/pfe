@@ -1,0 +1,36 @@
+<app-page-breadcrumb pageTitle=" Mon Profil" pageSubTitle="Gérez vos informations personnelles et professionnelles" />
+
+<div class="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+
+  <ng-container *ngIf="userDetails as user">
+
+   
+
+    <!-- GRID PRINCIPAL -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- META CARD (FULL WIDTH) -->
+      <div class="lg:col-span-2">
+        <app-user-meta-card [user]="user" [isAdminView]="false"></app-user-meta-card>
+      </div>
+
+      <!-- INFO (LEFT) -->
+      <div>
+        <app-user-info-card [user]="user" [isAdminView]="false"></app-user-info-card>
+      </div>
+
+      <!-- ADDRESS (RIGHT) -->
+      <div>
+        <app-user-adress-card [user]="user" [isAdminView]="false"></app-user-adress-card>
+      </div>
+
+      <!-- SECURITY (FULL WIDTH) -->
+      <div class="lg:col-span-2">
+        <app-user-security-card [user]="user"></app-user-security-card>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

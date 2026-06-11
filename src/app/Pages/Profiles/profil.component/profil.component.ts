@@ -12,7 +12,7 @@ import { UserSecurityCard } from '../../../shared/components/ui/user-profile/use
 
 @Component({
   selector: 'app-profil.component',
-  imports: [PageBreadcrumbComponents,UserMetaCard,UserInfoCard,UserAdressCard,CommonModule,ProfilComponent,UserSecurityCard],
+  imports: [PageBreadcrumbComponents,UserMetaCard,UserInfoCard,UserAdressCard,CommonModule,UserSecurityCard],
   templateUrl: './profil.component.html',
   styleUrl: './profil.component.css',
 })

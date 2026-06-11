@@ -9,28 +9,55 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Alert } from '../../alert/alert';
 import { LucideAngularModule,Pencil ,User} from 'lucide-angular';
+import { ApprenantService, UpdateProfilRequest } from '../../../../../services/apprenant-service';
 
 
 @Component({
   selector: 'app-user-info-card',
-  imports: [InputFieldComponent,Boutton,Label,Modal,FormsModule,CommonModule,Alert,LucideAngularModule],
+  imports: [FormsModule,CommonModule,LucideAngularModule],
   templateUrl: './user-info-card.html',
   styleUrl: './user-info-card.css',
 })
 export class UserInfoCard {
   @Input() user!:BaseUser;
   @Input() isAdminView: boolean = false;
-  constructor(public modal:ModalService){}
-  isOpen=false;
-  openModal(){this.isOpen=true}
-  closeModal(){ this.isOpen=false}
-
+  constructor(private apprenantService:ApprenantService){}
+  
   
 
-  handleSave(){
-    console.log('Saving changes...');
-    this.modal.closeModal();
+  editMode = false;
+    saving = false;
+    success = false;
+    form: UpdateProfilRequest = {};
+  
+    
+  startEdit(): void {
+    this.form = {
+      nom:       this.user?.nom,
+      prenom:       this.user?.prenom,
+      telephone:        this.user?.telephone,
+      
+    };
+    this.editMode = true;
+    this.success = false;
   }
-  
+
+  cancelEdit(): void {
+    this.editMode = false;
+  }
+
+  saveEdit(): void {
+    this.saving = true;
+    this.apprenantService.updateMonProfil(this.form).subscribe({
+      next: (updated) => {
+        Object.assign(this.user, updated);
+        this.saving = false;
+        this.editMode = false;
+        this.success = true;
+        setTimeout(() => this.success = false, 3000);
+      },
+      error: () => { this.saving = false; }
+    });
+  }
 
 }

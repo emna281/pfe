@@ -1,22 +1,25 @@
-import { ChangeDetectorRef, Component ,AfterViewInit,PLATFORM_ID, inject} from '@angular/core';
+import { ChangeDetectorRef, Component ,PLATFORM_ID, inject} from '@angular/core';
 
-import {  NgClass,isPlatformBrowser } from '@angular/common'; 
+import {  isPlatformBrowser, NgClass } from '@angular/common'; 
 import { Router, RouterModule } from '@angular/router';
 import { SessionDTO ,SessionService} from '../../../services/session-service';
-import { SignupForm } from '../../../shared/components/formulaires/signup-form/signup-form';
+
 import { ConfirmationModal } from '../../../shared/components/ui/confirmation-modal/confirmation-modal';
 import { AuthService } from '../../../shared/services/auth.service';
 import { FormulaireSignup } from '../../../shared/components/formulaires/formulaire-signup/formulaire-signup';
+import { NavBar } from '../../../shared/layout/nav-bar/nav-bar';
+import { SignupFormAccueil } from '../../../shared/components/formulaires/signup-form-accueil/signup-form-accueil';
 
 
 @Component({
   selector: 'app-apprenant',
   standalone: true,
-  imports: [NgClass,RouterModule,FormulaireSignup ,ConfirmationModal],
+  imports: [NgClass,RouterModule,FormulaireSignup,SignupFormAccueil ,ConfirmationModal,NavBar],
   templateUrl: './apprenant.html',
   styleUrls: ['./apprenant.css'],
+  host: { ngSkipHydration: 'true' }
 })
-export class Apprenant implements  AfterViewInit{
+export class Apprenant {
   sessions:SessionDTO[]=[]
   loading:boolean=false
   isFormulaireOpen:boolean=false
@@ -25,8 +28,9 @@ export class Apprenant implements  AfterViewInit{
   constructor(private sessionService:SessionService,private cdr:ChangeDetectorRef, private router:Router,private authService:AuthService){}
 
   ngOnInit():void{
+    if (isPlatformBrowser(this.platformId)) {  
     this.loadSessions();
-    
+    }
   }
   loadSessions():void{
     this.loading=true;
@@ -53,32 +57,7 @@ export class Apprenant implements  AfterViewInit{
   }
 
 
-  activeLink :string= 'home';
-  setActive(link: string) :void{
-    this.activeLink = link;
-  }
-  ngAfterViewInit():void{
-    if (isPlatformBrowser(this.platformId)) {
-      this.initNavActive();
-    }
-  }
-  initNavActive():void{
-    const links= document.querySelectorAll(".nav-link");
-    links.forEach((link)=>{
-      link.addEventListener('click',(event:Event)=>{
-        event.preventDefault();
-        this.setActiveLink(link as HTMLElement);
-      })
-    })
-    
-  }
-  setActiveLink(clickedLink:HTMLElement):void{
-    const links= document.querySelectorAll(".nav-link");
-    links.forEach((link) => {
-      link.classList.remove('active');
-    });
-    clickedLink.classList.add('active');
-  }
+
 
 
   showLoginModal = false;
@@ -104,6 +83,32 @@ export class Apprenant implements  AfterViewInit{
     });
   }
 
+  currentIndex = 1;
+getOffset(): number {
+  const slideWidth = 100 / 3;
+  const offset = (this.currentIndex - 1) * slideWidth;
+  const min = 0;
+  const max = (this.sessions.length - 3) * slideWidth;
   
+  return Math.max(min, Math.min(max, offset));
+}
+next(): void {
+  this.currentIndex = (this.currentIndex + 1) % this.sessions.length;
+}
+
+prev(): void {
+  this.currentIndex = (this.currentIndex - 1 + this.sessions.length) % this.sessions.length;
+}
+
+goTo(index: number): void {
+  this.currentIndex = index;
+}
+
+scrollToContact(): void {
+  const el = document.getElementById('contact');
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
  
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { UserListConfig, UserListPage } from '../../reutilisable/user-list-page/user-list-page';
 import { inject,PLATFORM_ID } from '@angular/core';
@@ -29,18 +29,34 @@ export class ListeFormateurs {
   totalCount = 0;
   private searchTerm$ = new Subject<string>();
   private destroy$    = new Subject<void>();
-
+afficherListe = false;
+searchEffectue = false;
   constructor(
     private utilisateurService: UtilisateurService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     
-    this.charger('');
+    this.utilisateurService.getFormateurs('').pipe(
+    takeUntil(this.destroy$)
+  ).subscribe({
+    next: (response) => {
+      this.totalCount = Array.isArray(response) ? response.length : response.total;
+      
+      if (this.totalCount <= 5) {
+        this.formateurs = Array.isArray(response) ? response : response.data;
+        this.afficherListe = true;
+      }
+      this.cdr.detectChanges();
+    }
+  });
+
     this.searchTerm$.pipe(
       switchMap(term=>{
         this.loading=true;
+        this.cdr.detectChanges();
         return this.utilisateurService.getFormateurs(term);
       }),
       takeUntil(this.destroy$)
@@ -49,14 +65,25 @@ export class ListeFormateurs {
       next:(response)=>{
         this.formateurs = Array.isArray(response) ? response : response.data;
         this.totalCount = Array.isArray(response) ? response.length : response.total;
+        this.afficherListe = true;
         this.loading=false;
+        this.cdr.detectChanges(); 
       },
-      error: () => { this.loading = false; }
+      error: () => { 
+        this.loading = false; 
+        this.cdr.detectChanges();
+      }
     });
   }
 
   charger(search:string):void{
     if (!isPlatformBrowser(this.plateformId)) return;
+    if (!search && this.totalCount > 5 && !this.searchEffectue) {
+    this.loading = false;
+    this.afficherListe = false;
+    this.cdr.detectChanges();
+    return;
+  }
     this.loading=true;
     console.log('🔵 Chargement formateurs...');
     this.utilisateurService.getFormateurs(search)
@@ -68,6 +95,7 @@ export class ListeFormateurs {
         console.log('✅ apprenants filtrés :', this.formateurs);
         this.totalCount = Array.isArray(response) ? response.length : response.total;
         this.loading=false;
+        this.cdr.detectChanges();
       },
       error: (err) => { 
         console.log('❌ Status :', err.status);
@@ -75,13 +103,15 @@ export class ListeFormateurs {
         console.log('❌ URL :', err.url);
         console.log('❌ Error complet :', err);
         this.loading = false; 
-        
+        this.cdr.detectChanges();
       }
   })
 
     
   }
  onFilterChanged(term: string): void {
+    this.searchEffectue = term.length > 0;
+    this.afficherListe = term.length > 0;
     this.searchTerm$.next(term);
   }
  
@@ -89,12 +119,9 @@ export class ListeFormateurs {
     const a = user as Formateur;
     return [
       { label: 'Spécialite',   value: String(a.specialite) },
-      { label: 'Années Experience',   value: String(a.anneesExperience) },
-      { label: 'Cv Path',   value: String(a.cvPath) },
-      { label: 'Heures Enseignées Total',   value: String(a.heuresEnseigneesTotal) },
       { label: 'Disponibilité',   value: String(a.disponibilite) },
-      { label: 'Sessions',   value: String(a.sessions?.length ?? 0) },
-      { label: 'Compétences',   value: String(a.competences) },
+  
+      { label: 'Compétences',   value: String(a.competences)  },
 
   
 

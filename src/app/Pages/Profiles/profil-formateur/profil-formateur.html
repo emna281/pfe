@@ -18,16 +18,23 @@
   : 'max-w-screen-xl mx-auto px-6 py-6'">
 
     <ng-container *ngIf="activeTab() === 'sessions'">
-
+      <app-prochaine-seance
+        *ngIf="prochaineSeance() && !sessionSelectionnee()"
+        [seance]="prochaineSeance()!"
+        
+        class="block mb-6">
+      </app-prochaine-seance>
 
       <!-- Liste sessions -->
       <app-mes-session
+      class="block max-w-8xl mx-auto"
         *ngIf="!sessionSelectionnee()"
         (openPanel)="onOpenPanel($event)">
       </app-mes-session>
 
       <!-- SessionGestion plein largeur -->
       <app-session-gestion
+      class="block max-w-8xl mx-auto"
         *ngIf="sessionSelectionnee()"
         [session]="sessionSelectionnee()"
         [ouvert]="true"
@@ -41,6 +48,90 @@
     *ngIf="profil()"
     [user]="profil()!">
   </app-formateur-parametres>
+</ng-container>
+  <ng-container *ngIf="activeTab() === 'candidatures'">
+  <div class="max-w-3xl mx-auto">
+
+    <!-- Titre -->
+    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">
+      Mes demandes de candidature
+    </h2>
+
+    <!-- Aucune candidature -->
+    <div *ngIf="candidatures().length === 0"
+      class="text-center py-16 text-gray-400">
+      <p class="text-lg">Aucune demande reçue pour le moment</p>
+    </div>
+
+    <!-- Liste des candidatures -->
+    <div class="flex flex-col gap-4">
+      <div *ngFor="let c of candidatures()"
+        class="rounded-2xl border bg-white dark:bg-gray-800 dark:border-gray-700 p-5 shadow-sm">
+
+        <!-- Header carte -->
+        <div class="flex items-start justify-between mb-3">
+          <div>
+            <h3 class="font-semibold text-gray-800 dark:text-white text-base">
+              {{ c.sessionNom }}
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+              {{ c.sessionDateDebut }} → {{ c.sessionDateFin }}
+            </p>
+          </div>
+
+          <!-- Badge statut -->
+          <span class="text-xs font-semibold px-3 py-1 rounded-full"
+            [ngClass]="{
+              'bg-yellow-100 text-yellow-700': c.statut === 'ENVOYEE',
+              'bg-green-100 text-green-700':  c.statut === 'ACCEPTEE',
+              'bg-red-100 text-red-700':      c.statut === 'REFUSEE',
+              'bg-gray-100 text-gray-500':    c.statut === 'EXPIREE'
+            }">
+            {{ c.statut === 'ENVOYEE'  ? '⏳ En attente' :
+               c.statut === 'ACCEPTEE' ? '✅ Acceptée'   :
+               c.statut === 'REFUSEE'  ? '❌ Refusée'    : '⌛ Expirée' }}
+          </span>
+        </div>
+
+        <!-- Infos session -->
+        <div class="grid grid-cols-2 gap-2 text-sm text-gray-600 dark:text-gray-300 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-gray-400">📍</span>
+            {{ c.sessionLieu || 'Non défini' }}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-gray-400">💻</span>
+            {{ c.sessionMode }}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-gray-400">📅</span>
+            Envoyé le {{ c.dateEnvoi | date:'dd/MM/yyyy' }}
+          </div>
+        </div>
+
+        <!-- Boutons — seulement si ENVOYEE -->
+        <div *ngIf="c.statut === 'ENVOYEE'" class="flex gap-3">
+          <button
+            (click)="accepterCandidature(c.id)"
+            class="flex-1 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition">
+            ✅ Accepter
+          </button>
+          <button
+            (click)="refuserCandidature(c.id)"
+            class="flex-1 py-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 text-sm font-medium transition">
+            ❌ Refuser
+          </button>
+        </div>
+
+        <!-- Message si déjà répondu -->
+        <div *ngIf="c.statut !== 'ENVOYEE'"
+          class="text-sm text-gray-400 text-center py-1">
+          Répondu le {{ c.dateReponse | date:'dd/MM/yyyy HH:mm' }}
+        </div>
+
+      </div>
+    </div>
+  </div>
 </ng-container>
 
   </div>

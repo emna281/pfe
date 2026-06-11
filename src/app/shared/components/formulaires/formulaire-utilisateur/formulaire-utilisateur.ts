@@ -23,6 +23,7 @@ export class FormulaireUtilisateur {
   private plateformId=inject(PLATFORM_ID);
   competences: CompetenceInfoDTO[] = [];
   selectedCompetenceNoms: string[] = [];
+  cvExistant: string | null = null;
   ngOnInit(): void {
     this.competenceService.getAllCompetence().subscribe({
       next:(data)=>{
@@ -42,7 +43,7 @@ export class FormulaireUtilisateur {
       actif: true,
       specialite: "",
       anneesExperience: 0,
-      cvPath: "",
+
       
     };
   
@@ -64,12 +65,14 @@ export class FormulaireUtilisateur {
         actif: this.selectedUtilisateur.actif,
         specialite: this.selectedUtilisateur.specialite,
         anneesExperience: this.selectedUtilisateur.anneesExperience,
-        cvPath: this.selectedUtilisateur.cvPath,
+        
       };
       this.selectedCompetenceNoms=this.selectedUtilisateur.competenceNoms ??[];
+      this.cvExistant = this.selectedUtilisateur.cvNomFichier ?? null;
     } else {
       this.resetForm();
       this.selectedCompetenceNoms=[];
+      this.cvExistant = null;
     }
   }
 }
@@ -94,8 +97,9 @@ onCompetenceChange(event: Event): void {
           actif: true,
           specialite: "",
           anneesExperience: 0,
-          cvPath: "", 
         };
+         this.cvFile = null;          
+          this.cvExistant = null;
       }
       cvFile: File | null = null;
 
@@ -122,7 +126,6 @@ onCompetenceChange(event: Event): void {
     actif: this.utilisateurData.actif,
     specialite: this.utilisateurData.specialite,
     anneesExperience: this.utilisateurData.anneesExperience,
-    cvPath: "",
     competenceNoms: this.selectedCompetenceNoms,
   };
 

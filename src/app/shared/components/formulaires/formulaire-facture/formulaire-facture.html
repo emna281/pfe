@@ -103,9 +103,6 @@
     <!-- FORM -->
     <form #factureForm="ngForm">
 
-      <!-- ══════════════════════════════════
-           ONGLET 1 — PARAMÈTRES
-      ══════════════════════════════════ -->
       <div *ngIf="activeTab === 'parametres'" class="flex flex-col gap-4">
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -123,22 +120,6 @@
             />
           </div>
 
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-              Remise %
-            </label>
-            <select
-              id="facture-remise"
-              name="remise"
-              [(ngModel)]="factureData.remise"
-              class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500"
-            >
-              <option [ngValue]="null">Aucune remise</option>
-              <option [ngValue]="10">10%</option>
-              <option [ngValue]="20">20%</option>
-              <option [ngValue]="30">30%</option>
-            </select>
-          </div>
 
         </div>
 

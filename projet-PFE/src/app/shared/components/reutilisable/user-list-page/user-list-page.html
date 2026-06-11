@@ -1,0 +1,35 @@
+<div class="min-h-screen bg-gray-50">
+  <app-user-list-header
+    [config]="config"
+    [totalCount]="totalCount"
+    (addClicked)="onAddClicked()"
+    (filterChanged)="onFilterChanged($event)">
+  </app-user-list-header>
+
+<!-- État de chargement -->
+<div class="user-list__loader" *ngIf="loading">
+  <span>Chargement...</span>
+</div>
+
+<!-- État vide -->
+<div class="user-list__empty" 
+     *ngIf="!loading && users !== null && filteredUsers?.length === 0">
+  <p>Aucun résultat trouvé.</p>
+</div>
+<!-- Grille de cards -->
+<div class="p-4" *ngIf="!loading && filteredUsers && filteredUsers.length > 0">
+  
+  <div class="bg-white rounded-2xl shadow-md p-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4" 
+    *ngIf="!loading && filteredUsers && filteredUsers.length > 0">
+      <app-user-card
+      *ngFor="let user of filteredUsers; trackBy: trackById"
+      [user]="user"
+      [extraFields]="getExtraFields(user)"
+      (cardClicked)="onUserClicked($event)">
+      </app-user-card>
+    </div>
+  </div>
+
+</div>
+</div>

@@ -1,162 +1,148 @@
-<div
-  class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
-  <div class="flex flex-col gap-4 px-6 mb-4 sm:flex-row sm:items-center sm:justify-between">
-    <div>
-      <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-        Liste des Demandes d'inscription
-      </h3>
-      @if (selectedRows.length > 0) {
-      <p class="text-sm text-gray-500 mt-1">
-        {{ selectedRows.length }} demande(s) sélectionnée(s)
-      </p>
-      }
-    </div>
-    <div class="flex items-center gap-3">
 
-
-      <button
-        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-         [disabled]="selectedRows.length === 0">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-        </svg>
-        exporter {{ selectedRows.length > 0 ? '(' + selectedRows.length + ')' : '' }}
-      </button>
-    </div>
+<div class="flex justify-between items-center mb-4">
+  <div>
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Demandes d'inscription</h1>
+    <p class="text-sm text-gray-400">Gérez les demnades d'inscription</p>
   </div>
-    <div class="flex gap-1 px-6 border-b border-gray-200 dark:border-white/[0.05]">
+
+</div>
+<!-- table-demandes-inscriptions.html -->
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+  
+  <!-- Header -->
+  <div class="flex justify-between items-start px-6 py-5 border-b border-gray-100 dark:border-white/[0.05]">
+  <div class="flex flex-col gap-2">
+  <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+    Liste des Demandes d'inscription
+  </h3>
+
+  @if (selectedRows.length > 0) {
+    <p class="text-sm text-gray-400">
+      {{ selectedRows.length }} demande(s) sélectionnée(s)
+    </p>
+  } @else {
+    <p class="text-sm text-gray-400">
+      {{ filteredRows.length }} demande(s)
+    </p>
+  }
+
+  <!-- ✅ FILTRES COLLÉS ICI -->
+  <div class="flex items-center gap-2 flex-wrap">
     @for (tab of tabs; track tab.value) {
       <button
+        class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
         (click)="changeTab(tab.value)"
         [class]="activeTab === tab.value
-          ? 'px-4 py-2.5 text-sm font-medium border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 -mb-px'
-          : 'px-4 py-2.5 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
+          ? 'bg-blue-500 text-white'
+          : 'bg-gray-100 text-gray-600 dark:bg-white/[0.06] dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/[0.10]'">
         {{ tab.label }}
-        <span [class]="activeTab === tab.value
-            ? 'ml-1.5 text-xs bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300 rounded-full px-2 py-0.5'
-            : 'ml-1.5 text-xs bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 rounded-full px-2 py-0.5'">
-          {{ getCount(tab.value) }}
-        </span>
       </button>
     }
   </div>
+</div>
+    
+    <div class="flex justify-end">
+      <button
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-50 hover:text-gray-800 disabled:opacity-40 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] transition-colors"
+        [disabled]="selectedRows.length === 0">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+        </svg>
+        Exporter {{ selectedRows.length > 0 ? '(' + selectedRows.length + ')' : '' }}
+      </button>
+    </div>
 
+  
+</div>
+
+  
+
+  <!-- Table -->
   <div class="max-w-full overflow-x-auto">
     <table class="min-w-full">
-      <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
+      <thead class="bg-gray-50 dark:bg-white/[0.02]">
         <tr>
-          <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">
+          <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
             <div class="flex items-center gap-3">
-              <div>
-                <app-checkbox [checked]="selectAll" (checkedChange)="handleSelectAll()" />
-              </div>
-              <div>
-                <span class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                  Id Demande
-                </span>
-              </div>
+              <app-checkbox [checked]="selectAll" (checkedChange)="handleSelectAll()" />
+              <span>Id Demande</span>
             </div>
           </th>
-          <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start"> Nom
-          </th>
-          <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Email
-          </th>
-          <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start"> Code Session
-          </th>
-          
-          <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Date Demande
-          </th>
-          
-          <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Moyen Inscription
-          </th>
-          <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">statut
-           </th>
-          
-          <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Entreprise
-          </th>
-          
-          
-          
-          
-          <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Actions
-          </th>
+          <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Nom</th>
+          <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Email</th>
+          <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Code Session</th>
+          <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Statut</th>
+          <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Entreprise</th>
+          <th class="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="divide-y divide-gray-100 dark:divide-white/[0.05]">
         @for (row of filteredRows; track row.id) {
-        <tr>
-          <td class="px-4 sm:px-6 py-3.5">
+        <tr class="hover:bg-gray-50/60 dark:hover:bg-white/[0.02] transition-colors duration-150">
+
+          <td class="px-6 py-4">
             <div class="flex items-center gap-3">
-              <div>
-                <app-checkbox [checked]="selectedRows.includes(row.id)" (checkedChange)="handleRowSelect(row.id)" />
-              </div>
-              <div>
-                <span class="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-                  {{ row.id }}
-                </span>
-              </div>
+              <app-checkbox [checked]="selectedRows.includes(row.id)" (checkedChange)="handleRowSelect(row.id)" />
+              <span class="text-sm font-semibold text-gray-800 dark:text-white/90">#{{ row.id }}</span>
             </div>
           </td>
-          <td class="px-4 sm:px-6 py-3.5">
-            <p class="text-gray-700 text-theme-sm dark:text-gray-400">
-              {{ row.nom }} {{ row.prenom }}
-            </p>
+
+          <td class="px-6 py-4">
+            <span class="text-sm font-medium text-gray-800 dark:text-white/90">{{ row.nom }} {{ row.prenom }}</span>
           </td>
-          <td class="px-4 sm:px-6 py-3.5">
-            <p class="text-gray-700 text-theme-sm dark:text-gray-400">
-              {{ row.email }}
-            </p>
+
+          <td class="px-6 py-4">
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{ row.email }}</span>
           </td>
-          <td class="px-4 sm:px-6 py-3.5">
-            <p class="text-gray-700 text-theme-sm dark:text-gray-400">
-              {{ row.sessionCode}}
-            </p>
+
+          <td class="px-6 py-4">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold text-blue-700 bg-gray-100 dark:bg-blue-500/10 dark:text-blue-400">
+              {{ row.sessionCode }}
+            </span>
           </td>
-          <td class="px-4 sm:px-6 py-3.5">
-            <p class="text-gray-700 text-theme-sm dark:text-gray-400">
-              {{ row.dateDemande}}
-            </p>
-          </td>
-          
-          <td class="px-4 sm:px-6 py-3.5">
-            <p class="text-gray-700 text-theme-sm dark:text-gray-400">
-              {{ row.moyenInscription }}
-            </p>
-          </td>
-          <td class="px-4 sm:px-6 py-3.5">
+
+
+          <td class="px-6 py-4">
             <app-badge variant="light" [color]="getBadgeColor(row.statut)" size="sm">
               {{ row.statut }}
             </app-badge>
           </td>
-          
-          <td class="px-4 sm:px-6 py-3.5">
-            <p class="text-gray-700 text-theme-sm dark:text-gray-400">
-              {{ row.entreprise||'__' }}
-            </p>
+
+          <td class="px-6 py-4">
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{ row.entreprise || '—' }}</span>
           </td>
-          
-          <td>
-            <div class="flex gap-5 items-center">
-          @if (row.statut === 'EN_ATTENTE') {
-          <button
-            class="text-green-500 hover:text-green-700"
-            (click)="handleDemande(row, 'ACCEPTER')">
-            <lucide-icon name="check"></lucide-icon>
-          </button>
-          <button
-            class="text-red-500 hover:text-red-700"
-            (click)="handleDemande(row, 'REFUSER')">
-            <lucide-icon name="x"></lucide-icon>
-          </button>
-          } @else {
-          <span class="text-gray-300 text-sm">—</span>
-          }
-           </div> 
-          </td>        
+
+          <td class="px-6 py-4">
+            <div class="flex items-center justify-end gap-1">
+              @if (row.statut === 'EN_ATTENTE') {
+                <button
+                  (click)="handleDemande(row, 'ACCEPTER')"
+                  class="rounded-lg p-2 text-gray-400 hover:bg-green-50 hover:text-green-600 dark:hover:bg-green-500/10 dark:hover:text-green-400 transition-colors duration-150"
+                  title="Accepter">
+                  <lucide-icon name="check" class="w-4 h-4"></lucide-icon>
+                </button>
+                <button
+                  (click)="handleDemande(row, 'REFUSER')"
+                  class="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 dark:hover:text-red-400 transition-colors duration-150"
+                  title="Refuser">
+                  <lucide-icon name="x" class="w-4 h-4"></lucide-icon>
+                </button>
+              } @else {
+                <span class="text-gray-300 text-sm px-2">—</span>
+              }
+            </div>
+          </td>
+        </tr>
+        }
+
+        @if (filteredRows.length === 0) {
+        <tr>
+          <td colspan="9" class="px-6 py-12 text-center text-sm text-gray-400 dark:text-gray-500">
+            Aucune demande trouvée.
+          </td>
         </tr>
         }
       </tbody>
     </table>
   </div>
+</div>

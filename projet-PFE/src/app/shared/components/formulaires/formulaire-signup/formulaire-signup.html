@@ -1,0 +1,94 @@
+
+<div class="min-h-screen flex items-center justify-center px-4 py-10 bg-slate-50 dark:bg-slate-950">
+  <div class="w-full max-w-2xl p-8 bg-white rounded-[2rem] shadow-2xl ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700">
+
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <img src="/images/logo/logo.jpg" alt="Logo" class="h-12 rounded-full object-cover shadow-sm" *ngIf="showLogo" />
+        <div>
+          <p class="text-sm font-semibold text-slate-500 uppercase tracking-[0.24em] dark:text-slate-400">FIRSTCODE</p>
+          <p class="text-lg font-bold text-slate-900 dark:text-white">Plateforme professionnelle</p>
+        </div>
+      </div>
+      <a routerLink="/" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 rounded-2xl shadow-sm hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+          <path d="M12.708 5L7.5 10.208L12.708 15.417" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Retour
+      </a>
+    </div>
+
+    <div class="mb-8">
+      <h1 class="text-3xl font-semibold text-slate-900 dark:text-white">Inscription</h1>
+      <p class="mt-3 text-base text-slate-500 dark:text-slate-400 max-w-2xl">
+        Créez un compte pour accéder à votre espace et gérer vos formations avec un design moderne et professionnel.
+      </p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 mb-6">
+      <button type="button" class="flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-slate-300 hover:bg-slate-50">
+        <img src="/images/logo/google.svg" alt="Google" class="h-5 w-5" />
+        Continuer avec Google
+      </button>
+      <button type="button" class="flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-slate-300 hover:bg-slate-50">
+        <img src="/images/logo/x.svg" alt="X" class="h-5 w-5" />
+        Continuer avec X
+      </button>
+    </div>
+
+    <div class="relative py-4 mb-6">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-slate-200 dark:border-slate-700"></div>
+      </div>
+      <div class="relative flex justify-center">
+        <span class="px-4 text-sm text-slate-500 bg-white dark:bg-slate-900 dark:text-slate-400">ou</span>
+      </div>
+    </div>
+
+    <form (ngSubmit)="onSignIn()">
+      <div class="space-y-6">
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <app-label className="text-base font-medium text-slate-700 dark:text-slate-200">Prénom <span class="text-rose-500">*</span></app-label>
+            <input type="text" [value]="prenom" id="prenom" name="prenom" [(ngModel)]="prenom" placeholder="Entrez votre prénom" class="w-full px-5 py-3 mt-2 text-sm border border-slate-300 rounded-2xl bg-white text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" />
+          </div>
+          <div>
+            <app-label className="text-base font-medium text-slate-700 dark:text-slate-200">Nom <span class="text-rose-500">*</span></app-label>
+            <input type="text" [value]="nom" id="lname" name="nom" [(ngModel)]="nom" placeholder="Entrez votre nom" class="w-full px-5 py-3 mt-2 text-sm border border-slate-300 rounded-2xl bg-white text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" />
+          </div>
+        </div>
+
+        <div>
+          <app-label className="text-base font-medium text-slate-700 dark:text-slate-200">Téléphone <span class="text-rose-500">*</span></app-label>
+          <input type="tel" [value]="telephone" id="telephone" name="telephone" [(ngModel)]="telephone" placeholder="Entrez votre téléphone" class="w-full px-5 py-3 mt-2 text-sm border border-slate-300 rounded-2xl bg-white text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" />
+        </div>
+
+        <div>
+          <app-label className="text-base font-medium text-slate-700 dark:text-slate-200">Email <span class="text-rose-500">*</span></app-label>
+          <input type="email" [value]="email" id="email" name="email" [(ngModel)]="email" placeholder="Entrez votre email" class="w-full px-5 py-3 mt-2 text-sm border border-slate-300 rounded-2xl bg-white text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" />
+        </div>
+
+        <div>
+          <app-label className="text-base font-medium text-slate-700 dark:text-slate-200">Mot de passe <span class="text-rose-500">*</span></app-label>
+          <input [type]="showPassword ? 'text' : 'password'" placeholder="Entrez votre mot de passe" [value]="motDePasse" name="motDePasse" [(ngModel)]="motDePasse" class="w-full px-5 py-3 mt-2 text-sm border border-slate-300 rounded-2xl bg-white text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" required />
+        </div>
+
+        <div class="flex items-start gap-3">
+          <app-checkbox className="w-6 h-6" [(checked)]="isChecked" />
+          <p class="text-sm leading-6 text-slate-500 dark:text-slate-400">En créant un compte, vous acceptez les <a href="#" class="font-semibold text-brand-500 hover:text-brand-600">conditions générales</a> et notre <a href="#" class="font-semibold text-brand-500 hover:text-brand-600">politique de confidentialité</a>.</p>
+        </div>
+
+        <button type="submit" [disabled]="loading" class="flex items-center justify-center w-full px-6 py-3 text-sm font-semibold text-white rounded-2xl bg-brand-500 shadow-lg shadow-brand-500/20 transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50">
+          <svg *ngIf="loading" class="w-5 h-5 animate-spin mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          </svg>
+          {{ loading ? 'Création...' : "S'inscrire" }}
+        </button>
+      </div>
+    </form>
+
+    <p class="mt-6 text-sm text-center text-slate-500 dark:text-slate-400">Vous avez déjà un compte ? <a routerLink="/login" class="font-semibold text-brand-500 hover:text-brand-600">Se connecter</a></p>
+  </div>
+</div>

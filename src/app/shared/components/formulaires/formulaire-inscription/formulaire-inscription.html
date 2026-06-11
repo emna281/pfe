@@ -1,116 +1,205 @@
-<div class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
-  <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Inscription à une session</h2>
+<div class="min-h-screen bg-gradient-to-br from-sky-50 via-white to-slate-100 
+            flex items-center justify-center px-4 py-16">
 
-  <form (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-4">
+  <div class="w-full max-w-2xl">
 
-    <input 
-      type="text" 
-      name="nom" 
-      [(ngModel)]="demande.nom" 
-      placeholder="Nom" 
-      required
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    />
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <span class="inline-flex items-center gap-2 text-xs font-bold tracking-widest
+                   text-sky-700 uppercase bg-sky-100 border border-sky-200
+                   px-3 py-1 rounded-full mb-4">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2"
+             viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+        </svg>
+        Nouvelle inscription
+      </span>
+      <h2 class="text-3xl font-extrabold text-slate-900">
+        Inscription à une session
+      </h2>
+      <p class="text-slate-500 text-sm mt-2">
+        Remplissez le formulaire ci-dessous pour rejoindre la session.
+      </p>
+    </div>
 
-    <input 
-      type="text" 
-      name="prenom" 
-      [(ngModel)]="demande.prenom" 
-      placeholder="Prénom" 
-      required
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    />
+    <!-- Carte formulaire -->
+    <div class="bg-white border border-slate-100 rounded-2xl shadow-xl p-8">
 
-    <input 
-      type="email" 
-      name="email" 
-      [(ngModel)]="demande.email" 
-      placeholder="Email" 
-      required
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    />
+      <form (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-4">
 
-    <!-- Genre -->
-    <select 
-      name="genre" 
-      [(ngModel)]="demande.genre" 
-      required
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    >
-      <option value="">-- Genre --</option>
-      <option value="HOMME">Homme</option>
-      <option value="FEMME">Femme</option>
-    </select>
+        <!-- Ligne 1 : Nom + Prénom -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Nom <span class="text-red-400">*</span>
+            </label>
+            <input type="text" name="nom" [(ngModel)]="demande.nom"
+                   placeholder="Votre nom" required
+                   class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                          bg-slate-50 border border-slate-200
+                          placeholder-slate-400
+                          focus:outline-none focus:ring-2 focus:ring-sky-400
+                          transition" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Prénom <span class="text-red-400">*</span>
+            </label>
+            <input type="text" name="prenom" [(ngModel)]="demande.prenom"
+                   placeholder="Votre prénom" required
+                   class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                          bg-slate-50 border border-slate-200
+                          placeholder-slate-400
+                          focus:outline-none focus:ring-2 focus:ring-sky-400
+                          transition" />
+          </div>
+        </div>
 
-    <input 
-      type="text" 
-      name="posteActuel" 
-      [(ngModel)]="demande.posteActuel" 
-      placeholder="Poste actuel"
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    />
+        <!-- Ligne 2 : Email + Genre -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Email <span class="text-red-400">*</span>
+            </label>
+            <input type="email" name="email" [(ngModel)]="demande.email"
+                   placeholder="votre@email.com" required
+                   class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                          bg-slate-50 border border-slate-200
+                          placeholder-slate-400
+                          focus:outline-none focus:ring-2 focus:ring-sky-400
+                          transition" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Genre <span class="text-red-400">*</span>
+            </label>
+            <select name="genre" [(ngModel)]="demande.genre" required
+                    class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                           bg-slate-50 border border-slate-200
+                           focus:outline-none focus:ring-2 focus:ring-sky-400
+                           transition">
+              <option value="">-- Sélectionner --</option>
+              <option value="HOMME">Homme</option>
+              <option value="FEMME">Femme</option>
+            </select>
+          </div>
+        </div>
 
-    <input 
-      type="text" 
-      name="entreprise" 
-      [(ngModel)]="demande.entreprise" 
-      placeholder="Entreprise"
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    />
+        <!-- Ligne 3 : Poste + Entreprise -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Poste actuel
+            </label>
+            <input type="text" name="posteActuel" [(ngModel)]="demande.posteActuel"
+                   placeholder="Ex: Développeur"
+                   class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                          bg-slate-50 border border-slate-200
+                          placeholder-slate-400
+                          focus:outline-none focus:ring-2 focus:ring-sky-400
+                          transition" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Entreprise
+            </label>
+            <input type="text" name="entreprise" [(ngModel)]="demande.entreprise"
+                   placeholder="Ex: FirstCode"
+                   class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                          bg-slate-50 border border-slate-200
+                          placeholder-slate-400
+                          focus:outline-none focus:ring-2 focus:ring-sky-400
+                          transition" />
+          </div>
+        </div>
 
-    <!-- Niveau -->
-    <select 
-      name="niveauDeclare" 
-      [(ngModel)]="demande.niveauDeclare" 
-      required
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    >
-      <option value="">-- Niveau --</option>
-      <option value="DEBUTANT">Débutant</option>
-      <option value="INTERMEDIAIRE">Intermédiaire</option>
-      <option value="AVANCE">Avancé</option>
-    </select>
+        <!-- Ligne 4 : Niveau + Moyen inscription -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Niveau <span class="text-red-400">*</span>
+            </label>
+            <select name="niveauDeclare" [(ngModel)]="demande.niveauDeclare" required
+                    class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                           bg-slate-50 border border-slate-200
+                           focus:outline-none focus:ring-2 focus:ring-sky-400
+                           transition">
+              <option value="">-- Sélectionner --</option>
+              <option value="DEBUTANT">Débutant</option>
+              <option value="INTERMEDIAIRE">Intermédiaire</option>
+              <option value="AVANCE">Avancé</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Moyen d'inscription <span class="text-red-400">*</span>
+            </label>
+            <select name="moyenInscription" [(ngModel)]="demande.moyenInscription" required
+                    class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                           bg-slate-50 border border-slate-200
+                           focus:outline-none focus:ring-2 focus:ring-sky-400
+                           transition">
+              <option value="">-- Sélectionner --</option>
+              <option value="EN_LIGNE">En ligne</option>
+              <option value="SUR_PLACE">Sur place</option>
+            </select>
+          </div>
+        </div>
 
-    <!-- Prérequis -->
-    <textarea 
-      name="maitrisePrerequis" 
-      [(ngModel)]="demande.maitrisePrerequis"
-      placeholder="Maîtrise des prérequis" 
-      required
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    ></textarea>
+        <!-- Prérequis -->
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+            Maîtrise des prérequis <span class="text-red-400">*</span>
+          </label>
+          <textarea name="maitrisePrerequis" [(ngModel)]="demande.maitrisePrerequis"
+                    placeholder="Décrivez votre niveau de maîtrise des prérequis..."
+                    rows="3" required
+                    class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                           bg-slate-50 border border-slate-200
+                           placeholder-slate-400 resize-none
+                           focus:outline-none focus:ring-2 focus:ring-sky-400
+                           transition">
+          </textarea>
+        </div>
 
-    <!-- Moyen inscription -->
-    <select 
-      name="moyenInscription" 
-      [(ngModel)]="demande.moyenInscription" 
-      required
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    >
-      <option value="">-- Moyen d'inscription --</option>
-      <option value="EN_LIGNE">En ligne</option>
-      <option value="SUR_PLACE">Sur place</option>
-    </select>
+        <!-- Commentaires -->
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+            Commentaires
+          </label>
+          <textarea name="commentaires" [(ngModel)]="demande.commentaires"
+                    placeholder="Des questions ou remarques particulières ?"
+                    rows="3"
+                    class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                           bg-slate-50 border border-slate-200
+                           placeholder-slate-400 resize-none
+                           focus:outline-none focus:ring-2 focus:ring-sky-400
+                           transition">
+          </textarea>
+        </div>
 
-    <textarea 
-      name="commentaires" 
-      [(ngModel)]="demande.commentaires"
-      placeholder="Commentaires"
-      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-    ></textarea>
+        <!-- Bouton -->
+        <button type="submit"
+                class="w-full py-3 rounded-xl text-sm font-bold text-white
+                       bg-gradient-to-r from-sky-600 to-indigo-600
+                       hover:from-sky-700 hover:to-indigo-700
+                       shadow-lg shadow-sky-200/40
+                       transition-all duration-200
+                       hover:scale-[1.02] active:scale-[0.98]">
+          S'inscrire à la session →
+        </button>
 
-    <button 
-      type="submit"
-      class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
-    >
-      S'inscrire
-    </button>
-  </form>
+        <!-- Message succès -->
+        @if (message) {
+          <p class="text-center text-sm text-green-600 font-medium">{{ message }}</p>
+        }
 
-  <p class="mt-4 text-center text-green-600">{{ message }}</p>
-
-
+      </form>
+    </div>
+  </div>
 </div>
+
 <app-confirmation-modal
   [visible]="showWarningModal"
   [titre]="modalTitle"

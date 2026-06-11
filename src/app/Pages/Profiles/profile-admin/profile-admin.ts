@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { PageBreadcrumbComponents } from '../../../shared/components/ui/page-breadcrumb.components/page-breadcrumb.components';
 import { UserMetaCard } from '../../../shared/components/ui/user-profile/user-meta-card/user-meta-card';
 import { UserInfoCard } from '../../../shared/components/ui/user-profile/user-info-card/user-info-card';
@@ -12,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile-admin',
-  imports: [PageBreadcrumbComponents,UserMetaCard,UserInfoCard,UserAdressCard,CommonModule,ProfilComponent],
+  imports: [PageBreadcrumbComponents,UserMetaCard,UserInfoCard,UserAdressCard,CommonModule],
   templateUrl: './profile-admin.html',
   styleUrl: './profile-admin.css',
 })
@@ -20,7 +20,10 @@ export class ProfileAdmin {
   currentUser:AuthResponse|null=null;
     userDetails:BaseUser|null=null;
     notFound: boolean = false;
-    constructor(private authService:AuthService,private utilisateurService:UtilisateurService,private route:ActivatedRoute){}
+    constructor(private authService:AuthService,
+      private utilisateurService:UtilisateurService,
+      private route:ActivatedRoute,
+      private cdr:ChangeDetectorRef){}
     
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('id'); 
@@ -30,13 +33,15 @@ export class ProfileAdmin {
       this.utilisateurService.getById(id).subscribe({
         next: (user) => {
           this.userDetails = user;
+          this.cdr.detectChanges();
         },
         error: (err) => {
-  console.log('Status:', err.status);
-  console.log('Message:', err.message);
-  console.log('Error:', err.error);
-  this.notFound = true;
-}
+          console.log('Status:', err.status);
+          console.log('Message:', err.message);
+          console.log('Error:', err.error);
+          this.notFound = true;
+          this.cdr.detectChanges();
+        }
       });
     } else {
       this.notFound = true;

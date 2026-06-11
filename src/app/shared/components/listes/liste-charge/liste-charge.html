@@ -1,0 +1,284 @@
+<div class="w-full">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-xl font-bold text-gray-800 dark:text-white">
+      Liste des charges
+    </h1>
+    <div class="flex items-center gap-3">
+      <button (click)="exporterCSV()"
+              class="flex items-center gap-2 px-4 py-2 border border-gray-300
+                     text-gray-600 text-base rounded-lg hover:bg-gray-50 transition">
+        <lucide-icon name="upload"></lucide-icon> Exporter CSV
+        <span *ngIf="selectedIds.length > 0"
+              class="text-sm bg-gray-200 px-1.5 py-0.5 rounded-full">
+          {{ selectedIds.length }}
+        </span>
+      </button>
+      <button (click)="ouvrirCreation()"
+              class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white
+                     text-base font-medium rounded-lg hover:bg-blue-700 transition">
+        <span class="text-lg leading-none">+</span> Nouvelle charge
+      </button>
+    </div>
+  </div>
+
+  <!-- Recherche + Filtres -->
+  <div class="flex items-center gap-3 mb-4 flex-wrap">
+
+    <!-- Recherche -->
+    <div class="relative flex-1 min-w-64">
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><lucide-icon name="search"></lucide-icon></span>
+      <input type="text" [(ngModel)]="recherche"
+             (ngModelChange)="appliquerFiltres()"
+             placeholder="Rechercher par nom, session..."
+             class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg
+                    text-base focus:outline-none focus:ring-2 focus:ring-blue-300
+                    bg-white dark:bg-gray-900 dark:border-gray-700
+                    dark:text-white" />
+    </div>
+
+    <!-- Filtre Type -->
+    <select [(ngModel)]="filtreType" (ngModelChange)="appliquerFiltres()"
+            class="border border-gray-200 rounded-lg px-3 py-2 text-base
+                   bg-white dark:bg-gray-900 dark:border-gray-700
+                   dark:text-white focus:outline-none">
+      <option value="">Tous les types</option>
+      <option *ngFor="let t of types" [value]="t">{{ typeLabel(t) }}</option>
+    </select>
+
+    <!-- Filtre Statut -->
+    <select [(ngModel)]="filtreStatut" (ngModelChange)="appliquerFiltres()"
+            class="border border-gray-200 rounded-lg px-3 py-2 text-base
+                   bg-white dark:bg-gray-900 dark:border-gray-700
+                   dark:text-white focus:outline-none">
+      <option value="">Tous les statuts</option>
+      <option *ngFor="let s of statuts" [value]="s">{{ statutLabel(s) }}</option>
+    </select>
+
+    <!-- Filtre Session -->
+    <select [(ngModel)]="filtreSession" (ngModelChange)="appliquerFiltres()"
+            class="border border-gray-200 rounded-lg px-3 py-2 text-base
+                   bg-white dark:bg-gray-900 dark:border-gray-700
+                   dark:text-white focus:outline-none">
+      <option value="toutes">Toutes</option>
+      <option value="attachee">Attachée session</option>
+      <option value="generale">Générale</option>
+    </select>
+
+    <!-- Réinitialiser -->
+    <button *ngIf="nombreFiltresActifs > 0"
+            (click)="reinitialiserFiltres()"
+            class="flex items-center gap-1 text-base text-gray-500
+                   hover:text-gray-700 transition">
+      ✕ Réinitialiser
+      <span class="bg-blue-100 text-blue-600 text-xs px-1.5 py-0.5 rounded-full">
+        {{ nombreFiltresActifs }}
+      </span>
+    </button>
+
+  </div>
+
+  <!-- Message erreur -->
+  <div *ngIf="errorMessage"
+       class="mb-4 px-4 py-3 bg-red-50 border border-red-200
+              text-red-600 text-sm rounded-lg">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Tableau -->
+  <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200
+              dark:border-gray-700 shadow-sm overflow-hidden">
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="flex items-center justify-center py-16">
+      <div class="w-8 h-8 border-4 border-blue-600 border-t-transparent
+                  rounded-full animate-spin"></div>
+    </div>
+
+    <table *ngIf="!isLoading" class="w-full text-sm">
+      <thead class="bg-gray-50 dark:bg-gray-800 text-gray-500
+                    dark:text-gray-400 uppercase text-sm">
+        <tr>
+          <th class="px-4 py-3 text-left w-10">
+            <input type="checkbox" [checked]="selectAll"
+                   (change)="toggleSelectAll()"
+                   class="rounded border-gray-300" />
+          </th>
+          <th class="px-4 py-3 text-left">Charge</th>
+          <th class="px-4 py-3 text-left">Catégorie</th>
+          <th class="px-4 py-3 text-left">Montant</th>
+          <th class="px-4 py-3 text-left">Session</th>
+          <th class="px-4 py-3 text-left">Date</th>
+          <th class="px-4 py-3 text-left">Statut</th>
+          <th class="px-4 py-3 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+
+        <tr *ngFor="let charge of chargesPage"
+            class="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+
+          <!-- Checkbox -->
+          <td class="px-4 py-3">
+            <input type="checkbox"
+                   [checked]="isSelected(charge.id)"
+                   (change)="toggleSelect(charge.id)"
+                   class="rounded border-gray-300" />
+          </td>
+
+          <!-- Charge -->
+          <td class="px-4 py-3">
+            <p class="font-medium text-gray-800 dark:text-white">
+              {{ charge.description }}
+            </p>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span class="text-sm px-1.5 py-0.5 rounded border border-gray-200
+                           text-gray-500 dark:border-gray-600">
+                {{ charge.sessionId ? 'Attachée' : 'Générale' }}
+              </span>
+              <span class="text-sm text-gray-400">{{ charge.numeroCharge }}</span>
+            </div>
+          </td>
+
+          <!-- Catégorie -->
+          <td class="px-4 py-3">
+            <span class="px-2.5 py-1 rounded-full text-sm font-medium"
+                  [ngClass]="typeBadgeClass(charge.type)">
+              {{ typeLabel(charge.type) }}
+            </span>
+          </td>
+
+          <!-- Montant -->
+          <td class="px-4 py-3 font-semibold text-gray-800 dark:text-white">
+            {{ charge.montant | number:'1.2-2' }} DT
+          </td>
+
+          <!-- Session -->
+          <td class="px-4 py-3">
+            <span *ngIf="charge.sessionNom"
+                  class="text-blue-600 text-base font-medium">
+              {{ charge.sessionNom }}
+            </span>
+            <span *ngIf="!charge.sessionNom"
+                  class="text-gray-400 italic text-base">Générale</span>
+          </td>
+
+          <!-- Date -->
+          <td class="px-4 py-3 text-gray-500 text-base">
+            {{ charge.dateCharge | date:'dd MMM yyyy' }}
+          </td>
+
+          <!-- Statut -->
+          <td class="px-4 py-3">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1
+                         rounded-full text-sm font-medium"
+                  [ngClass]="statutBadgeClass(charge.statut)">
+              <span class="w-1.5 h-1.5 rounded-full"
+                    [class.bg-green-500]="charge.statut === 'ANNULEE'"
+                    [class.bg-yellow-500]="charge.statut === 'ACTIVE'"
+                    >
+              </span>
+              {{ statutLabel(charge.statut) }}
+            </span>
+          </td>
+
+          <!-- Actions -->
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              <button (click)="ouvrirEdition(charge)"
+                      class="text-blue-500 hover:text-blue-700 transition"
+                      title="Modifier">
+                <lucide-icon name="pencil"></lucide-icon>
+              </button>
+              <button (click)="ouvrirSuppression(charge)"
+                      class="text-red-400 hover:text-red-600 transition"
+                      title="Supprimer">
+                <lucide-icon name="trash2"></lucide-icon>
+              </button>
+            </div>
+          </td>
+
+        </tr>
+
+        <!-- Vide -->
+        <tr *ngIf="chargesPage.length === 0">
+          <td colspan="8"
+              class="px-4 py-12 text-center text-gray-400 text-base">
+            Aucune charge trouvée
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div *ngIf="!isLoading && total > 0"
+         class="flex items-center justify-between px-4 py-3 border-t
+                border-gray-100 dark:border-gray-700 text-base text-gray-500">
+      <span>
+        Affichage de {{ (page - 1) * pageSize + 1 }}-{{ page * pageSize > total ? total : page * pageSize }}
+        sur {{ total }} charges
+      </span>
+      <div class="flex items-center gap-2">
+        <span>Lignes par page : </span>
+        <select [(ngModel)]="pageSize" (ngModelChange)="appliquerFiltres()"
+                class="border border-gray-200 rounded px-2 py-1 text-base
+                       bg-white dark:bg-gray-900">
+          <option [value]="10">10</option>
+          <option [value]="20">20</option>
+          <option [value]="50">50</option>
+        </select>
+        <button (click)="changerPage(-1)" [disabled]="page === 1"
+                class="px-3 py-1 border border-gray-200 rounded-lg
+                       hover:bg-gray-50 disabled:opacity-40 transition">
+          ‹
+        </button>
+        <span class="font-medium text-gray-700">{{ page }}</span>
+        <button (click)="changerPage(1)" [disabled]="page >= totalPages"
+                class="px-3 py-1 border border-gray-200 rounded-lg
+                       hover:bg-gray-50 disabled:opacity-40 transition">
+          ›
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Modal Création/Édition — composant séparé -->
+<app-formlaire-charge
+  *ngIf="showModal"
+  [charge]="chargeSelectionnee"
+  (fermer)="fermerModal()"
+  (sauvegarde)="onChargeSauvegardee()">
+</app-formlaire-charge>
+
+<!-- Modal Suppression -->
+<div *ngIf="showDeleteModal"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50
+            flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-base p-6">
+    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">
+      Supprimer la charge
+    </h3>
+    <p class="text-base text-gray-500 mb-6">
+      Voulez-vous vraiment supprimer
+      <strong>{{ chargeASupprimer?.description }}</strong> ?
+      Cette action est irréversible.
+    </p>
+    <div class="flex justify-end gap-3">
+      <button (click)="showDeleteModal = false"
+              class="px-6 py-3 border border-gray-200 text-gray-600
+                     text-xl rounded-lg hover:bg-gray-50 transition">
+        Annuler
+      </button>
+      <button (click)="confirmerSuppression()"
+              class="px-4 py-2 bg-red-600 text-white text-base font-medium
+                     rounded-lg hover:bg-red-700 transition">
+        Supprimer
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,14 +1,15 @@
-import { Component,Input,Output,EventEmitter ,OnChanges,SimpleChanges,OnInit} from '@angular/core';
+import { Component,Input,Output,EventEmitter ,OnChanges,SimpleChanges,OnInit, ChangeDetectorRef} from '@angular/core';
 import { Modal } from '../ui/modal/modal';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SwitchComponent } from '../ui/switch.component';
 import { FormationService ,FormationRequest,FormationAdminDTO} from '../../../services/formation-service';
 import { CompetenceService,CompetenceInfoDTO } from '../../../services/competence-service';
+import { LucideAngularModule ,SquarePen,Plus} from 'lucide-angular';
 @Component({
   selector: 'app-formulaire-formation',
   standalone: true,
-  imports: [Modal,FormsModule,CommonModule,SwitchComponent],
+  imports: [Modal,FormsModule,CommonModule,SwitchComponent,LucideAngularModule],
   templateUrl: './formulaire-formation.html',
   styleUrl: './formulaire-formation.css',
 })
@@ -36,6 +37,7 @@ export class FormulaireFormation implements OnChanges,OnInit{
   ngOnInit(): void {
     this.competenceService.getAllCompetence().subscribe(data=>{
       this.competences=data;
+      this.cdr.detectChanges();
     });
   }
   ngOnChanges(changes: SimpleChanges) {
@@ -50,20 +52,22 @@ export class FormulaireFormation implements OnChanges,OnInit{
       this.isLoading = false;
     }
   }
-  toggleCompetence(nom:string){
-    const index= this.selectedCompetenceNoms.indexOf(nom);
-    if(index===-1){
-      this.selectedCompetenceNoms.push(nom);
-    }
-    else{
-      this.selectedCompetenceNoms.splice(index,1);
-    }
+  toggleCompetence(nom: string) {
+  const index = this.selectedCompetenceNoms.indexOf(nom);
+  if (index === -1) {
+    this.selectedCompetenceNoms = [...this.selectedCompetenceNoms, nom]; // nouveau tableau → détection
+  } else {
+    this.selectedCompetenceNoms = this.selectedCompetenceNoms.filter(n => n !== nom);
   }
-  constructor(private formationService: FormationService,private competenceService:CompetenceService) {}
+}
+  constructor(private formationService: FormationService,
+    private competenceService:CompetenceService,
+    private cdr: ChangeDetectorRef ) {}
 
   closeModal() {
     this.closeFormulaire.emit();
     this.resetForm();
+    this.cdr.detectChanges();
   }
 
   resetForm() {
@@ -128,5 +132,14 @@ export class FormulaireFormation implements OnChanges,OnInit{
       });
   }
 }
+
+activeTab: string = 'general';
+
+tabs = [
+  { id: 'general',   label: 'Informations générales', icon: 'info' },
+  { id: 'duree',     label: 'Durée',                  icon: 'clock' },
+  { id: 'pedagogie', label: 'Détails pédagogiques',   icon: 'book-open' },
+  { id: 'statut',    label: 'Statut',                 icon: 'toggle-left' },
+];
 
 }

@@ -214,4 +214,17 @@ export class TableFormation implements OnInit{
   fermerWarning():void{
     this.showWarningModal=false;
   }
+
+  getDebut(): number {
+  return this.filtredFormation.length === 0 ? 0 
+    : (this.currentPage - 1) * this.itemsPerPage + 1;
+}
+
+getFin(): number {
+  return Math.min(this.currentPage * this.itemsPerPage, this.filtredFormation.length);
+}
+
+getPages(): number[] {
+  return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+}
 }

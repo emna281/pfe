@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { UserListConfig, UserListPage } from '../../reutilisable/user-list-page/user-list-page';
 import { BaseUser, Financier } from '../../../services/auth.service';
@@ -29,15 +29,29 @@ export class ListeFinanciers {
   totalCount = 0;
   private searchTerm$ = new Subject<string>();
   private destroy$    = new Subject<void>();
-
+afficherListe = false;
+searchEffectue = false;
   constructor(
     private utilisateurService: UtilisateurService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     
-    this.charger('');
+    this.utilisateurService.getFinanciers('').pipe(
+    takeUntil(this.destroy$)
+  ).subscribe({
+    next: (response) => {
+      this.totalCount = Array.isArray(response) ? response.length : response.total;
+      // Si <= 5, affiche directement
+      if (this.totalCount <= 5) {
+        this.financiers = Array.isArray(response) ? response : response.data;
+        this.afficherListe = true;
+      }
+      this.cdr.detectChanges();
+    }
+  });
     this.searchTerm$.pipe(
       switchMap(term=>{
         this.loading=true;
@@ -49,14 +63,25 @@ export class ListeFinanciers {
       next:(response)=>{
         this.financiers = Array.isArray(response) ? response : response.data;
         this.totalCount = Array.isArray(response) ? response.length : response.total;
+        this.afficherListe = true;
         this.loading=false;
+        this.cdr.detectChanges();
       },
-      error: () => { this.loading = false; }
+      error: () => { 
+        this.loading = false;
+         this.cdr.detectChanges();
+      }
     });
   }
 
   charger(search:string):void{
     if (!isPlatformBrowser(this.plateformId)) return;
+    if (!search && this.totalCount > 5 && !this.searchEffectue) {
+    this.loading = false;
+    this.afficherListe = false;
+    this.cdr.detectChanges();
+    return;
+  }
     this.loading=true;
     console.log('🔵 Chargement apprenants...');
     this.utilisateurService.getFinanciers(search)
@@ -68,6 +93,7 @@ export class ListeFinanciers {
         console.log('✅ apprenants filtrés :', this.financiers);
         this.totalCount = Array.isArray(response) ? response.length : response.total;
         this.loading=false;
+        this.cdr.detectChanges();
       },
       error: (err) => { 
         console.log('❌ Status :', err.status);
@@ -75,13 +101,15 @@ export class ListeFinanciers {
         console.log('❌ URL :', err.url);
         console.log('❌ Error complet :', err);
         this.loading = false; 
-        
+        this.cdr.detectChanges();
       }
   })
 
     
   }
  onFilterChanged(term: string): void {
+  this.searchEffectue = term.length > 0;
+  this.afficherListe = term.length > 0;
     this.searchTerm$.next(term);
   }
  
@@ -90,7 +118,7 @@ export class ListeFinanciers {
     return [
       { label: 'Spécialite',   value: String(f.specialite) },
       { label: 'Années Experience',   value: String(f.anneesExperience) },
-      { label: 'Cv Path',   value: String(f.cvPath) },
+      { label: 'Cv ',   value: String(f.cvNomFichier) },
 
     ];
   };

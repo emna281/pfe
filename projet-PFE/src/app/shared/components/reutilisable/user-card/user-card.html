@@ -1,0 +1,85 @@
+<!-- user-card.component.html -->
+<div class="bg-gray-50 rounded-2xl border border-gray-100 p-5 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 relative flex flex-col"
+(click)="onClick()">
+<button
+    class="absolute top-4 right-4 text-gray-600 hover:text-gray-600 hover:bg-gray-100 rounded-lg px-2 py-0.5 text-4xl tracking-widest leading-none"
+    (click)="navigateToProfile($event)">
+    ···
+  </button>
+  <!-- Avatar + point statut -->
+  <div class="relative w-14 h-14 mb-3">
+    <div
+      class="w-14 h-14 rounded-full flex items-center justify-center font-semibold text-lg overflow-hidden"
+      [ngClass]="getRandomColor(user.nom + user.prenom)"> 
+      <div>{{ user.prenom[0] }}{{ user.nom[0] }}</div>
+    </div>
+    <span
+    class="absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-2 border-white"
+    [ngClass]="{
+    'bg-green-400': user.actif,
+    'bg-red-400': !user.actif
+  }">
+</span>
+  </div>
+
+  
+
+  <div class="user-card__info">
+    <h3 class="text-lg font-semibold">{{ user.prenom }} {{ user.nom }}</h3>
+    <p class="text-gray-500">{{ user.email }}</p>
+
+   
+  </div>
+
+  <div class="bg-white rounded-xl px-3 py-3 flex flex-col gap-3"
+     *ngIf="extraFields && extraFields.length > 0">
+
+  <!-- 🔹 Ligne 1 : Téléphone + Date -->
+  <div class="flex justify-between">
+
+    <!-- Téléphone -->
+    <div class="flex items-center gap-2 text-sm">
+  
+  <lucide-icon name="phone" class="w-4 h-4 text-black"></lucide-icon>
+
+  <div class="flex flex-col">
+    <span class="text-gray-400">Téléphone</span>
+    <span class="font-medium text-gray-700">
+      {{ user.telephone || '___' }}
+    </span>
+  </div>
+
+</div>
+
+    <!-- Date création -->
+    <div class="flex items-center gap-2 text-sm">
+
+  <lucide-icon name="calendar" class="w-4 h-4 text-black"></lucide-icon>
+
+  <div class="flex flex-col">
+    <span class="text-gray-400">Date création</span>
+    <span class="font-medium text-gray-700">
+      {{ user.dateCreation ? (user.dateCreation | date:'dd/MM/yyyy HH:mm') : '___' }}
+    </span>
+  </div>
+
+</div>
+
+  </div>
+
+  <!-- 🔹 Ligne 2+ : autres champs -->
+  <div class="flex flex-col gap-2">
+    <div class="flex justify-between text-sm"
+         *ngFor="let field of extraFields">
+      <span class="text-gray-400">{{ field.label }}</span>
+      <span class="font-medium text-gray-700">
+        {{ field.value || '___' }}
+      </span>
+    </div>
+  </div>
+
+</div>
+
+  
+
+</div>

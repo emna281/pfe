@@ -24,7 +24,8 @@ export class FinancierSidebar {
   readonly ReceiptText= ReceiptText;
   readonly Send= Send;
   readonly ChartColumn= ChartColumn;
-
+  readonly Users=Users;
+  readonly User=User;
     navItems: NavItem[] = [
       {
         name: 'Dashboard',
@@ -41,16 +42,22 @@ export class FinancierSidebar {
         ],
       },
       {
+        name: "Charges",
+        icon: ReceiptText,
+        subItems: [
+          { name: "Charge générale", path: "/financier/ListeCharge", pro: false},         
+        ],
+      },
+      {
         name: "Rappels",
         icon: Send,
         path:"/financier/rappel"
       },
+
       {
-        name: "Rapports",
-        icon: ChartColumn,
-        subItems: [
-          //{ name: "Formation", path: "/planificateur/formation", pro: false},         
-        ],
+        name:"Apprenants",
+        icon:Users,
+        path:"/financier/FinancierApprenants"
       },
       {
         name:"Profil",
@@ -59,11 +66,7 @@ export class FinancierSidebar {
           {name:"Mon Profil",path:"/financier/profile"}
         ]
       },
-      {
-        name:"Apprenants",
-        icon:Users,
-        path:"/financier/FinancierApprenants"
-      }
+      
 
       
     ]

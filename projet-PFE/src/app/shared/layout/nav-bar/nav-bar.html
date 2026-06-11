@@ -1,0 +1,114 @@
+<!-- Navigation Bar -->
+<nav
+  class="navbar"
+  [class.scrolled]="isScrolled"
+  role="navigation"
+  aria-label="Main navigation">
+  <div class="navbar-container">
+    <!-- Logo Section -->
+    <div class="navbar-logo">
+      <a href="/" class="logo-link" title="FIRSTCODE - Home">
+        <img
+          src="/images/logo/logo.jpg"
+          alt="FIRSTCODE Logo"
+          class="logo-image" />
+        <span class="logo-text">FIRSTCODE</span>
+      </a>
+    </div>
+
+    <!-- Mobile Menu Toggle Button -->
+    <button
+      class="mobile-menu-toggle"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMobileMenuOpen"
+      aria-label="Toggle navigation menu"
+      type="button">
+      <svg
+        class="toggle-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6" *ngIf="!isMobileMenuOpen"></line>
+        <line x1="3" y1="12" x2="21" y2="12" *ngIf="!isMobileMenuOpen"></line>
+        <line x1="3" y1="18" x2="21" y2="18" *ngIf="!isMobileMenuOpen"></line>
+        <path d="M6 6l12 12" *ngIf="isMobileMenuOpen"></path>
+        <path d="M18 6l-12 12" *ngIf="isMobileMenuOpen"></path>
+      </svg>
+    </button>
+
+    <!-- Navigation Menu -->
+    <div
+      class="nav-menu"
+      [class.open]="isMobileMenuOpen"
+      #mobileMenu>
+      <ul class="nav-list">
+        <!-- Navigation Links -->
+        <li class="nav-item" *ngFor="let link of navLinks">
+          <a
+            [href]="link.route"
+            class="nav-link"
+            [attr.data-link-id]="link.id"
+            [class.active]="activeLink === link.id"
+            (click)="setActive(link.id)"
+            [attr.aria-current]="activeLink === link.id ? 'page' : null">
+            {{ link.label }}
+          </a>
+        </li>
+
+        <!-- Login Button (Mobile) -->
+        <li class="nav-item md:hidden">
+          <button
+            type="button"
+            routerLink="/signin"
+            class="btn-connexion-mobile"
+            (click)="closeMobileMenu()">
+            <svg
+              class="btn-connexion-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Connexion
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Login Button (Desktop) -->
+    <button
+      type="button"
+      routerLink="/signin"
+      class="btn-connexion"
+      aria-label="Sign in to your account">
+      <svg
+        class="btn-connexion-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      Connexion
+    </button>
+  </div>
+</nav>

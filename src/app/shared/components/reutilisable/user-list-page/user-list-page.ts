@@ -1,9 +1,9 @@
-import { Component ,Input,Output,EventEmitter} from '@angular/core';
+import { Component ,Input,Output,EventEmitter, ChangeDetectorRef} from '@angular/core';
 import { BaseUser } from '../../../services/auth.service';
-import { ExtraField, UserCard } from '../user-card/user-card';
+import { ExtraField } from '../user-card/user-card';
 import { CommonModule } from '@angular/common';
 import { UserListHeader } from '../user-list-header/user-list-header';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 
 export interface UserListConfig {
@@ -14,7 +14,7 @@ export interface UserListConfig {
 }
 @Component({
   selector: 'app-user-list-page',
-  imports: [UserCard,CommonModule,UserListHeader,RouterModule],
+  imports: [CommonModule,UserListHeader,RouterModule],
   standalone: true,
   templateUrl: './user-list-page.html',
   styleUrl: './user-list-page.css',
@@ -30,8 +30,9 @@ export class UserListPage {
   @Output() addClicked     = new EventEmitter<void>();     
   @Output() filterChanged  = new EventEmitter<string>();   
 
-  
+  constructor(private cdr:ChangeDetectorRef,private router:Router){}
   searchTerm: string = '';
+  
   get filteredUsers(): BaseUser[] {
     if (!this.users) return []; 
     if (!this.searchTerm) return this.users;
@@ -57,6 +58,24 @@ export class UserListPage {
   trackById(_index: number, user: BaseUser): string {
     return user.id;
   }
+  getAvatarColor(name: string): string {
+  const colors = [
+    'bg-violet-100 text-violet-600',
+    'bg-blue-100 text-blue-600',
+    'bg-yellow-100 text-yellow-600',
+    'bg-pink-100 text-pink-600',
+    'bg-indigo-100 text-indigo-600',
+    'bg-gray-100 text-gray-600'
+  ];
+  let index = 0;
+  for (let i = 0; i < name.length; i++) index += name.charCodeAt(i);
+  return colors[index % colors.length];
+}
+
+navigateToProfile(user: BaseUser): void {
+  // adapte la route selon ton app
+  this.router.navigate(['admin/profileAdmin'], { queryParams: { id: user.id } });
+}
 
   
 }

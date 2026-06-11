@@ -69,7 +69,6 @@ export class FormulairePaiement {
     .validerCode(this.codeRemiseSaisi, apprenantId)
     .subscribe({
       next: (codeReponse) => {
-        // Recalcul local uniquement
         const prixOriginal = this.selectedFacture!.montantHT /
           (1 - (this.selectedFacture!.remise ?? 0) / 100);
         const nouveauHT = prixOriginal * (1 - codeReponse.pourcentage / 100);

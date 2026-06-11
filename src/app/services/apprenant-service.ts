@@ -24,10 +24,12 @@ export interface SessionApprenant {
   lienVisio: string;
   mode: string;
   statut: string;
-  formateurNom: string;
+  formateurNom: string | null;
   formationNom: string;
   placesRestantes: number;
   prix: number;
+  nombreSeances: number;
+  nombreSeancesRealisees: number;
 }
 export interface FactureApprenant {
   id: number;
@@ -44,6 +46,17 @@ export interface FactureApprenant {
   formationTitre: string;
   inscriptionId: number;
   paiements: PaiementDTO[];
+}
+export interface UpdateProfilRequest {
+  prenom?: string;
+  nom?: string;
+  telephone?: string;
+  email?:string;
+  posteActuel?: string;
+  niveauEtude?: string;
+  specialite?: string;
+  anneesExperience?: number;
+  competences?: string[];
 }
 @Injectable({
   providedIn: 'root',
@@ -80,4 +93,7 @@ getApprenantsPourFinancier(): Observable<ApprenantResponse[]> {
     }
     return this.http.get<ApprenantResponse[]>('/api/financier/apprenants/avec-codes');
   }
+  updateMonProfil(data: UpdateProfilRequest): Observable<any> {
+  return this.http.put(`${this.baseUrl}/me`, data);
+}
 }

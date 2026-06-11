@@ -1,0 +1,10 @@
+<app-user-list-page
+      [config]="config"
+      [users]="apprenants"
+      [loading]="loading"
+      [totalCount]="totalCount"
+      [getExtraFields]="getExtraFields"
+      (userClicked)="voirDetail($event)"
+      (addClicked)="ouvrirFormulaire()"
+      (filterChanged)="onFilterChanged($event)">
+    </app-user-list-page>

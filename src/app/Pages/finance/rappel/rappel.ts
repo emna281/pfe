@@ -137,6 +137,19 @@ export class Rappel {
   formatCurrency(val: number): string {
     return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(val);
   }
-
+  getDebutRetard(): number {
+  return this.allFacturesRetard.length === 0 ? 0 
+    : (this.currentPageRetard - 1) * this.itemsPerPage + 1;
+}
+getFinRetard(): number {
+  return Math.min(this.currentPageRetard * this.itemsPerPage, this.allFacturesRetard.length);
+}
+getDebutEcheance(): number {
+  return this.allEcheances.length === 0 ? 0 
+    : (this.currentPageEcheance - 1) * this.itemsPerPage + 1;
+}
+getFinEcheance(): number {
+  return Math.min(this.currentPageEcheance * this.itemsPerPage, this.allEcheances.length);
+}
 
 }

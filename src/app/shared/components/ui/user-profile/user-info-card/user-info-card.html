@@ -1,130 +1,126 @@
-<div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+<div class="bg-white dark:bg-gray-800 rounded-xl p-6"
+  style="border:0.5px solid #e5e7eb">
 
-  <!-- HEADER -->
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <div class="flex items-center gap-3">
+  <!-- En-tête -->
+  <div class="flex items-start justify-between mb-4">
+    <div class="flex items-center gap-3">
+      
         <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100">
-          <lucide-icon name="user" class="w-5 h-5 text-blue-700"></lucide-icon>
+          <lucide-icon name="briefcase" class="w-5 h-5 text-blue-700"></lucide-icon>
         </div>
-        <h4 class="text-xl font-semibold text-gray-800 dark:text-white ">
-        Informations personnelles
-        </h4>
+      
+      <div>
+        <h3 class="font-semibold text-gray-800 dark:text-white">
+          Parcours professionnel
+        </h3>
+
       </div>
-      <p class="text-sm text-gray-500 ml-12">
-        Gérez votre mot de passe
+    </div>
+
+    <button *ngIf="!editMode && !isAdminView"
+  (click)="startEdit()"
+  class="flex items-center gap-1.5 text-lg font-medium px-3 py-1.5 rounded-lg
+         border border-gray-300 text-gray-200
+         bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]
+         transition-all duration-300
+         hover:bg-gradient-to-br hover:from-[#0f3460] hover:via-[#16213e] hover:to-[#1a1a2e]">
+  
+  <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
+  Modifier
+</button>
+
+    <div *ngIf="editMode" class="flex gap-2">
+      <button (click)="cancelEdit()"
+        class="text-xs px-3 py-1.5 rounded-lg"
+        style="border:0.5px solid #d1d5db; color:#6b7280; background:transparent">
+        Annuler
+      </button>
+      <button (click)="saveEdit()" [disabled]="saving"
+        class="text-xs px-3 py-1.5 rounded-lg text-white font-medium"
+        style="background:#378ADD; border:none"
+        [style.opacity]="saving ? '0.7' : '1'">
+        {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Succès -->
+  <div *ngIf="success"
+    class="flex items-center gap-2 text-xs px-3 py-2 rounded-lg mb-4"
+    style="background:#EAF3DE; color:#3B6D11">
+    
+    <i class="ti ti-circle-check" style="font-size:14px"></i>
+    Informations mises à jour avec succès.
+  </div>
+
+
+  <!-- ═══ FORMATEUR — Mode lecture ═══ -->
+  <div *ngIf="!editMode" class="grid grid-cols-2 gap-x-8 gap-y-4">
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">
+        Nom
+      </p>
+      <p class="font-semibold text-gray-800 dark:text-white">
+        {{ user.nom || '—' }}
+      </p>
+    </div>
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">
+        Prenom
+      </p>
+      <p class="font-semibold text-gray-800 dark:text-white">
+        {{ user.prenom  }} ans
+      </p>
+    </div>
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">
+        Email
+      </p>
+      <p class="font-semibold text-gray-800 dark:text-white">
+        {{ user.email  }} ans
+      </p>
+    </div>
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">
+        telephone
+      </p>
+      <p class="font-semibold text-gray-800 dark:text-white">
+        {{ user.telephone }} ans
       </p>
     </div>
     
-
-    <button
-      *ngIf="isAdminView"
-      (click)="openModal()"
-      class="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-700"
-    >
-    <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
-    Modifier
-    </button>
   </div>
 
-  <!-- CONTENT -->
-  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-
-    <!-- Prenom -->
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <p class="text-xs text-gray-500 mb-1">Prénom</p>
-      <p class="text-sm font-semibold text-gray-800 dark:text-white">
-        {{ user?.prenom || '-' }}
-      </p>
+  <!-- ═══ FORMATEUR — Mode édition ═══ -->
+  <div *ngIf="editMode" class="grid grid-cols-2 gap-4">
+    <div>
+      <label class="text-xs font-medium text-gray-500 block mb-1">Nom</label>
+      <input type="text" [(ngModel)]="form.nom"
+        class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+               focus:outline-none focus:ring-2 focus:ring-blue-300
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
     </div>
-
-    <!-- Nom -->
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <p class="text-xs text-gray-500 mb-1">Nom</p>
-      <p class="text-sm font-semibold text-gray-800 dark:text-white">
-        {{ user?.nom || '-' }}
-      </p>
+    <div>
+      <label class="text-xs font-medium text-gray-500 block mb-1">Prenom</label>
+      <input type="text" [(ngModel)]="form.prenom" min="0"
+        class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+               focus:outline-none focus:ring-2 focus:ring-blue-300
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
     </div>
-
-    <!-- Email -->
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <p class="text-xs text-gray-500 mb-1">Email</p>
-      <p class="text-sm font-semibold text-gray-800 dark:text-white">
-        {{ user?.email || '-' }}
-      </p>
+    <div>
+      <label class="text-xs font-medium text-gray-500 block mb-1">telephone</label>
+      <input type="text" [(ngModel)]="form.telephone"
+        class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+               focus:outline-none focus:ring-2 focus:ring-blue-300
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
     </div>
-
-    <!-- Téléphone -->
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <p class="text-xs text-gray-500 mb-1">Téléphone</p>
-      <p class="text-sm font-semibold text-gray-800 dark:text-white">
-        {{ user?.telephone || '-' }}
-      </p>
+    <div>
+      <label class="text-xs font-medium text-gray-500 block mb-1">email</label>
+      <input type="email" [(ngModel)]="form.email" min="0"
+        class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+               focus:outline-none focus:ring-2 focus:ring-blue-300
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
     </div>
-
   </div>
-
-  <!-- MODAL -->
-  <app-modal
-    [isOpen]="isOpen"
-    (close)="closeModal()"
-    className="max-w-[600px] m-4"
-  >
-
-    <div class="rounded-2xl bg-white p-6 dark:bg-gray-900">
-
-      <!-- TITLE -->
-      <div class="mb-6">
-        <h4 class="text-xl font-semibold text-gray-800 dark:text-white">
-          Modifier les informations
-        </h4>
-        <p class="text-sm text-gray-500">
-          Mettez à jour vos données personnelles
-        </p>
-      </div>
-
-      <!-- FORM -->
-      <form (ngSubmit)="handleSave()" class="space-y-5">
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-          <div>
-            <app-label>Nom</app-label>
-            <app-input-field [(ngModel)]="user.nom" name="nom"></app-input-field>
-          </div>
-
-          <div>
-            <app-label>Prénom</app-label>
-            <app-input-field [(ngModel)]="user.prenom" name="prenom"></app-input-field>
-          </div>
-
-          <div>
-            <app-label>Email</app-label>
-            <app-input-field [(ngModel)]="user.email" name="email"></app-input-field>
-          </div>
-
-          <div>
-            <app-label>Téléphone</app-label>
-            <app-input-field [(ngModel)]="user.telephone" name="telephone"></app-input-field>
-          </div>
-
-        </div>
-
-        <!-- ACTIONS -->
-        <div class="flex justify-end gap-3 pt-4">
-          <app-boutton size="sm" variant="outline" (btnClick)="closeModal()">
-            Annuler
-          </app-boutton>
-
-          <app-boutton size="sm" (btnClick)="handleSave()">
-            Sauvegarder
-          </app-boutton>
-        </div>
-
-      </form>
-
-    </div>
-
-  </app-modal>
 
 </div>

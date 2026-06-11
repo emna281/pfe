@@ -1,0 +1,239 @@
+<div class="fixed inset-0  
+            flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl
+              w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+
+    <!-- Header -->
+    <div class="flex items-start justify-between p-6 pb-4 border-b
+                border-gray-100 dark:border-gray-700">
+      <div>
+        <h2 class="text-lg font-bold text-gray-800 dark:text-white">
+          {{ estEdition ? 'Éditer la charge' : 'Nouvelle charge' }}
+        </h2>
+        <p *ngIf="estEdition && charge"
+           class="text-sm text-gray-400 mt-0.5">
+          Ref: {{ charge.numeroCharge }}
+        </p>
+      </div>
+      <button (click)="fermer.emit()"
+              class="text-gray-400 hover:text-gray-600 text-xl leading-none
+                     dark:hover:text-gray-200">
+        ✕
+      </button>
+    </div>
+
+    <!-- Formulaire -->
+    <form [formGroup]="form" (ngSubmit)="soumettre()" class="p-6 space-y-5">
+
+      <!-- Ligne 1 : Description + Montant -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700
+                         dark:text-gray-300 mb-1">
+            Titre de la charge <span class="text-red-500">*</span>
+          </label>
+          <input type="text" formControlName="description"
+                 placeholder="Ex: Location salle de conférence"
+                 class="w-full border rounded-lg px-3 py-2 text-sm
+                        focus:outline-none focus:ring-2 focus:ring-blue-300
+                        dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                 [class.border-red-400]="invalid('description')"
+                 [class.border-gray-300]="!invalid('description')" />
+          <p *ngIf="invalid('description')"
+             class="text-xs text-red-500 mt-1">Requis (min 3 caractères)</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700
+                         dark:text-gray-300 mb-1">
+            Montant <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <input type="number" formControlName="montant"
+                   step="0.01" min="0"
+                   placeholder="0.00"
+                   class="w-full border rounded-lg px-3 py-2 pr-8 text-sm
+                          focus:outline-none focus:ring-2 focus:ring-blue-300
+                          dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                   [class.border-red-400]="invalid('montant')"
+                   [class.border-gray-300]="!invalid('montant')" />
+            <span class="absolute right-3 top-1/2 -translate-y-1/2
+                         text-gray-400 text-sm">DT</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">Entrez le montant TTC</p>
+          <p *ngIf="invalid('montant')"
+             class="text-xs text-red-500 mt-1">Montant invalide</p>
+        </div>
+      </div>
+
+      <!-- Ligne 2 : Catégorie + Date -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700
+                         dark:text-gray-300 mb-1">
+            Catégorie <span class="text-red-500">*</span>
+          </label>
+          <select formControlName="type"
+                  class="w-full border rounded-lg px-3 py-2 text-sm
+                         bg-white dark:bg-gray-800 dark:border-gray-600
+                         dark:text-white focus:outline-none
+                         focus:ring-2 focus:ring-blue-300"
+                  [class.border-red-400]="invalid('type')"
+                  [class.border-gray-300]="!invalid('type')">
+            <option [ngValue]="null">Choisir...</option>
+            <option *ngFor="let t of types" [value]="t.value">
+              {{ t.label }}
+            </option>
+          </select>
+          <p *ngIf="invalid('type')"
+             class="text-xs text-red-500 mt-1">Requis</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700
+                         dark:text-gray-300 mb-1">
+            Date de la dépense <span class="text-red-500">*</span>
+          </label>
+          <input type="date" formControlName="dateCharge"
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2
+                        text-sm focus:outline-none focus:ring-2
+                        focus:ring-blue-300 dark:bg-gray-800
+                        dark:border-gray-600 dark:text-white"
+                 [class.border-red-400]="invalid('dateCharge')" />
+        </div>
+      </div>
+
+      <!-- Ligne 3 : Statut + Facturable -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700
+                         dark:text-gray-300 mb-1">Statut</label>
+          <select formControlName="statut"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2
+                         text-sm bg-white dark:bg-gray-800 dark:border-gray-600
+                         dark:text-white focus:outline-none
+                         focus:ring-2 focus:ring-blue-300">
+            <option *ngFor="let s of statuts" [value]="s.value">
+              {{ s.label }}
+            </option>
+          </select>
+        </div>
+
+        
+      </div>
+
+      <!-- Type de charge -->
+      <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl
+                  border border-gray-200 dark:border-gray-700">
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          Type de charge
+        </p>
+        <div class="flex items-center gap-6">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" formControlName="typeSession"
+                   value="session"
+                   class="w-4 h-4 text-blue-600 border-gray-300
+                          focus:ring-blue-300" />
+            <span class="text-sm text-gray-700 dark:text-gray-300">
+              Attachée à une session
+            </span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" formControlName="typeSession"
+                   value="generale"
+                   class="w-4 h-4 text-blue-600 border-gray-300
+                          focus:ring-blue-300" />
+            <span class="text-sm text-gray-700 dark:text-gray-300">
+              Générale / Structure
+            </span>
+          </label>
+        </div>
+
+        <!-- Dropdown session -->
+        <div *ngIf="typeSession === 'session'" class="mt-3">
+          <label class="block text-sm font-medium text-gray-700
+                         dark:text-gray-300 mb-1">
+            Session associée <span class="text-red-500">*</span>
+          </label>
+          <select formControlName="sessionId"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2
+                         text-sm bg-white dark:bg-gray-800 dark:border-gray-600
+                         dark:text-white focus:outline-none
+                         focus:ring-2 focus:ring-blue-300"
+                  [class.border-red-400]="invalid('sessionId')">
+            <option [ngValue]="null">Choisir une session...</option>
+            <option *ngFor="let s of sessions" [value]="s.id">
+              {{ s.nom }}
+            </option>
+          </select>
+          <p *ngIf="invalid('sessionId')"
+             class="text-xs text-red-500 mt-1">Session requise</p>
+        </div>
+      </div>
+
+      <!-- Description / Notes + Période -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700
+                         dark:text-gray-300 mb-1">
+            Description / Notes
+          </label>
+          <textarea formControlName="periode" rows="3"
+                    placeholder="Détails supplémentaires..."
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2
+                           text-sm focus:outline-none focus:ring-2
+                           focus:ring-blue-300 dark:bg-gray-800
+                           dark:border-gray-600 dark:text-white resize-none">
+          </textarea>
+        </div>
+
+        <!-- Pièces jointes — placeholder -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700
+                         dark:text-gray-300 mb-1">Pièces jointes</label>
+          <div class="border-2 border-dashed border-gray-200 dark:border-gray-700
+                      rounded-lg p-6 text-center h-28 flex flex-col
+                      items-center justify-center gap-1
+                      hover:border-blue-300 transition cursor-pointer">
+            <span class="text-2xl text-gray-400">⬆</span>
+            <p class="text-xs text-gray-500">Cliquez pour téléverser</p>
+            <p class="text-xs text-gray-400">PDF, JPG, PNG (Max. 5Mo)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Erreur -->
+      <div *ngIf="errorMsg"
+           class="px-4 py-3 bg-red-50 border border-red-200
+                  text-red-600 text-sm rounded-lg">
+        {{ errorMsg }}
+      </div>
+
+      <!-- Boutons -->
+      <div class="flex items-center justify-between pt-2 border-t
+                  border-gray-100 dark:border-gray-700">
+        <button *ngIf="estEdition" type="button"
+                class="flex items-center gap-2 text-sm text-red-500
+                       hover:text-red-700 transition">
+          🗑 Supprimer la charge
+        </button>
+        <div class="flex gap-3 ml-auto">
+          <button type="button" (click)="fermer.emit()"
+                  class="px-4 py-2 border border-gray-200 text-gray-600
+                         text-sm rounded-lg hover:bg-gray-50 transition
+                         dark:border-gray-600 dark:text-gray-300">
+            Annuler
+          </button>
+          <button type="submit" [disabled]="loading"
+                  class="px-5 py-2 bg-blue-600 text-white text-sm font-medium
+                         rounded-lg hover:bg-blue-700 disabled:opacity-50
+                         transition">
+            {{ loading ? 'Enregistrement...' : estEdition ?
+               'Enregistrer les modifications' : 'Créer la charge' }}
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

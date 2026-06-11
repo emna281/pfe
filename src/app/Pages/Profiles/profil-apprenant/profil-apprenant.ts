@@ -8,24 +8,27 @@ import { Planing } from '../../../shared/components/ui/user-profile/planing/plan
 import { FormsModule } from '@angular/forms';
 import { Historique } from '../../../shared/components/ui/user-profile/historique/historique';
 import { Paiement } from '../../../shared/components/ui/user-profile/paiement/paiement';
+import { ApprenantParametres } from '../../../shared/components/ui/apprenant-parametres/apprenant-parametres';
 
 
 @Component({
   selector: 'app-profil-apprenant',
-  imports: [UserMetaCard,CommonModule,Planing,FormsModule,Historique,Paiement],
+  imports: [CommonModule,Planing,FormsModule,Historique,Paiement,ApprenantParametres],
   templateUrl: './profil-apprenant.html',
   styleUrl: './profil-apprenant.css',
+  host: { ngSkipHydration: 'true' }
 })
 export class ProfilApprenant {
+
   profil: ApprenantProfil | null = null;
   activeTab: string = 'planning';
-
+  anneeCourante: number = new Date().getFullYear();
   tabs = [
     { id: 'planning',     label: 'Mon planning',  icon: 'calendar' },
     { id: 'historique',   label: 'Historique',    icon: 'clock' },
     { id: 'paiements',    label: 'Paiements',     icon: 'credit-card' },
     { id: 'certificats',  label: 'Certificats',   icon: 'award' },
-    { id: 'parametres',   label: 'Paramètres',    icon: 'settings' },
+    { id: 'parametres',   label: 'Profil',    icon: 'settings' },
   ];
 
   constructor(private apprenantService: ApprenantService,@Inject(PLATFORM_ID) private platformId: Object) {}

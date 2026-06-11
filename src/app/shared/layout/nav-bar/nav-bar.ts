@@ -1,18 +1,32 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Component,inject,Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser, NgClass } from '@angular/common';
+import { Component,EventEmitter,inject,Inject, Input, Output, PLATFORM_ID } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+export type NavLink = {
+  label: string;
+  href?: string;
+  routerLink?: string;
+  key: string;
+  children?: { label: string; href?: string; routerLink?: string }[];
+};
 
 @Component({
   selector: 'app-nav-bar',
-  imports: [],
+  imports: [CommonModule,RouterModule,FormsModule],
   templateUrl: './nav-bar.html',
   styleUrl: './nav-bar.css',
+  
 })
 export class NavBar {
   private platformId =inject(PLATFORM_ID);
-  
-  activeLink :string= 'home';
-  setActive(link: string) :void{
-    this.activeLink = link;
+  @Input() links: NavLink[] = [];
+  @Input() showSearch: boolean = true;
+  @Output() search = new EventEmitter<string>();
+  @Input() showLoginButton: boolean = true;
+  activeLink = '';
+  searchQuery = '';
+  setActive(key: string) {
+    this.activeLink = key;
   }
   ngAfterViewInit():void{
     if (isPlatformBrowser(this.platformId)) {
@@ -36,5 +50,7 @@ export class NavBar {
     });
     clickedLink.classList.add('active');
   }
-
+  onSearch() {
+    this.search.emit(this.searchQuery);
+  }
 }

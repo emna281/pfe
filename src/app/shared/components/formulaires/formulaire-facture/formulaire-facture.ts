@@ -19,7 +19,6 @@ export class FormulaireFacture {
   @Input() isOpen: boolean = false;
   factureData: any = { 
     dateEcheance: '',
-    remise: null as number | null,
     notes: '',
     statut:'',
   };
@@ -41,9 +40,7 @@ export class FormulaireFacture {
         dateEcheance: this.selectedFacture.dateEcheance
           ? this.selectedFacture.dateEcheance.toString().substring(0, 10)
           : '',
-        remise: this.selectedFacture.remise
-          ? Number(this.selectedFacture.remise)
-          : null,
+        
         notes: this.selectedFacture.notes || '',
         statut:this.selectedFacture.statut || '',
       };
@@ -80,7 +77,7 @@ export class FormulaireFacture {
     this.errorMessage = '';
     this.factureData = {
       dateEcheance: '',
-      remise: null,
+  
       notes: '',    
       statut:'',
     };
@@ -96,7 +93,7 @@ export class FormulaireFacture {
 
     const factureRequest: FactureUpdateDTO = {
       dateEcheance: this.factureData.dateEcheance || undefined,
-      remise: this.factureData.remise,
+     
       notes: this.factureData.notes,
       statut: this.factureData.statut,
     };
@@ -104,7 +101,6 @@ export class FormulaireFacture {
       // ✅ Valider les champs paiement avant d'envoyer
       if (!this.validerChampsPaiement()) return;
 
-      // ✅ updateFacture → puis ajouterPaiement en séquence
       this.factureService.updateFacture(this.selectedFacture.id, factureRequest)
         .pipe(
           switchMap(() => {

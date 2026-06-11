@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Apprenant } from '../shared/services/auth.service';
 export interface InscriptionRequest{
-  apprenantId:number;
+  apprenantEmail: string; 
   sessionId:number;
 }
 export interface InscriptionResponseDTO{
@@ -73,5 +74,9 @@ export class InscriptionService {
     `${this.financierUrl}/inscriptions/non-facturees`
     );
   }
-
+  getApprenantsCertifiables(sessionId: number): Observable<Apprenant[]> {
+    return this.http.get<Apprenant[]>(
+    `/api/sessions/${sessionId}/apprenants/certifiables`
+  );
+}
 }

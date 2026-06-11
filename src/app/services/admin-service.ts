@@ -11,9 +11,10 @@ export interface UtilisateurResponse {
   actif: boolean;
   specialite: string;
   anneesExperience: number;
-  cvPath: string;
   competenceNoms?: string[];
   competence:string;
+  
+  cvNomFichier?: string;  
 }
 
 export interface CreateUtilisateurRequest {
@@ -25,7 +26,7 @@ export interface CreateUtilisateurRequest {
   actif: boolean;
   specialite: string;
   anneesExperience: number;
-  cvPath: string;
+
   competenceNoms?: string[];
 }
 export interface PagedResponse<T> {
@@ -44,7 +45,7 @@ export interface ExtraChamps {
   required?: boolean;
 }
 
-export type Role = 'PLANIFICATEUR'|'FINANCIER'| 'MANAGER';
+export type Role = 'PLANIFICATEUR'|'FINANCIER'| 'MANAGER'| 'FORMATEUR';
 @Injectable({
   providedIn: 'root',
 })
@@ -88,8 +89,8 @@ export class AdminService {
   uploadCv(id: number, file: File) {
     console.log('📤 Envoi CV:', file.name, file.size + ' bytes', 'pour user id:', id);
   const formData = new FormData();
-  formData.append('cv', file, file.name);
-  return this.http.post(`${this.apiUrl}/utilisateurs/${id}/cv`, formData);
+  formData.append('file', file, file.name);
+  return this.http.post(`${this.apiUrl}/utilisateurs/${id}/cv`, formData,{ responseType: 'text' } );
 }
   
 }

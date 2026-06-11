@@ -8,10 +8,11 @@ import { DatailFacture } from '../../datail-facture/datail-facture';
 import { PdfExportService } from '../../../services/pdf-export.service';
 import { FormulairePaiement } from '../../formulaires/formulaire-paiement/formulaire-paiement';
 import { ConfirmationModal } from '../../ui/confirmation-modal/confirmation-modal';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-table-facture',
-  imports: [Badge,CheckboxComponent,DecimalPipe,FormulaireFacture,DatailFacture ,FormulairePaiement,ConfirmationModal,CommonModule],
+  imports: [Badge,CheckboxComponent,DecimalPipe,FormulaireFacture,DatailFacture ,FormulairePaiement,ConfirmationModal,CommonModule,FormsModule],
   templateUrl: './table-facture.html',
   styleUrl: './table-facture.css',
 })
@@ -36,7 +37,8 @@ export class TableFacture implements OnInit{
   
   private factureEnAttente?: FactureResponseDTO;
   private statutEnAttente?: string;
-  
+  currentPage = 1;
+  pageSize = 20;
   constructor(private factureService:FactureService ,private cdr: ChangeDetectorRef ,private pdfExportService: PdfExportService){}
 
   ouvrirDetail(facture: FactureResponseDTO) {
@@ -189,6 +191,35 @@ export class TableFacture implements OnInit{
     const facturesSelectionees=this.tableRowData.filter(f=>this.selectedRows.includes(f.id));
     await this.pdfExportService.exportFactures(facturesSelectionees);
   }
-  
+  get totalPages(): number {
+  return Math.ceil(this.tableRowData.length / this.pageSize);
+}
+
+get paginatedData(): FactureResponseDTO[] {
+  const start = (this.currentPage - 1) * this.pageSize;
+  return this.tableRowData.slice(start, start + this.pageSize);
+}
+
+getDebut(): number {
+  return this.tableRowData.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
+}
+
+getFin(): number {
+  return Math.min(this.currentPage * this.pageSize, this.tableRowData.length);
+}
+
+nextPage(): void {
+  if (this.currentPage < this.totalPages) this.currentPage++;
+}
+
+prevPage(): void {
+  if (this.currentPage > 1) this.currentPage--;
+}
+
+onPageSizeChange(): void {
+  this.currentPage = 1;
+}
+
+
 
 }

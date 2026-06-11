@@ -8,7 +8,7 @@ import { UserDropdown } from '../../../components/header/user-dropdown/user-drop
 
 @Component({
   selector: 'app-apprenant-layout',
-  imports: [RouterOutlet,CommonModule,RouterModule,ThemeToggle,NotificationDropdown,UserDropdown],
+  imports: [RouterOutlet,CommonModule,RouterModule,ThemeToggle,NotificationDropdown,UserDropdown,NavBar],
   templateUrl: './apprenant-layout.html',
   styleUrl: './apprenant-layout.css',
 })

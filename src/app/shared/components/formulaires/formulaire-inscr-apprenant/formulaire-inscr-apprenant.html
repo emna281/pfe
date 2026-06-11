@@ -1,0 +1,128 @@
+<app-modal [isOpen]="isOpen" (close)="closeModal()" className="max-w-[480px] w-full">
+  <div class="flex flex-col max-h-[90vh] overflow-hidden">
+
+    <!-- HEADER -->
+    <div class="flex items-center gap-3 px-6 pt-6 pb-4
+                border-b border-gray-100 dark:border-white/[0.07] flex-shrink-0">
+      <div class="flex items-center justify-center w-10 h-10 rounded-[10px]
+                  bg-[#e8f0fe] dark:bg-[#4285f4]/15 flex-shrink-0">
+        <lucide-icon name="user-plus" class="w-5 h-5 text-[#4285f4]"></lucide-icon>
+      </div>
+      <div>
+        <h2 class="text-[15px] font-semibold text-gray-900 dark:text-[#e2e8f0]">
+          Nouvelle inscription
+        </h2>
+        <p class="text-[12px] text-gray-400 dark:text-[#8b9ab8] mt-0.5">
+          Inscrire un apprenant à une session
+        </p>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="flex-1 overflow-y-auto px-6 py-5 custom-scrollbar">
+      <form novalidate class="flex flex-col gap-5">
+
+        <!-- APPRENANT ID -->
+        <div *ngIf="!apprenantEmail" class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+                Email de l'apprenant <span class="text-red-400">*</span>
+            </label>
+            <div class="relative">
+            <lucide-icon name="mail" class="absolute left-3 top-1/2 -translate-y-1/2
+                 w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+                <input type="email" name="apprenantEmail"
+                    [(ngModel)]="inscriptionData.apprenantEmail"
+                    placeholder="nom@email.com"
+                    class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                     bg-gray-50 dark:bg-white/[0.04]
+                    border border-gray-200 dark:border-white/[0.09]
+                     text-gray-900 dark:text-[#e2e8f0]
+                     placeholder-gray-400 dark:placeholder-[#4a5568]
+                    focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                    focus:border-[#4285f4] transition-all duration-150" />
+        </div>
+    </div>
+
+        <!-- APPRENANT PRÉ-REMPLI (readonly) -->
+        <div *ngIf="apprenantEmail"
+            class="flex items-center gap-2 h-10 px-3 rounded-[9px]
+         bg-[#e8f0fe] dark:bg-[#4285f4]/15
+         border border-[#4285f4]/30">
+            <lucide-icon name="mail" class="w-4 h-4 text-[#4285f4]"></lucide-icon>
+            <span class="text-[13px] font-medium text-[#185FA5] dark:text-[#4285f4]">
+                {{ apprenantEmail }}
+            </span>
+        </div>
+
+        <!-- SESSION -->
+        <div *ngIf="!sessionId" class="flex flex-col gap-1.5">
+          <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+            Session <span class="text-red-400">*</span>
+          </label>
+          <div class="relative">
+            <lucide-icon name="calendar" class="absolute left-3 top-1/2 -translate-y-1/2
+                         w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+            <select name="sessionId"
+              [(ngModel)]="inscriptionData.sessionId"
+              class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                     bg-gray-50 dark:bg-white/[0.04]
+                     border border-gray-200 dark:border-white/[0.09]
+                     text-gray-900 dark:text-[#e2e8f0]
+                     focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                     focus:border-[#4285f4] transition-all duration-150">
+              <option [value]="0" disabled>Sélectionner une session</option>
+              <option *ngFor="let s of sessions" [value]="s.id">
+                {{ s.nom }} — {{ s.dateDebut }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- SESSION PRÉ-REMPLIE (readonly) -->
+        <div *ngIf="sessionId" class="flex items-center gap-2 h-10 px-3 rounded-[9px]
+                    bg-[#e8f0fe] dark:bg-[#4285f4]/15
+                    border border-[#4285f4]/30">
+          <lucide-icon name="calendar" class="w-4 h-4 text-[#4285f4]"></lucide-icon>
+          <span class="text-[13px] font-medium text-[#185FA5] dark:text-[#4285f4]">
+            Session #{{ sessionId }}
+          </span>
+        </div>
+
+        <!-- MESSAGE ERREUR -->
+        <div *ngIf="errorMessage"
+          class="flex items-center gap-2.5 px-4 py-3 rounded-[9px] text-[12px]
+                 bg-red-50 dark:bg-red-500/10
+                 border border-red-200 dark:border-red-500/20
+                 text-red-600 dark:text-red-400">
+          <lucide-icon name="alert-circle" class="w-4 h-4 flex-shrink-0"></lucide-icon>
+          {{ errorMessage }}
+        </div>
+
+      </form>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="flex items-center justify-end gap-2.5 px-6 py-4
+                border-t border-gray-100 dark:border-white/[0.07] flex-shrink-0">
+      <button type="button" (click)="closeModal()"
+        class="px-4 py-2 rounded-[9px] text-[13px] font-medium
+               text-gray-600 dark:text-[#8b9ab8]
+               bg-gray-100 dark:bg-white/[0.06]
+               hover:bg-gray-200 dark:hover:bg-white/[0.10]
+               transition-all duration-150">
+        Annuler
+      </button>
+      <button type="button" (click)="handleSubmit()"
+        [disabled]="isLoading"
+        class="px-4 py-2 rounded-[9px] text-[13px] font-medium
+               text-white bg-[#4285f4] hover:bg-[#2563c9]
+               disabled:opacity-50 disabled:cursor-not-allowed
+               transition-all duration-150 flex items-center gap-2">
+        <lucide-icon [name]="isLoading ? 'loader' : 'plus'" class="w-3.5 h-3.5"
+          [class.animate-spin]="isLoading"></lucide-icon>
+        {{ isLoading ? 'Enregistrement...' : 'Inscrire' }}
+      </button>
+    </div>
+
+  </div>
+</app-modal>

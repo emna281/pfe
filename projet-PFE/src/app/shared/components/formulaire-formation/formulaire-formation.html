@@ -1,0 +1,92 @@
+
+
+<div class="modal-wrap">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Ajouter une formation</h2>
+      <p>Remplissez les informations ci-dessous pour créer une nouvelle formation</p>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="section-label"><span>Informations générales</span></div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Titre <span class="req">*</span></label>
+          <input type="text" placeholder="Ex : Formation Angular avancé" />
+        </div>
+        <div class="field">
+          <label>Prix public <span class="req">*</span></label>
+          <input type="text" placeholder="Ex : 1200 TND" />
+        </div>
+        <div class="field col-span-2">
+          <label>Description</label>
+          <textarea rows="2" placeholder="Décrire les objectifs de la formation..."></textarea>
+        </div>
+      </div>
+
+      <div class="section-label"><span>Durée</span></div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Durée en jours</label>
+          <input type="number" placeholder="Ex : 5" />
+        </div>
+        <div class="field">
+          <label>Durée en heures</label>
+          <input type="number" placeholder="Ex : 35" />
+        </div>
+      </div>
+
+      <div class="section-label"><span>Détails pédagogiques</span></div>
+      <div class="grid-2">
+        <div class="field col-span-2">
+          <label>Public cible</label>
+          <input type="text" placeholder="Ex : Développeurs débutants" />
+        </div>
+        <div class="field col-span-2">
+          <label>Prérequis</label>
+          <input type="text" placeholder="Ex : Notions de base en HTML/CSS" />
+        </div>
+        <div class="field col-span-2">
+          <label>Programme</label>
+          <textarea rows="2" placeholder="Ex : Bases en JavaScript, Angular components..."></textarea>
+        </div>
+        <div class="field">
+          <label>Version</label>
+          <input type="text" placeholder="Ex : v1.0" />
+        </div>
+        <div class="field col-span-2">
+          <label>Compétences associées</label>
+          <select multiple>
+            <option>HTML/CSS — Front-end</option>
+            <option selected>Angular — Framework</option>
+            <option>TypeScript — Langage</option>
+            <option selected>REST API — Back-end</option>
+            <option>Docker — DevOps</option>
+          </select>
+          <p class="hint"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:3px;"></i>Maintenez Ctrl (ou ⌘ sur Mac) pour sélectionner plusieurs compétences</p>
+        </div>
+        <div class="field col-span-2">
+          <div class="badge-wrap">
+            <div class="badge">Angular <button>✕</button></div>
+            <div class="badge">REST API <button>✕</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="switch-row">
+        <label class="switch">
+          <input type="checkbox" checked />
+          <span class="slider"></span>
+        </label>
+        <span class="switch-label">Formation active</span>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <button class="btn btn-cancel"><i class="ti ti-x" aria-hidden="true" style="font-size:13px;margin-right:5px;vertical-align:-1px;"></i>Fermer</button>
+      <button class="btn btn-submit"><i class="ti ti-check" aria-hidden="true" style="font-size:13px;margin-right:5px;vertical-align:-1px;"></i>Créer la formation</button>
+    </div>
+  </div>
+</div>

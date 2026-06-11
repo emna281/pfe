@@ -2,9 +2,11 @@ import { Component,Input ,Output,EventEmitter,OnChanges,SimpleChanges} from '@an
 import { Modal } from '../ui/modal/modal';
 import { FactureResponseDTO ,FactureService} from '../../../services/facture-service';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { LucideAngularModule } from 'lucide-angular';
+
 @Component({
   selector: 'app-datail-facture',
-  imports: [Modal,CommonModule,DecimalPipe],
+  imports: [Modal,CommonModule,DecimalPipe,LucideAngularModule],
   templateUrl: './datail-facture.html',
   styleUrls: ['./datail-facture.css'],
 })
@@ -12,6 +14,14 @@ export class DatailFacture implements OnChanges{
   @Input() isOpen: boolean = false;
   @Input() facture: FactureResponseDTO | null = null;
   @Output() closeFiche = new EventEmitter<void>();
+
+
+  stripe: any;
+  cardElement: any;
+  showPaymentForm = false;
+  loading = false;
+  message = '';
+  messageType = '';
   activeDetailTab: 'general' | 'apprenant' | 'montants' = 'general';
   constructor(private factureService:FactureService) {}
   
@@ -28,5 +38,7 @@ export class DatailFacture implements OnChanges{
     this.activeDetailTab = 'general';
     this.isOpen=false
   }
+
+  
   
 }

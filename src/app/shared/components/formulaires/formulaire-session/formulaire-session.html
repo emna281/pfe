@@ -1,358 +1,483 @@
-<app-modal
-    [isOpen]="isOpen"
-    (close)="closeModal()"
-    className="max-w-[700px] w-full max-h-[90vh] overflow-hidden p-4 lg:p-6 rounded-2xl 
-    bg-gradient-to-b from-[#f5faff] to-white
-    shadow-[0_10px_40px_rgba(0,0,0,0.01)]  shadow-blue-100/40"
->
-    <div class="flex flex-col px-2 overflow-y-auto custom-scrollbar">
-      <div class="flex items-center gap-4 sticky top-0  z-10 pb-3 bg-transparent">
-        
-        <div class="flex flex-col">
-          <h6 class="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-3xl  pt-4">
-          {{ selectedSession  ? 'Modifier une session' : 'Ajouter une session' }}
-          </h6>
-          <h5 class=" text-gray-500 text-sm">
-          remplissez le formulaire pour ajouter une session 
-          </h5>
+<app-modal [isOpen]="isOpen" (close)="closeModal()" className="max-w-[680px] w-full">
+  <div class="flex flex-col max-h-[90vh] overflow-hidden">
+
+    <!-- ───────── HEADER ───────── -->
+    <div class="flex items-start justify-between px-6 pt-6 pb-4
+             border-b border-gray-100 dark:border-white/[0.07] flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center justify-center w-10 h-10 rounded-[10px]
+                 bg-[#e8f0fe] dark:bg-[#4285f4]/15 flex-shrink-0">
+          <lucide-icon [name]="selectedSession ? 'square-pen' : 'plus'" class="w-5 h-5 text-[#4285f4]">
+          </lucide-icon>
+        </div>
+        <div>
+          <h2 class="text-[15px] font-semibold text-gray-900 dark:text-[#e2e8f0]">
+            {{ selectedSession ? 'Modifier une session' : 'Ajouter une session' }}
+          </h2>
+          <p class="text-[12px] text-gray-400 dark:text-[#8b9ab8] mt-0.5">
+            Remplissez les informations du formulaire
+          </p>
         </div>
       </div>
-      <div class="col-span-1 md:col-span-2 my-2 h-px w-full bg-gray-200"></div>
-      <div class="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[75vh] ">
-      <form #sessionForm="ngForm" class="mt-8" >
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <h6 class="col-span-1 md:col-span-2 text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-1">Identification</h6>
-      
-        <div class="relative">
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Nom de la session
-          </label>          
-          <div>
-            <svg xmlns="http://www.w3.org/2000/svg" 
-              width="24" height="24" viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-              class="absolute left-3 top-1/2 -translate-y-[2px] w-5 h-5 text-gray-600"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            <input         
-              id="session-nom"
-              type="text"
-              name="nom"
-              placeholder="Entrer le nom de session"
-              [(ngModel)]="sessionData.nom"
-              class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-            />
-          </div>
-        </div>
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Code Formation
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></svg>
-          <input
-            id="session-formationCode"
-            type="text"
-            name="formationCode"
-            [(ngModel)]="sessionData.formationCode"
-            [readonly]="!!formationCode"
-            placeholder="Entrer le code"
-            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-          />
-          </div>
-        </div> 
-        <h6 class="col-span-1 md:col-span-2 text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-6">Planification</h6>
-      
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Date de Debut
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
-            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2  text-gray-600">
-              <path d="M8 2v4"/>
-              <path d="M16 2v4"/>
-              <rect width="18" height="18" x="3" y="4" rx="2"/>
-              <path d="M3 10h18"/>
-            </svg>
-            <input
-              id="session-dateDebut"
-              type="date" 
-              name="dateDebut"
-              [(ngModel)]="sessionData.dateDebut"
-              class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-400 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-            />
-          </div>
-          
-        </div>  
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Date de Fin
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
-            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">
-              <path d="M8 2v4"/>
-              <path d="M16 2v4"/>
-              <rect width="18" height="18" x="3" y="4" rx="2"/>
-              <path d="M3 10h18"/>
-            </svg>
-          <input
-            id="session-dateFin"
-            type="date"
-            name="dateFin"
-            [(ngModel)]="sessionData.dateFin"
-            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-          />
-          </div>
-        </div>  
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Heure de Debut
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
-            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">
-            <path d="M16 14v2.2l1.6 1"/>
-            <path d="M16 2v4"/>
-            <path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/>
-            <path d="M3 10h5"/>
-            <path d="M8 2v4"/>
-            <circle cx="16" cy="16" r="6"/>
-          </svg>
-            <input
-            id="session-heureDebut"
-            type="time"
-            name="heureDebut"
-            [(ngModel)]="sessionData.heureDebut"
-            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-          />
-          </div>
-          
-        </div> 
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Heure de Fin
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
-            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">
-            <path d="M16 14v2.2l1.6 1"/>
-            <path d="M16 2v4"/>
-            <path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/>
-            <path d="M3 10h5"/>
-            <path d="M8 2v4"/>
-            <circle cx="16" cy="16" r="6"/>
-          </svg>
-            <input
-            id="session-heureFin"
-            type="time"
-            name="heureFin"
-            [(ngModel)]="sessionData.heureFin"
-            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-          />
-          </div>
-          
-        </div> 
-        <h6 class="col-span-1 md:col-span-2 text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-6">Etat et Configuration</h6>
-      
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Statut
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"><path d="M20 6 9 17l-5-5"/></svg>
-            <select
-            id="session-statut"
-            type="text"
-            name="statut"
-            [(ngModel)]="sessionData.statut"
-            
-            class="w-full rounded-lg border border-gray-300 bg-white pl-10 px-3 py-2 text-sm text-gray-800 shadow-sm placeholder-gray-400 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 dark:focus:border-brand-500 dark:focus:ring-1 dark:focus:ring-brand-500"
-          >
-          <option value="" disabled >Sélectionner un statut</option>
-          <option value="PLANIFIEE">PLANIFIEE</option>
-          <option value="OUVERTE">OUVERTE</option>
-          <option value="CONFIRMEE">CONFIRMEE</option>
-          <option value="EN_COURS">EN_COURS</option>
-          <option value="TERMINEE">TERMINEE</option>
-          <option value="ANNULEE">ANNULEE</option>
-          <option value="REPORTEE">REPORTEE</option>
-        </select>
-        </div>
-        </div> 
-        
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Mode
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg>
-            <select
-            id="session-mode"
-            type="text"
-            name="mode"
-            [(ngModel)]="sessionData.mode"
-            
-            class="w-full rounded-lg border border-gray-300 bg-white pl-10 px-3 py-2 text-sm text-gray-800 shadow-sm placeholder-gray-400 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 dark:focus:border-brand-500 dark:focus:ring-1 dark:focus:ring-brand-500"
-          >
-          <option value="" disabled>Entrer mode de présence</option>
-          <option value="PRESENTIEL">PRESENTIEL</option>
-          <option value="DISTANCIEL">DISTANCIEL</option>
-          </select>
-          </div>
-        </div> 
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Places max</label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" 
-                width="24" height="24" viewBox="0 0 24 24" 
-                fill="none" stroke="currentColor" 
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-              <path d="M16 3.128a4 4 0 0 1 0 7.744"/>
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-              <circle cx="9" cy="7" r="4"/>
-            </svg>
-          
-          <input 
-            id="session-placesMax"
-            type="number" 
-            [(ngModel)]="sessionData.placesMax"
-            placeholder="Entrer le nombre des places max" 
-            name="placesMax" 
-            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
-        </div>
-          </div>
-        <h6 class="col-span-1 md:col-span-2 text-lg font-semibold text-blue-600  tracking-wider border-l-4 border-brand-500 pl-3 mt-6">Lieu et Resources</h6>
-      
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Lieu
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-          
-          <input
-            id="session-lieu"
-            type="text"
-            name="lieu"
-            placeholder="Entrer le lieu"
-            [(ngModel)]="sessionData.lieu"
-            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-          />
-          </div>
-        </div>
-        
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Lien Visio
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
-          <input
-            id="session-lienVisio"
-            type="text"
-            name="lienVisio"
-            placeholder="Entrer lien "
-            [(ngModel)]="sessionData.lienVisio"
-            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-          />
-          </div>
-        </div>  
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Materiels 
-          </label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"><rect width="18" height="12" x="3" y="4" rx="2" ry="2"/><line x1="2" x2="22" y1="20" y2="20"/></svg>
-          <input
-            id="session-materielRequis"
-            type="text"
-            name="materielRequis"
-            [(ngModel)]="sessionData.materielRequis"
-            placeholder="Entrer le materiel"
-            class="dark:bg-dark-900 h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-10 px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-          />
-          </div>
-        </div> 
-        
-        <h6 class="col-span-1 md:col-span-2 text-lg font-semibold text-blue-600 tracking-wider border-l-4 border-brand-500 pl-3 mt-6">
-        Formateur
-        </h6>
-
-        <div class="col-span-1 md:col-span-2">
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-          Sélectionner un formateur
-          </label>
-        <div class="relative">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-          class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">
-          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-          </svg>
-
-
-        <div *ngIf="formateurs.length === 0"
-          class="w-full rounded-lg border border-yellow-200 bg-yellow-50 pl-10 px-4 py-2.5 text-sm text-yellow-700">
-          ⚠️ Aucun formateur disponible avec la compétence "{{ competenceFormation }}"
-        </div>
-
-        <select *ngIf="formateurs.length > 0"
-        name="formateurId"
-        [(ngModel)]="sessionData.formateurId"
-        class="w-full rounded-lg border border-gray-300 bg-white pl-10 px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
-          <option [value]="null" disabled>Sélectionner un formateur</option>
-          <option *ngFor="let f of formateurs" [value]="f.id">
-          {{ f.prenom }} {{ f.nom }}
-            <span *ngIf="f.specialite"> — {{ f.specialite }}</span>
-          </option>
-        </select>
-      </div>
-
-
-      <p *ngIf="competenceFormation" class="text-xs text-gray-400 mt-1">
-      Filtrés par compétence : <span class="font-medium text-violet-600">{{ competenceFormation }}</span>
-      </p>
     </div>
-        
-        
-       <div class="col-span-1 md:col-span-2 my-6 h-px w-full bg-gray-200"></div>
-       
-        <div class="col-span-1 md:col-span-2 flex items-center gap-3 mt-6 modal-footer sm:justify-end">
-            <button
-          (click)="closeModal()"
-          type="button"
-          class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 sm:w-auto"
-        >
-          Close
-            </button>
-            <button
-          (click)="handleAddOrUpdateEvent()"
-          type="button"
-          class="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-          
-          >
-          {{ selectedSession  ? 'Modifier une session' : '+ Ajouter une session' }}
-            </button>
+
+    <!-- ───────── ONGLETS ───────── -->
+    <div class="flex border-b border-gray-100 dark:border-white/[0.07]
+             px-6 bg-white dark:bg-transparent flex-shrink-0 overflow-x-auto">
+
+      <button type="button" *ngFor="let tab of tabs"
+        (click)="activeTab = tab.id"
+        class="flex items-center gap-1.5 px-3.5 py-2.5 text-[12px] font-medium
+               border-b-2 -mb-px transition-all duration-150 whitespace-nowrap"
+        [ngClass]="activeTab === tab.id
+          ? 'border-[#4285f4] text-[#4285f4]'
+          : 'border-transparent text-gray-400 dark:text-[#8b9ab8] hover:text-[#4285f4]'">
+        <lucide-icon [name]="tab.icon" class="w-3.5 h-3.5"></lucide-icon>
+        {{ tab.label }}
+      </button>
+
+    </div>
+
+    <!-- ───────── BODY ───────── -->
+    <div class="flex-1 overflow-y-auto px-6 py-5 custom-scrollbar">
+      <form #sessionForm="ngForm" novalidate>
+
+        <!-- ══ Onglet 1 : Identification ══ -->
+        <div *ngIf="activeTab === 'identification'" class="flex flex-col gap-5">
+
+          <!-- NOM -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Nom de la session
+            </label>
+            <div class="relative">
+              <lucide-icon name="user" class="absolute left-3 top-1/2 -translate-y-1/2
+                       w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+              <input type="text" name="nom"
+                [(ngModel)]="sessionData.nom"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Entrer le nom de la session"
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       placeholder-gray-400 dark:placeholder-[#4a5568]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150" />
+            </div>
+          </div>
+
+          <!-- FORMATION -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Formation
+            </label>
+            <div class="relative">
+              <lucide-icon name="book-open" class="absolute left-3 top-1/2 -translate-y-1/2
+                       w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+
+              <!-- Readonly si formationCode imposé -->
+              <input *ngIf="!!formationCode" type="text"
+                [value]="sessionData.formationCode" readonly
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-100 dark:bg-white/[0.02]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-400 dark:text-[#4a5568] cursor-not-allowed" />
+
+              <!-- Select libre -->
+              <select *ngIf="!formationCode"
+                [(ngModel)]="sessionData.formationCode"
+                [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="onFormationChange()"
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150">
+                <option value="" disabled>Sélectionner une formation</option>
+                <option *ngFor="let f of formations" [value]="f.code">
+                  {{ f.titre }} — {{ f.code }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Badge compétence détectée -->
+            <div *ngIf="competenceFormation"
+              class="flex items-center gap-1.5 mt-0.5">
+              <span class="text-[11px] text-gray-400 dark:text-[#4a5568]">Compétence détectée :</span>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-medium
+                           bg-[#f0ebfe] dark:bg-purple-500/15
+                           text-purple-700 dark:text-purple-400
+                           border border-purple-200/50">
+                {{ competenceFormation }}
+              </span>
+            </div>
+          </div>
+
         </div>
+
+        <!-- ══ Onglet 2 : Planification ══ -->
+        <div *ngIf="activeTab === 'planification'" class="flex flex-col gap-5">
+
+          <div class="grid grid-cols-2 gap-4">
+
+            <!-- DATE DÉBUT -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+                Date de début
+              </label>
+              <div class="relative">
+                <lucide-icon name="calendar" class="absolute left-3 top-1/2 -translate-y-1/2
+                         w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+                <input type="date" name="dateDebut"
+                  [(ngModel)]="sessionData.dateDebut"
+                  [ngModelOptions]="{standalone: true}"
+                  class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                         bg-gray-50 dark:bg-white/[0.04]
+                         border border-gray-200 dark:border-white/[0.09]
+                         text-gray-900 dark:text-[#e2e8f0]
+                         focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                         focus:border-[#4285f4] transition-all duration-150" />
+              </div>
+            </div>
+
+            <!-- DATE FIN -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+                Date de fin
+              </label>
+              <div class="relative">
+                <lucide-icon name="calendar" class="absolute left-3 top-1/2 -translate-y-1/2
+                         w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+                <input type="date" name="dateFin"
+                  [(ngModel)]="sessionData.dateFin"
+                  [ngModelOptions]="{standalone: true}"
+                  class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                         bg-gray-50 dark:bg-white/[0.04]
+                         border border-gray-200 dark:border-white/[0.09]
+                         text-gray-900 dark:text-[#e2e8f0]
+                         focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                         focus:border-[#4285f4] transition-all duration-150" />
+              </div>
+            </div>
+
+            <!-- HEURE DÉBUT -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+                Heure de début
+              </label>
+              <div class="relative">
+                <lucide-icon name="clock" class="absolute left-3 top-1/2 -translate-y-1/2
+                         w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+                <input type="time" name="heureDebut"
+                  [(ngModel)]="sessionData.heureDebut"
+                  [ngModelOptions]="{standalone: true}"
+                  class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                         bg-gray-50 dark:bg-white/[0.04]
+                         border border-gray-200 dark:border-white/[0.09]
+                         text-gray-900 dark:text-[#e2e8f0]
+                         focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                         focus:border-[#4285f4] transition-all duration-150" />
+              </div>
+            </div>
+
+            <!-- HEURE FIN -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+                Heure de fin
+              </label>
+              <div class="relative">
+                <lucide-icon name="clock" class="absolute left-3 top-1/2 -translate-y-1/2
+                         w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+                <input type="time" name="heureFin"
+                  [(ngModel)]="sessionData.heureFin"
+                  [ngModelOptions]="{standalone: true}"
+                  class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                         bg-gray-50 dark:bg-white/[0.04]
+                         border border-gray-200 dark:border-white/[0.09]
+                         text-gray-900 dark:text-[#e2e8f0]
+                         focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                         focus:border-[#4285f4] transition-all duration-150" />
+              </div>
+            </div>
+
+          </div>
+
         </div>
+
+        <!-- ══ Onglet 3 : État & Config ══ -->
+        <div *ngIf="activeTab === 'etat'" class="flex flex-col gap-5">
+
+          <!-- STATUT -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Statut
+            </label>
+            <div class="relative">
+              <lucide-icon name="check-circle" class="absolute left-3 top-1/2 -translate-y-1/2
+                       w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+              <select name="statut"
+                [(ngModel)]="sessionData.statut"
+                [ngModelOptions]="{standalone: true}"
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150">
+                <option value="" disabled>Sélectionner un statut</option>
+                <option value="PLANIFIEE">Planifiée</option>
+                <option value="OUVERTE">Ouverte</option>
+                <option value="CONFIRMEE">Confirmée</option>
+                <option value="EN_COURS">En cours</option>
+                <option value="TERMINEE">Terminée</option>
+                <option value="ANNULEE">Annulée</option>
+                <option value="REPORTEE">Reportée</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- MODE -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Mode
+            </label>
+            <div class="relative">
+              <lucide-icon name="layers" class="absolute left-3 top-1/2 -translate-y-1/2
+                       w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+              <select name="mode"
+                [(ngModel)]="sessionData.mode"
+                [ngModelOptions]="{standalone: true}"
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150">
+                <option value="" disabled>Sélectionner un mode</option>
+                <option value="PRESENTIEL">Présentiel</option>
+                <option value="DISTANCIEL">Distanciel</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- PLACES MAX -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Places max
+            </label>
+            <div class="relative">
+              <lucide-icon name="users" class="absolute left-3 top-1/2 -translate-y-1/2
+                       w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+              <input type="number" name="placesMax"
+                [(ngModel)]="sessionData.placesMax"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Ex: 20"
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       placeholder-gray-400 dark:placeholder-[#4a5568]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150" />
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ══ Onglet 4 : Lieu & Ressources ══ -->
+        <div *ngIf="activeTab === 'lieu'" class="flex flex-col gap-5">
+
+          <!-- LIEU -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Lieu
+            </label>
+            <div class="relative">
+              <lucide-icon name="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2
+                       w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+              <input type="text" name="lieu"
+                [(ngModel)]="sessionData.lieu"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Entrer le lieu"
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       placeholder-gray-400 dark:placeholder-[#4a5568]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150" />
+            </div>
+          </div>
+
+          <!-- LIEN VISIO -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Lien visio
+            </label>
+            <div class="relative">
+              <lucide-icon name="video" class="absolute left-3 top-1/2 -translate-y-1/2
+                       w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+              <input type="text" name="lienVisio"
+                [(ngModel)]="sessionData.lienVisio"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="https://..."
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       placeholder-gray-400 dark:placeholder-[#4a5568]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150" />
+            </div>
+          </div>
+
+          <!-- MATÉRIELS -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Matériels requis
+            </label>
+            <div class="relative">
+              <lucide-icon name="monitor" class="absolute left-3 top-1/2 -translate-y-1/2
+                       w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+              <input type="text" name="materielRequis"
+                [(ngModel)]="sessionData.materielRequis"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Ex: Ordinateur, projecteur..."
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       placeholder-gray-400 dark:placeholder-[#4a5568]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150" />
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ══ Onglet 5 : Formateur ══ -->
+        <div *ngIf="activeTab === 'formateur'" class="flex flex-col gap-5">
+
+          <!-- TOGGLE MODE AFFECTATION -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Mode d'affectation
+            </label>
+            <div class="flex gap-3">
+
+              <label *ngFor="let mode of modesAffectation"
+                class="flex items-center gap-2 px-3.5 py-2 rounded-[9px] text-[13px] cursor-pointer
+                       border transition-all duration-150"
+                [ngClass]="modeAffectation === mode.value
+                  ? 'border-[#4285f4] bg-[#e8f0fe] dark:bg-[#4285f4]/15 text-[#185FA5] dark:text-[#4285f4]'
+                  : 'border-gray-200 dark:border-white/[0.09] bg-gray-50 dark:bg-white/[0.04] text-gray-500 dark:text-[#8b9ab8]'">
+                <input type="radio" name="modeAffectation"
+                  [value]="mode.value"
+                  [(ngModel)]="modeAffectation"
+                  [ngModelOptions]="{standalone: true}"
+                  class="hidden" />
+                <lucide-icon [name]="mode.icon" class="w-3.5 h-3.5"></lucide-icon>
+                {{ mode.label }}
+              </label>
+
+            </div>
+          </div>
+
+          <!-- SÉLECTION DIRECTE -->
+          <ng-container *ngIf="modeAffectation === 'directe'">
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+                Sélectionner un formateur
+              </label>
+
+              <!-- Aucun formateur dispo -->
+              <div *ngIf="formateurs.length === 0"
+                class="flex items-center gap-2.5 px-4 py-3 rounded-[9px] text-[12px]
+                       bg-amber-50 dark:bg-amber-500/10
+                       border border-amber-200 dark:border-amber-500/20
+                       text-amber-700 dark:text-amber-400">
+                <lucide-icon name="triangle-alert" class="w-4 h-4 flex-shrink-0"></lucide-icon>
+                Aucun formateur disponible avec la compétence
+                <span class="font-semibold">"{{ competenceFormation }}"</span>
+              </div>
+
+              <!-- Select formateur -->
+              <!-- Remplacer le bloc select formateur -->
+              <div *ngIf="formateurs.length > 0" class="relative">
+                <lucide-icon name="user" class="absolute left-3 top-1/2 -translate-y-1/2
+                 w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+                <select name="formateurId"
+                [(ngModel)]="sessionData.formateurId"
+                [ngModelOptions]="{standalone: true}"
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+               bg-gray-50 dark:bg-white/[0.04]
+                border border-gray-200 dark:border-white/[0.09]
+                 text-gray-900 dark:text-[#e2e8f0]
+                 focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+               focus:border-[#4285f4] transition-all duration-150">
+                  <option [value]="null" disabled>Sélectionner un formateur</option>
+                  <option *ngFor="let f of formateurs" [value]="f.id">
+                    {{ f.prenom }} {{ f.nom }}{{ f.specialite ? ' — ' + f.specialite : '' }}
+                  </option>
+                </select>
+        </div>
+
+              <p *ngIf="competenceFormation"
+                class="text-[11px] text-gray-400 dark:text-[#4a5568]">
+                Filtrés par compétence :
+                <span class="font-medium text-purple-600 dark:text-purple-400">{{ competenceFormation }}</span>
+              </p>
+            </div>
+
+          </ng-container>
+
+          <!-- APPEL À CANDIDATURE -->
+          <ng-container *ngIf="modeAffectation === 'appel'">
+            <div class="flex flex-col gap-2 px-4 py-4 rounded-[9px] text-[12px]
+                       bg-[#e8f0fe] dark:bg-[#4285f4]/10
+                       border border-[#4285f4]/20">
+              <div class="flex items-center gap-2 font-semibold text-[#185FA5] dark:text-[#4285f4]">
+                <lucide-icon name="megaphone" class="w-4 h-4"></lucide-icon>
+                Appel à candidature
+              </div>
+              <p class="text-[#185FA5]/80 dark:text-[#4285f4]/80 leading-relaxed">
+                Un appel sera automatiquement envoyé à tous les formateurs possédant la compétence
+                <span class="font-semibold">"{{ competenceFormation }}"</span>
+                après la création de la session.
+              </p>
+              <p class="text-[11px] text-[#185FA5]/60 dark:text-[#4285f4]/60 mt-1">
+                Les formateurs recevront la demande et pourront accepter ou refuser. Vous pourrez ensuite choisir parmi les candidats acceptants.
+              </p>
+            </div>
+          </ng-container>
+
+        </div>
+
       </form>
-      </div>
     </div>
-  </app-modal>
+
+    <!-- ───────── FOOTER ───────── -->
+    <div class="flex items-center justify-end gap-2.5 px-6 py-4
+             border-t border-gray-100 dark:border-white/[0.07] flex-shrink-0">
+      <button type="button" (click)="closeModal()"
+        class="px-4 py-2 rounded-[9px] text-[13px] font-medium
+               text-gray-600 dark:text-[#8b9ab8]
+               bg-gray-100 dark:bg-white/[0.06]
+               hover:bg-gray-200 dark:hover:bg-white/[0.10]
+               transition-all duration-150">
+        Annuler
+      </button>
+      <button type="button" (click)="handleAddOrUpdateEvent()"
+        class="px-4 py-2 rounded-[9px] text-[13px] font-medium
+               text-white bg-[#4285f4] hover:bg-[#2563c9]
+               transition-all duration-150 flex items-center gap-2">
+        <lucide-icon [name]="selectedSession ? 'save' : 'plus'" class="w-3.5 h-3.5"></lucide-icon>
+        {{ selectedSession ? 'Modifier la session' : 'Ajouter la session' }}
+      </button>
+    </div>
+
+  </div>
+</app-modal>

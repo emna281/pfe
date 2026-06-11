@@ -28,6 +28,8 @@ export interface SessionDTO{
   nombrePresences: number;
   factureIds: number[];  
   chargeIds: number[]; 
+  nombreSeances: number;
+nombreSeancesRealisees: number;
 }
 export interface SessionRequest{
   
@@ -54,8 +56,8 @@ export interface SessionRequest{
 })
 export class SessionService {
   
-  private publicUrl = '/api/public/sessions';
-  private planificateurUrl = '/api/planificateur/sessions';
+  private publicUrl = 'http://localhost:8081/api/public/sessions';
+  private planificateurUrl = 'http://localhost:8081/api/planificateur/sessions';
   constructor(private http: HttpClient){}
   getAllSession():Observable<SessionDTO[]>{
     let params = new HttpParams();   

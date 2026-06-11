@@ -1,0 +1,117 @@
+<!-- tableau-notes.html -->
+<div class="flex flex-col gap-4">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h6 class="text-lg font-semibold text-gray-800">Tableau des notes</h6>
+      <p class="text-sm text-gray-500">{{ notes.length }} apprenant(s)</p>
+    </div>
+    <button
+      
+      (click)="initialiser()"
+      type="button"
+      class="flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600">
+      <lucide-icon name="refresh-cw" class="w-4 h-4"></lucide-icon>
+      Initialiser
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="flex justify-center py-10">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+  </div>
+
+  <!-- Tableau -->
+  <div *ngIf="!loading" class="overflow-x-auto rounded-xl border border-gray-200">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+        <tr>
+          <th class="px-4 py-3 text-left">Apprenant</th>
+          <th class="px-4 py-3 text-center">Note /20</th>
+          <th class="px-4 py-3 text-center">Résultat</th>
+          <th class="px-4 py-3 text-center">Évaluation</th>
+          <th class="px-4 py-3 text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <tr *ngFor="let note of notes" class="hover:bg-gray-50 transition">
+
+          <!-- Apprenant -->
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-3">
+              <div class="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-semibold text-sm">
+                {{ note.nomApprenant[0] }}{{ note.prenomApprenant[0] }}
+              </div>
+              <span class="font-medium text-gray-800">
+                {{ note.nomApprenant }} {{ note.prenomApprenant }}
+              </span>
+            </div>
+          </td>
+
+          <!-- Input note -->
+          <td class="px-4 py-3 text-center">
+            <input
+            *ngIf="peutEditer"
+              type="number"
+              min="0"
+              max="20"
+              [name]="'note-' + note.inscriptionId"
+              [(ngModel)]="notesEditees[note.inscriptionId]"
+              class="w-20 rounded-lg border border-gray-300 px-2 py-1 text-center text-sm focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10"
+              placeholder="—"
+            />
+            <span
+            *ngIf="!peutEditer"
+            [class]="'font-semibold ' + getNoteColor(note.note)">
+            {{ note.note !== null ? note.note + '/20' : '—' }}
+            </span>
+          </td>
+
+          <!-- Réussi / Échoué -->
+          <td class="px-4 py-3 text-center">
+            <span *ngIf="note.reusit === null" class="text-gray-400 text-xs">—</span>
+            <span *ngIf="note.reusit === true"
+              class="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+              <lucide-icon name="check" class="w-3 h-3"></lucide-icon> Réussi
+            </span>
+            <span *ngIf="note.reusit === false"
+              class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+              <lucide-icon name="x" class="w-3 h-3"></lucide-icon> Échoué
+            </span>
+          </td>
+
+          <!-- Évaluation -->
+          <td class="px-4 py-3 text-center">
+            <span *ngIf="note.evaluation === null" class="text-gray-400 text-xs">—</span>
+            <span *ngIf="note.evaluation !== null"
+              [class]="'inline-block rounded-full px-2 py-0.5 text-xs font-medium ' + getBadgeClass(note.evaluation)">
+              {{ note.evaluation | titlecase }}
+            </span>
+          </td>
+
+          <!-- Bouton sauvegarder -->
+          <td *ngIf="peutEditer" class="px-4 py-3 text-center">
+            <button
+              (click)="sauvegarderNote(note)"
+              [disabled]="saving[note.inscriptionId]"
+              type="button"
+              class="rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+              <span *ngIf="!saving[note.inscriptionId]">Sauvegarder</span>
+              <span *ngIf="saving[note.inscriptionId]">...</span>
+            </button>
+          </td>
+
+        </tr>
+        <th *ngIf="peutEditer" class="px-4 py-3 text-center">Action</th>
+        <!-- Vide -->
+        <tr *ngIf="notes.length === 0">
+          <td colspan="5" class="px-4 py-8 text-center text-gray-400 text-sm">
+            Aucune note. Cliquez sur "Initialiser" pour créer les notes.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

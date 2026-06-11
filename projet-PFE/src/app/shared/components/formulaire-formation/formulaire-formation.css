@@ -1,0 +1,54 @@
+  .modal-wrap { background: rgba(0,0,0,0.35); min-height: 700px; display: flex; align-items: center; justify-content: center; padding: 20px; border-radius: var(--border-radius-lg); }
+  .modal { background: var(--color-background-primary); border-radius: 20px; border: 0.5px solid var(--color-border-tertiary); width: 100%; max-width: 660px; overflow: hidden; }
+  .modal-header { background: #185FA5; padding: 24px 28px 20px; }
+  .modal-header h2 { color: #fff; font-size: 18px; font-weight: 500; }
+  .modal-header p { color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 3px; }
+  .modal-body { padding: 24px 28px; max-height: 560px; overflow-y: auto; }
+  .section-label { display: flex; align-items: center; gap: 10px; margin: 22px 0 12px; }
+  .section-label span { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-secondary); }
+  .section-label::before { content:''; display:block; width:3px; height:14px; background:#185FA5; border-radius:2px; }
+  .section-label::after { content:''; flex:1; height:0.5px; background:var(--color-border-tertiary); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-1 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
+  .field input, .field textarea, .field select {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--color-text-primary);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+    font-family: var(--font-sans);
+    width: 100%;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: #185FA5;
+    box-shadow: 0 0 0 3px rgba(24,95,165,0.12);
+    background: var(--color-background-primary);
+  }
+  .field input { height: 36px; }
+  .field textarea { resize: vertical; }
+  .field select { height: 120px; }
+  .badge-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .badge { display: flex; align-items: center; gap: 5px; padding: 3px 10px; background: #E6F1FB; color: #185FA5; font-size: 11px; border-radius: 20px; border: 0.5px solid #B5D4F4; }
+  .badge button { background: none; border: none; color: #378ADD; cursor: pointer; font-size: 13px; line-height: 1; padding: 0; }
+  .hint { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; }
+  .switch-row { display: flex; align-items: center; gap: 10px; padding: 14px 0; border-top: 0.5px solid var(--color-border-tertiary); border-bottom: 0.5px solid var(--color-border-tertiary); margin: 18px 0 0; }
+  .switch { position: relative; width: 40px; height: 22px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #D3D1C7; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+  .slider::before { content:''; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+  input:checked + .slider { background: #185FA5; }
+  input:checked + .slider::before { transform: translateX(18px); }
+  .switch-label { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .footer { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 28px; border-top: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); }
+  .btn { height: 36px; padding: 0 18px; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; cursor: pointer; border: 0.5px solid var(--color-border-secondary); transition: 0.15s; }
+  .btn-cancel { background: var(--color-background-primary); color: var(--color-text-secondary); }
+  .btn-cancel:hover { background: var(--color-background-secondary); }
+  .btn-submit { background: #185FA5; color: white; border-color: #185FA5; }
+  .btn-submit:hover { background: #0C447C; border-color: #0C447C; }
+  .col-span-2 { grid-column: span 2; }
+  .req { color: #E24B4A; margin-left: 2px; }

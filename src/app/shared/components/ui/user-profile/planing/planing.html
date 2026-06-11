@@ -1,22 +1,59 @@
-<div *ngIf="loading" class="text-center py-12 text-gray-400">Chargement...</div>
+<div *ngIf="loading" class="flex justify-center py-12">
+  <span class="text-gray-400 text-sm">Chargement...</span>
+</div>
 
-<div *ngIf="!loading" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div *ngIf="!loading" class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
-  <!-- COLONNE GAUCHE — Sessions -->
-  <div class="lg:col-span-2">
+  <!-- COLONNE GAUCHE -->
+  <div class="lg:col-span-2 flex flex-col gap-4">
 
-    <!-- Header + Filtre -->
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+    <!-- Bannière prochaine session -->
+    <div *ngIf="prochaineSession"
+      class="rounded-xl p-4 flex items-center justify-between gap-4"
+      style="background:#1a1a2e">
+      <div class="min-w-0">
+        <p class="text-xs font-semibold tracking-widest mb-1" style="color:#7F77DD; letter-spacing:0.1em">
+          PROCHAINE SESSION
+        </p>
+        <p class="text-white font-semibold text-sm truncate">{{ prochaineSession.nom }}</p>
+        <p class="text-xs mt-0.5" style="color:#888">
+          {{ prochaineSession.dateDebut | date:'dd MMM yyyy' }} à
+          {{ prochaineSession.heureDebut.slice(0,5) }}
+          &nbsp;·&nbsp;
+          {{ prochaineSession.mode === 'DISTANCIEL' ? 'En ligne' : prochaineSession.lieu }}
+        </p>
+      </div>
+      <div class="flex gap-2 flex-shrink-0">
+        <button class="text-xs px-3 py-1.5 rounded-lg text-white"
+          style="border:0.5px solid rgba(255,255,255,0.2); background:transparent"
+          onmouseenter="this.style.background='rgba(255,255,255,0.08)'"
+          onmouseleave="this.style.background='transparent'">
+          <i class="ti ti-download" style="font-size:12px"></i> Convocation
+        </button>
+        <button class="text-xs px-3 py-1.5 rounded-lg text-white font-medium"
+          style="background:#378ADD; border:none">
+          <i class="ti ti-arrow-right" style="font-size:12px"></i> Rejoindre
+        </button>
+      </div>
+    </div>
+
+    <!-- Header + filtre -->
+    <div class="flex items-center justify-between">
+      <h2 class="text-base font-semibold text-gray-800 dark:text-white">
         Sessions de la semaine
       </h2>
-      <select
-        [(ngModel)]="filterStatut"
-        class="text-base border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
-        <option *ngFor="let s of statuts" [value]="s">
-          {{ s === 'TOUS' ? 'Tous les statuts' : s }}
-        </option>
-      </select>
+      <div class="flex items-center gap-3">
+        <span class="text-xs cursor-pointer hover:underline" style="color:#378ADD">
+          Voir tout le mois &rsaquo;
+        </span>
+        <select
+          [(ngModel)]="filterStatut"
+          class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+          <option *ngFor="let st of statuts" [value]="st">
+            {{ st === 'TOUS' ? 'Tous les statuts' : st }}
+          </option>
+        </select>
+      </div>
     </div>
 
     <!-- Vide -->
@@ -25,137 +62,264 @@
       Aucune session trouvée.
     </div>
 
-    <!-- Liste sessions -->
-    <div class="flex flex-col gap-4">
-      <div *ngFor="let s of sessionsFiltrees"
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+    <!-- ═══ Liste sessions ═══ -->
+    <div *ngFor="let s of sessionsFiltrees"
+      class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden transition-shadow duration-200 hover:shadow-md"
+      style="border:0.5px solid #e5e7eb">
 
-        <div class="flex gap-4">
+      <!-- En-tête session -->
+      <div class="flex gap-3 p-4 cursor-pointer" (click)="toggleSeances(s)">
 
-          <!-- Date -->
-          <div class="flex-shrink-0 text-center w-14">
-            <p class="text-sm text-gray-400 uppercase">
+        <!-- Date pill bleue -->
+        <div class="flex-shrink-0">
+          <div class="rounded-lg text-center w-12 py-2 px-1" style="background:#E6F1FB">
+            <p class="text-xs font-semibold uppercase" text-gray-100 style=" letter-spacing:0.05em; line-height:1">
               {{ s.dateDebut | date:'MMM' }}
             </p>
-            <p class="text-3xl font-bold text-blue-600">
+            <p class="font-semibold leading-tight mt-0.5" style="color:#0C447C; font-size:20px">
               {{ s.dateDebut | date:'dd' }}
             </p>
-            <p class="text-sm text-gray-400">
-              {{ s.heureDebut?.slice(0,5) }}
+            <p class="text-xs" text-gray-100 style="line-height:1; margin-top:2px">
+              {{ s.heureDebut.slice(0,5) }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Infos session -->
+        <div class="flex-1 min-w-0">
+
+          <!-- Track : NOM FORMATION / sous-catégorie -->
+          <div class="flex items-center gap-1 mb-1">
+            <span class="text-xs font-semibold uppercase tracking-wider" style="color:#296aab">
+              {{ s.formationNom }}
+            </span>
+          </div>
+
+          <!-- Nom session -->
+          <h3 class="font-semibold text-gray-800 dark:text-white" style="font-size:16px; line-height:1.3">
+            {{ s.nom }}
+          </h3>
+
+          <!-- Méta : horaire, lieu, nb séances -->
+          <div class="flex flex-wrap gap-3 mt-1.5" style="font-size:11px; color:#9ca3af">
+            <lucide-icon name="Clock" class="w-4 h-4"></lucide-icon>
+            <span *ngIf="s.nombreSeances" class="flex items-center gap-1">
+              <i class="ti ti-layout-list" style="font-size:11px"></i>
+              {{ s.nombreSeances }} séances
+            </span>
+            <span class="flex items-center gap-1">
+              <i class="ti ti-clock" style="font-size:11px"></i>
+              {{ s.heureDebut.slice(0,5) }} – {{ s.heureFin.slice(0,5) }}
+            </span>
+            <lucide-icon name="MapPin" class="w-4 h-4"></lucide-icon>           
+            <span *ngIf="s.mode !== 'DISTANCIEL'" class="flex items-center gap-1">
+              <i class="ti ti-map-pin" style="font-size:11px"></i>
+              {{ s.lieu }}
+            </span>
+            <span *ngIf="s.mode === 'DISTANCIEL'" class="flex items-center gap-1">
+              <i class="ti ti-video" style="font-size:11px"></i>
+              <a [href]="s.lienVisio" target="_blank" style="color:#378ADD" class="underline">Lien visio</a>
+            </span>
+          </div>
+        </div>
+
+        <!-- Statut + bouton toggle -->
+        <div class="flex flex-col items-end justify-between flex-shrink-0 gap-2">
+          <span class="text-xs px-2 py-0.5 rounded-full font-medium"
+            [ngClass]="getStatutClass(s.statut)">
+            {{ s.statut }}
+          </span>
+          <button class="text-xs flex items-center gap-1" style="color:#378ADD">
+            <i class="ti" style="font-size:12px"
+              [ngClass]="seancesOuvertes[s.id] ? 'ti-chevron-up' : 'ti-chevron-down'"></i>
+            {{ seancesOuvertes[s.id] ? 'Masquer' : 'Séances' }}
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ═══ Bloc séances dépliable ═══ -->
+      <div *ngIf="seancesOuvertes[s.id]">
+
+        <!-- Chargement -->
+        <div *ngIf="seancesLoading[s.id]"
+          class="text-xs px-4 py-3" style="color:#9ca3af; border-top:0.5px dashed #e5e7eb">
+          Chargement des séances...
+        </div>
+
+        <ng-container *ngIf="!seancesLoading[s.id]">
+
+          <!-- Label en-tête séances -->
+          <div class="flex items-center justify-between px-4 py-2"
+            style="border-top:0.5px dashed #d1d5db">
+            <p class="text-xs font-semibold tracking-wider"
+              style="color:#9ca3af; letter-spacing:0.07em; text-transform:uppercase">
+              Séances programmées
+            </p>
+            <p class="text-xs" style="color:#9ca3af">
+              {{ seancesEffectuees(s.id) }}/{{ (seancesMap[s.id] ).length }} effectuées
             </p>
           </div>
 
-          <!-- Séparateur -->
-          <div class="w-px bg-gray-100"></div>
-
-          <!-- Infos -->
-          <div class="flex-1">
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <p class="text-sm font-semibold text-blue-500 uppercase mb-1">
-                  {{ s.formationNom }}
-                </p>
-                <h3 class="font-semibold text-gray-800 dark:text-white">
-                  {{ s.nom }}
-                </h3>
-              </div>
-              <span class="text-sm px-2 py-1 rounded-full font-medium flex-shrink-0"
-                [ngClass]="getStatutClass(s.statut)">
-                {{ s.statut }}
-              </span>
-            </div>
-
-            <!-- Horaire + lieu -->
-            <div class="flex flex-wrap gap-3 mt-2 text-base text-gray-500">
-              <span>🕐 {{ s.heureDebut?.slice(0,5) }} – {{ s.heureFin?.slice(0,5) }}</span>
-              <span *ngIf="s.mode !== 'DISTANCIEL'">📍 {{ s.lieu }}</span>
-              <span *ngIf="s.mode === 'DISTANCIEL'">
-                🎥 <a [href]="s.lienVisio" target="_blank"
-                  class="text-blue-500 underline">Lien Zoom</a>
-              </span>
-            </div>
-
-            <!-- Formateur + bouton -->
-            <div class="flex items-center justify-between mt-3">
-              <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
-                  {{ s.formateurNom?.[0] ?? '?' }}
-                </div>
-                <span class="text-base text-gray-600 dark:text-gray-300">
-                  {{ s.formateurNom ?? 'Formateur non assigné' }}
-                </span>
-              </div>
-              <button (click)="ouvrirPanel(s)" class="text-base text-blue-600 border border-blue-200 hover:bg-blue-50 px-3 py-1 rounded-lg transition-colors">
-                Voir détails
-              </button>
-            </div>
+          <!-- Aucune séance -->
+          <div *ngIf="!seancesMap[s.id] || seancesMap[s.id].length === 0"
+            class="px-4 py-3 text-xs" style="color:#9ca3af">
+            Aucune séance programmée.
           </div>
 
-        </div>
-      </div>
-    </div>
+          <!-- Ligne par séance -->
+          <div *ngFor="let seance of seancesMap[s.id]; let i = index"
+            class="flex items-start gap-3 px-4 py-2.5 mx-3 mb-2 rounded-lg"
+            style="background:#f8f9fa; border:0.5px solid #e5e7eb">
+            <!-- Indicateur état -->
+            <div class="flex-shrink-0 mt-0.5"
+              style="width:22px; height:22px; border-radius:50%;
+              display:flex; align-items:center; justify-content:center;
+              font-size:10px; font-weight:500;"
+              [ngStyle]="{
+                'background': isSeanceFaite(seance)    ? '#EAF3DE'
+                  : isSeanceCourante(seance) ? '#378ADD'
+                  : '#ffffff',
+                'color':      isSeanceFaite(seance)    ? '#3B6D11'
+                  : isSeanceCourante(seance) ? '#ffffff'
+                  : '#9ca3af',
+                'border':     isSeanceFuture(seance)   ? '0.5px solid #d1d5db' : 'none'
+              }">
+              <i *ngIf="isSeanceFaite(seance)" class="ti ti-check" style="font-size:11px"></i>
+              <span *ngIf="!isSeanceFaite(seance)">S{{ i + 1 }}</span>
+            </div>
 
+            <!-- Titre + horaire -->
+            <div class="flex-1 min-w-0">
+              <p class="font-medium" style="font-size:13px; line-height:1.3; color:#111827">
+                Séance {{ i + 1 }}
+                <span *ngIf="seance.salleNumero" style="font-weight:400; color:#9ca3af; font-size:12px">
+                  · Salle {{ seance.salleNumero }}
+                </span>
+              </p>
+              <p class="mt-0.5" style="font-size:11px; color:#9ca3af">
+                {{ seance.date | date:'EEE. dd MMM' }}
+                &nbsp;·&nbsp;
+                {{ seance.heureDebut.slice(0,5) }} – {{ seance.heureFin.slice(0,5) }}
+              </p>
+            </div>
+
+            <!-- Badge EN COURS -->
+            <span *ngIf="isSeanceCourante(seance)"
+              style="font-size:10px; padding:2px 8px; border-radius:20px;
+              background:#E6F1FB; color:#185FA5;
+              flex-shrink:0; margin-top:2px; white-space:nowrap">
+              EN COURS
+            </span>
+
+            <!-- Check vert si faite -->
+            <i *ngIf="isSeanceFaite(seance)"
+              class="ti ti-circle-check flex-shrink-0"
+              style="font-size:16px; color:#639922; margin-top:2px"></i>
+
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Footer formateur + voir détails -->
+      <div class="flex items-center justify-between px-4 py-3"
+        style="border-top:0.5px solid #f3f4f6">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full flex items-center justify-center
+                      text-xs font-bold flex-shrink-0"
+            style="background:#E6F1FB; color:#185FA5">
+            {{ (s.formateurNom ?? '?')[0].toUpperCase() }}
+          </div>
+          <span class="text-xs" style="color:#6b7280">{{ s.formateurNom }}</span>
+        </div>
+        <button (click)="ouvrirPanel(s); $event.stopPropagation()"
+          class="text-xs px-3 py-1.5 rounded-lg transition-colors"
+          style="color:#378ADD; border:0.5px solid #bfdbfe"
+          onmouseenter="this.style.background='#eff6ff'"
+          onmouseleave="this.style.background='transparent'">
+          Voir détails
+        </button>
+      </div>
+
+    </div>
   </div>
 
   <!-- COLONNE DROITE — Sidebar -->
   <div class="flex flex-col gap-4">
 
-    <!-- Stats -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 p-5 shadow-sm">
-      <h3 class="font-semibold text-gray-700 dark:text-white mb-4">Mes statistiques</h3>
-      <div class="flex flex-col gap-3">
-        <div class="flex justify-between items-center">
-          <span class="text-base text-gray-500">Total inscriptions</span>
-          <span class="font-bold text-gray-800 dark:text-white">{{ inscriptions.length }}</span>
+    <!-- Stats dark -->
+    <div class="rounded-xl p-5" style="background:#1a1a2e">
+      <p class="text-xs font-semibold tracking-widest mb-4"
+        style="color:#7F77DD; letter-spacing:0.1em">
+        MES STATISTIQUES
+      </p>
+
+      <div class="flex flex-col">
+        <div class="flex justify-between items-center py-2.5"
+          style="border-bottom:0.5px solid rgba(255,255,255,0.07)">
+          <span class="text-xs" style="color:#aaa">Inscriptions totales</span>
+          <span class="text-sm font-semibold text-white">
+            {{ inscriptions.length.toString().padStart(2,'0') }}
+          </span>
         </div>
-        <div class="flex justify-between items-center">
-          <span class="text-base text-gray-500">En cours</span>
-          <span class="font-bold text-blue-600">{{ enCours.length }}</span>
+        <div class="flex justify-between items-center py-2.5"
+          style="border-bottom:0.5px solid rgba(255,255,255,0.07)">
+          <span class="text-xs" style="color:#aaa">En cours</span>
+          <span class="text-sm font-semibold" style="color:#378ADD">
+            {{ enCours.length.toString().padStart(2,'0') }}
+          </span>
         </div>
-        <div class="flex justify-between items-center">
-          <span class="text-base text-gray-500">Terminées</span>
-          <span class="font-bold text-green-600">{{ terminees.length }}</span>
+        <div class="flex justify-between items-center py-2.5"
+          style="border-bottom:0.5px solid rgba(255,255,255,0.07)">
+          <span class="text-xs" style="color:#aaa">Terminées</span>
+          <span class="text-sm font-semibold" style="color:#1D9E75">
+            {{ terminees.length.toString().padStart(2,'0') }}
+          </span>
         </div>
-        <!-- Barre progression -->
-        <div class="mt-2">
-          <div class="flex justify-between text-base text-gray-400 mb-1">
-            <span>Progression</span>
-            <span>{{ progressionPct }}%</span>
+        <div class="flex justify-between items-center pt-2.5">
+          <span class="text-xs" style="color:#aaa">Certifications</span>
+          <span class="text-sm font-semibold text-white">00</span>
+        </div>
+      </div>
+
+      <!-- Progression -->
+      <div class="mt-4">
+        <div class="flex justify-between mb-1.5" style="font-size:11px; color:#888">
+          <span>Progression</span>
+          <span class="text-white font-semibold">{{ progressionPct }}%</span>
+        </div>
+        <div class="rounded-full" style="height:3px; background:rgba(255,255,255,0.1)">
+          <div class="rounded-full transition-all duration-500"
+            style="height:3px; background:#378ADD"
+            [style.width.%]="progressionPct">
           </div>
-          <div class="w-full h-2 bg-gray-100 rounded-full">
-            <div class="h-2 bg-blue-500 rounded-full transition-all duration-500"
-              [style.width.%]="progressionPct">
-            </div>
-          </div>
+        </div>
+      </div>
+
+      <!-- Mini stats 2×2 -->
+      <div class="grid grid-cols-2 gap-2 mt-4">
+        <div class="rounded-lg p-3" style="background:rgba(255,255,255,0.05)">
+          <p class="text-base font-semibold text-white">{{ totalSeances }}</p>
+          <p class="text-xs mt-0.5" style="color:#888">Séances totales</p>
+        </div>
+        <div class="rounded-lg p-3" style="background:rgba(255,255,255,0.05)">
+          <p class="text-base font-semibold text-white">{{ assiduite }}%</p>
+          <p class="text-xs mt-0.5" style="color:#888">Assiduité</p>
         </div>
       </div>
     </div>
 
-    <!-- Prochaine session -->
-    <div *ngIf="prochaineSession"
-      class="bg-blue-600 text-white rounded-xl p-5 shadow-sm">
-      <h3 class="font-semibold mb-3">⏰ Prochainement</h3>
-      <p class="font-bold text-xl">{{ prochaineSession.nom }}</p>
-      <p class="text-blue-200 text-base mt-1">
-        {{ prochaineSession.dateDebut | date:'dd MMM yyyy' }}
-        à {{ prochaineSession.heureDebut?.slice(0,5) }}
-      </p>
-      <p class="text-blue-200 text-base">
-        {{ getModeIcon(prochaineSession.mode) }}
-        {{ prochaineSession.mode === 'DISTANCIEL' ? 'En ligne' : prochaineSession.lieu }}
-      </p>
-    </div>
-
     <!-- Aucune prochaine session -->
     <div *ngIf="!prochaineSession"
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 p-5 shadow-base text-center text-gray-400">
+      class="bg-white dark:bg-gray-800 rounded-xl p-5 text-center text-sm"
+      style="border:0.5px solid #e5e7eb; color:#9ca3af">
       Aucune session à venir.
     </div>
 
   </div>
-
 </div>
 
+<!-- Panel détail -->
 <app-session-panel
   [ouvert]="panelOuvert"
   [session]="sessionSelectionnee"

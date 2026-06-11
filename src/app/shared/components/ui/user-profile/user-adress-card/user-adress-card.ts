@@ -12,7 +12,7 @@ import { LucideAngularModule ,Pencil,Briefcase} from 'lucide-angular';
 
 @Component({
   selector: 'app-user-adress-card',
-  imports: [InputFieldComponent,Boutton,Label,Modal,FormsModule,CommonModule,Dropzone,LucideAngularModule],
+  imports: [InputFieldComponent,Boutton,Label,Modal,FormsModule,CommonModule,LucideAngularModule],
   templateUrl: './user-adress-card.html',
   styleUrl: './user-adress-card.css',
 })

@@ -19,7 +19,7 @@ import {
   BookOpen, 
   Settings ,
   Calendar,FileText
-} from 'lucide-angular/src/icons';
+} from 'lucide-angular';
 type NavItem = {
   name: string;
   icon: any;
@@ -45,6 +45,7 @@ export class PlanificateurSidebar {
   readonly ClipboardList = ClipboardList;
   readonly LogOut = LogOut;
   readonly Calendar = Calendar;
+  readonly FileText = FileText;
   navItems: NavItem[] = [
     {
       name: 'Dashboard',
@@ -65,8 +66,14 @@ export class PlanificateurSidebar {
     },
     {
       name:"Demandes",
-      icon:'FileText',
+      icon:FileText,
       path: "/planificateur/demandeInscription",
+    },
+    {
+        name:"Salle",
+        icon:User,
+        path:"/planificateur/tableSalle"
+        
     },
     {
       name: "Calendrier",
@@ -82,6 +89,7 @@ export class PlanificateurSidebar {
           {name:"Mon Profil",path:"/planificateur/profile"}
         ]
     },
+    
     
   ]
   openSubmenu: string | null | number = null;
@@ -109,7 +117,9 @@ export class PlanificateurSidebar {
     this.subscription.add(
       this.router.events.subscribe(event => {
         if (event instanceof NavigationEnd) {
+          setTimeout(() => {
           this.setActiveMenuFromRoute(this.router.url);
+          });
         }
       })
     );

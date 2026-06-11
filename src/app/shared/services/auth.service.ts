@@ -38,7 +38,8 @@ export interface BaseUser {
 export interface Planificateur extends BaseUser {
   specialite: string;
   anneesExperience: number;
-  cvPath: string[];
+  cvNomFichier?: string;
+  cvContentType?: string;
   role: 'PLANIFICATEUR';
 }
 export interface Manager extends BaseUser {
@@ -50,13 +51,15 @@ export interface Manager extends BaseUser {
 export interface Financier extends BaseUser {
   specialite: string;
   anneesExperience: number;
-  cvPath: string[];
+  cvNomFichier?: string;
+  cvContentType?: string;
   role: 'FINANCIER';
 }
 export interface Formateur  extends BaseUser {
   specialite: string;
   anneesExperience: number;
-  cvPath: string[];
+  cvNomFichier?: string;
+  cvContentType?: string;
   noteMoyenne: number;
   heuresEnseigneesTotal:number;
   disponibilite:boolean;

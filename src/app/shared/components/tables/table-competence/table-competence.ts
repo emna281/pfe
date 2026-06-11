@@ -24,6 +24,8 @@ export class TableCompetence implements OnInit{
   allItems:any[]=[];
   currentPage = 1;
   itemsPerPage = 5;
+
+  Math = Math;
   constructor(private competenceService:CompetenceService ,private cdr: ChangeDetectorRef ){}
   
     isFormulaireOpen = false;
@@ -66,22 +68,21 @@ export class TableCompetence implements OnInit{
     });
   }
   filterCompetences(): void {
-      if (!this.searchTerm || this.searchTerm.trim() === '') {
-        this.filtredCompetences = this.competences;
-        this.currentPage = 1;
-        return;
-      }
-  
-      const term = this.searchTerm.toLowerCase();
-  
-      this.currentList = this.allItems.filter(item =>
-        item.code?.toLowerCase().includes(term) ||
-        item.titre?.toLowerCase().includes(term) ||
-        item.description?.toLowerCase().includes(term) ||
-        item.publicCible?.toLowerCase().includes(term)
-      );
-      this.currentPage = 1;
-    }
+  if (!this.searchTerm || this.searchTerm.trim() === '') {
+    this.filtredCompetences = this.competences;
+    this.currentPage = 1;
+    return;
+  }
+
+  const term = this.searchTerm.toLowerCase();
+
+  this.filtredCompetences = this.competences.filter(item =>
+    item.nom?.toLowerCase().includes(term) ||
+    item.description?.toLowerCase().includes(term) ||
+    item.categorie?.toLowerCase().includes(term)
+  );
+  this.currentPage = 1;
+}
   
     get totalPages(): number {
       return Math.ceil(this.filtredCompetences.length / this.itemsPerPage);
@@ -138,5 +139,7 @@ annulerSuppression(){
     this.suppModalVisible=false;
     this.competenceASupprimer=null;
   }
+
+ 
 
 }

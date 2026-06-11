@@ -8,7 +8,7 @@ import { UserDropdown } from '../../../components/header/user-dropdown/user-drop
 
 @Component({
   selector: 'app-formateur-layout',
-  imports: [RouterOutlet,CommonModule,RouterModule,ThemeToggle,NotificationDropdown,UserDropdown],
+  imports: [RouterOutlet,CommonModule,RouterModule,ThemeToggle,NotificationDropdown,UserDropdown,NavBar],
   templateUrl: './formateur-layout.html',
   styleUrl: './formateur-layout.css',
 })

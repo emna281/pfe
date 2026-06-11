@@ -1,0 +1,160 @@
+<div class="bg-white dark:bg-gray-800 rounded-xl p-6"
+  style="border:0.5px solid #e5e7eb">
+
+  <!-- En-tête -->
+  <div class="flex items-start justify-between mb-4">
+    <div class="flex items-center gap-3">
+      
+        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100">
+          <lucide-icon name="briefcase" class="w-5 h-5 text-blue-700"></lucide-icon>
+        </div>
+      
+      <div>
+        <h3 class="font-semibold text-gray-800 dark:text-white">
+          Parcours professionnel
+        </h3>
+        <p class="text-xs text-gray-400">
+          {{ isApprenant ? 'Votre poste et niveau d\'étude' : 'Votre expertise et compétences' }}
+        </p>
+      </div>
+    </div>
+
+    <button *ngIf="!editMode && !isAdminView"
+  (click)="startEdit()"
+  class="flex items-center gap-1.5 text-lg font-medium px-3 py-1.5 rounded-lg
+         border border-gray-300 text-gray-200
+         bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]
+         transition-all duration-300
+         hover:bg-gradient-to-br hover:from-[#0f3460] hover:via-[#16213e] hover:to-[#1a1a2e]">
+  
+  <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
+  Modifier
+</button>
+
+    <div *ngIf="editMode" class="flex gap-2">
+      <button (click)="cancelEdit()"
+        class="text-xs px-3 py-1.5 rounded-lg"
+        style="border:0.5px solid #d1d5db; color:#6b7280; background:transparent">
+        Annuler
+      </button>
+      <button (click)="saveEdit()" [disabled]="saving"
+        class="text-xs px-3 py-1.5 rounded-lg text-white font-medium"
+        style="background:#378ADD; border:none"
+        [style.opacity]="saving ? '0.7' : '1'">
+        {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Succès -->
+  <div *ngIf="success"
+    class="flex items-center gap-2 text-xs px-3 py-2 rounded-lg mb-4"
+    style="background:#EAF3DE; color:#3B6D11">
+    
+    <i class="ti ti-circle-check" style="font-size:14px"></i>
+    Informations mises à jour avec succès.
+  </div>
+
+  <!-- ═══ APPRENANT — Mode lecture ═══ -->
+  <div *ngIf="isApprenant && !editMode" class="grid grid-cols-2 gap-x-8 gap-y-4">
+    <div>
+      <p class="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">
+        Poste Actuel
+      </p>
+      <p class="text-sm font-semibold text-gray-800 dark:text-white">
+        {{ user?.posteActuel || '—' }}
+      </p>
+    </div>
+    <div>
+      <p class="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">
+        Niveau
+      </p>
+      <p class="text-sm font-semibold text-gray-800 dark:text-white">
+        {{ user?.niveauEtude || '—' }}
+      </p>
+    </div>
+    <div>
+      <p class="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">
+        Numéro d'étudiant
+      </p>
+      <p class="text-sm font-semibold text-gray-800 dark:text-white">
+        APP-{{ user?.numeroEnregistrement }}
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══ APPRENANT — Mode édition ═══ -->
+  <div *ngIf="isApprenant && editMode" class="grid grid-cols-2 gap-4">
+    <div>
+      <label class="text-xs font-medium text-gray-500 block mb-1">Poste actuel</label>
+      <input type="text" [(ngModel)]="form.posteActuel"
+        class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+               focus:outline-none focus:ring-2 focus:ring-blue-300
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+    <div>
+      <label class="text-xs font-medium text-gray-500 block mb-1">Niveau d'étude</label>
+      <select [(ngModel)]="form.niveauEtude"
+        class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+               focus:outline-none focus:ring-2 focus:ring-blue-300
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+        <option value="">— Sélectionner —</option>
+        <option value="DEBUTANT">Débutant</option>
+        <option value="INTERMEDIAIRE">Intermédiaire</option>
+        <option value="AVANCE">Avancé</option>
+        <option value="EXPERT">Expert</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ═══ FORMATEUR — Mode lecture ═══ -->
+  <div *ngIf="isFormateur && !editMode" class="grid grid-cols-2 gap-x-8 gap-y-4">
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">
+        Spécialité
+      </p>
+      <p class="font-semibold text-gray-800 dark:text-white">
+        {{ user?.specialite || '—' }}
+      </p>
+    </div>
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <p class="text-xs text-gray-500 mb-1">
+        Années d'expérience
+      </p>
+      <p class="font-semibold text-gray-800 dark:text-white">
+        {{ user?.anneesExperience ?? '—' }} ans
+      </p>
+    </div>
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50" *ngIf="user?.competences?.length">
+      <p class="text-xs text-gray-500 mb-1">
+        Compétences
+      </p>
+      <div class="font-semibold text-gray-800 dark:text-white">
+        <span *ngFor="let c of user.competences"
+          class="text-xs px-2 py-1 rounded-full"
+          style="background:#E6F1FB; color:#185FA5">
+          {{ c }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FORMATEUR — Mode édition ═══ -->
+  <div *ngIf="isFormateur && editMode" class="grid grid-cols-2 gap-4">
+    <div>
+      <label class="text-xs font-medium text-gray-500 block mb-1">Spécialité</label>
+      <input type="text" [(ngModel)]="form.specialite"
+        class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+               focus:outline-none focus:ring-2 focus:ring-blue-300
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+    <div>
+      <label class="text-xs font-medium text-gray-500 block mb-1">Années d'expérience</label>
+      <input type="number" [(ngModel)]="form.anneesExperience" min="0"
+        class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+               focus:outline-none focus:ring-2 focus:ring-blue-300
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+  </div>
+
+</div>

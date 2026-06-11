@@ -1,49 +1,92 @@
- <nav class="px-8 py-4 flex items-center justify-between ">
-    
-        <a href="" class="flex flex-col items-center   ml-11">
-            <img src="/images/logo/logo.jpg" class="h-36"  />
-            <span class="text-sm font-bold  text-heading -mt-10">FIRSTCODE</span>
-        </a>
-        <div id="mega-menu-full" class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 mr-36">
-            <ul class="flex flex-col mt-4 font-medium md:flex-row md:mt-0 md:space-x-8 rtl:space-x-reverse">
-                <li>
-                    <a href="#" class="nav-link  relative block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0" aria-current="page"
-                    [class.active]="activeLink === 'home'" (click)="setActive('home')">Acceuil</a>
-                </li>
-                <li>
-                    <button id="mega-menu-full-dropdown-button" data-collapse-toggle="mega-menu-full-dropdown" class="flex items-center justify-between w-full py-2 px-3 font-medium text-heading text-xl border-b border-light md:w-auto hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0">
-                        Formations 
-                        <svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
-                    </button>
-                </li>
-                <li>
-                    <a href="#" class="nav-link block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0"
-                    [class.active]="activeLink === 'Calendrier'" (click)="setActive('Calendrier')">
-                      Calendrier
+<nav class="px-4 py-2 flex items-center justify-between bg-transparent gap-4 w-full z-10 relative">
+
+  <!-- Logo -->
+  <a href="#" class="flex items-center gap-4 ml-0 lg:ml-4 flex-shrink-0">
+    <img src="/images/logo/logo4.jpg" class="h-10 w-10 rounded-3xl object-cover border border-slate-200 shadow-sm" />
+    <div class="flex flex-col">
+      <span class="text-lg font-bold tracking-[0.24em] uppercase text-slate-900">FIRSTCODE</span>
+      <span class="text-xs uppercase tracking-[0.2em] text-slate-500">Campus & formations</span>
+    </div>
+  </a>
+
+  <!-- ✅ Nav Links (déplacés ici, entre logo et search) -->
+  <div class="hidden md:flex items-center gap-1 flex-shrink-0">
+    <ul class="flex flex-row items-center gap-1">
+      @for (link of links; track link.key) {
+        <li class="relative group">
+          @if (!link.children) {
+            <a [href]="link.href || '#'"
+               class="nav-link block rounded-xl py-2 px-3 text-slate-700 text-base hover:text-sky-600 transition-colors duration-200"
+               [class.active]="activeLink === link.key"
+               (click)="setActive(link.key)">
+              {{ link.label }}
+            </a>
+          }
+          @if (link.children) {
+            <button class="nav-link flex items-center gap-1 rounded-xl py-2 px-3 text-slate-700 text-base hover:text-sky-600 transition-colors duration-200"
+                    [class.active]="activeLink === link.key"
+                    (click)="setActive(link.key)">
+              {{ link.label }}
+              <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-100
+                        rounded-xl shadow-lg opacity-0 invisible
+                        group-hover:opacity-100 group-hover:visible
+                        transition-all duration-200 z-50">
+              <ul class="py-2">
+                @for (child of link.children; track child.label) {
+                  <li>
+                    <a [href]="child.href || '#'"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-[#517FB0] transition-colors duration-150">
+                      {{ child.label }}
                     </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0"
-                    [class.active]="activeLink === 'Offres'" (click)="setActive('Offres')">
-                      Offres Emplois
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0"
-                    [class.active]="activeLink === 'Nouveaute'" (click)="setActive('Nouveaute')">
-                      Nouveauté
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link block py-2 px-3 text-heading text-xl hover:text-fg-brand border-b border-light hover:bg-neutral-secondary-soft md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0"
-                    [class.active]="activeLink === 'Contact'" (click)="setActive('Contact')">
-                      Contact
-                    </a>
-                </li>
-                <li>
-                  <button type="button" routerLink="/signin" class="text-white bg-[#517FB0] box-border border border-[#517FB0] hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-xl text-lg px-4 py-2.5 focus:outline-none">Connexion</button>
-                </li>
-            </ul>
-        </div>
-    
-  </nav>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  </div>
+
+  <!-- ✅ Search bar agrandie (flex-1 + max-w-xl) -->
+  <div class="flex-1 max-w-xl" [class.hidden]="!showSearch">
+    <div class="relative">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+      </svg>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+        placeholder="Rechercher une formation…"
+        class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl
+               bg-gray-50 text-gray-800 placeholder-gray-400
+               focus:outline-none focus:ring-2 focus:ring-[#517FB0]/30
+               focus:border-[#517FB0] transition-all duration-200"
+      />
+      <button (click)="searchQuery = ''; onSearch()"
+              [class.hidden]="!searchQuery"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  @if (showLoginButton) {
+  <div class="flex-shrink-0">
+    <button type="button" routerLink="/signin"
+            class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-sky-200/40 transition duration-200 hover:from-sky-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-sky-200/60">
+      Connexion
+    </button>
+  </div>
+}
+</nav>

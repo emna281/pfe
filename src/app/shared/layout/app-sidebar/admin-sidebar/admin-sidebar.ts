@@ -18,7 +18,7 @@ import {
   BookOpen, 
   Settings ,
   Calendar
-} from 'lucide-angular/src/icons';
+} from 'lucide-angular';
 type NavItem = {
   name: string;
   icon: any;

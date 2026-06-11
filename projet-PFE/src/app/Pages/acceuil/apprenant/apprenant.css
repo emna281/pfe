@@ -1,0 +1,28 @@
+.nav-link {
+  position: relative;
+}
+
+.nav-link .indicator {
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 2px;
+  width: 0%;
+  background-color: #3b82f6; /* bleu */
+  transition: 0.3s ease;
+}
+
+.nav-link.active {
+  color: #3b82f6;
+  border-bottom: 2px solid #3b82f6;  
+}
+
+.nav-link.active .indicator {
+  width: 100%;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+

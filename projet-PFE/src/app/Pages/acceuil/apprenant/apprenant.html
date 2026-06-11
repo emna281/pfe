@@ -1,0 +1,322 @@
+<div class="min-h-screen bg-white text-slate-800">
+   <nav class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md shadow-sm px-8 py-4 transition duration-300">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between max-w-7xl mx-auto">
+      <a href="#" class="flex items-center gap-4 ml-0 lg:ml-4">
+        <img src="/images/logo/logo.jpg" class="h-16 w-16 rounded-3xl object-cover border border-slate-200 shadow-sm" />
+        <div class="flex flex-col">
+          <span class="text-lg font-bold tracking-[0.24em] uppercase text-slate-900">FIRSTCODE</span>
+          <span class="text-xs uppercase tracking-[0.2em] text-slate-500">Campus & formations</span>
+        </div>
+      </a>
+
+      <div class="flex items-center justify-center lg:order-2">
+        <button type="button" routerLink="/signin" class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-sky-200/40 transition duration-200 hover:from-sky-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-sky-200/60">
+          Connexion
+        </button>
+      </div>
+
+      <div id="mega-menu-full" class="hidden w-full md:flex md:w-auto lg:order-3">
+        <ul class="flex flex-col gap-3 mt-4 font-medium md:flex-row md:mt-0 md:space-x-6">
+          <li>
+            <a href="#" class="nav-link relative block rounded-xl py-2 px-3 text-slate-700 text-base hover:text-sky-600 transition-colors duration-200 md:p-0"
+            [class.active]="activeLink === 'home'" (click)="setActive('home')">Accueil</a>
+          </li>
+          <li>
+            <button id="mega-menu-full-dropdown-button" data-collapse-toggle="mega-menu-full-dropdown" class="flex items-center justify-between w-full py-2 px-3 rounded-xl text-slate-700 text-base hover:text-sky-600 transition-colors duration-200 md:w-auto md:p-0">
+              Formations
+              <svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
+            </button>
+          </li>
+          <li>
+            <a href="#" class="nav-link block rounded-xl py-2 px-3 text-slate-700 text-base hover:text-sky-600 transition-colors duration-200 md:p-0"
+            [class.active]="activeLink === 'Calendrier'" (click)="setActive('Calendrier')">
+              Calendrier
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link block rounded-xl py-2 px-3 text-slate-700 text-base hover:text-sky-600 transition-colors duration-200 md:p-0"
+            [class.active]="activeLink === 'Offres'" (click)="setActive('Offres')">
+              Offres Emplois
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link block rounded-xl py-2 px-3 text-slate-700 text-base hover:text-sky-600 transition-colors duration-200 md:p-0"
+            [class.active]="activeLink === 'Nouveaute'" (click)="setActive('Nouveaute')">
+              Nouveauté
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link block rounded-xl py-2 px-3 text-slate-700 text-base hover:text-sky-600 transition-colors duration-200 md:p-0"
+            [class.active]="activeLink === 'Contact'" (click)="setActive('Contact')">
+              Contact
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <header class="relative overflow-hidden px-8 pt-10 pb-24 border-b border-slate-200 bg-gradient-to-b from-sky-50 via-white to-slate-100">
+
+    <div class="absolute -top-40 -left-20 w-96 h-96 bg-sky-400 rounded-full blur-3xl opacity-25"></div>
+    <div class="absolute -bottom-40 -right-20 w-80 h-80 bg-cyan-300 rounded-full blur-3xl opacity-20"></div>
+
+    <div class="relative w-full flex flex-col-reverse gap-12 lg:flex-row lg:items-center lg:gap-x-20">
+
+      <!-- TEXTE -->
+      <div class="flex flex-col flex-1 gap-y-8 max-w-2xl">
+
+        <span class="inline-flex items-center rounded-full bg-sky-100 px-4 py-1 text-sm font-semibold text-sky-700">Formations pratiques & certifiantes</span>
+
+        <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
+          Des formations pour construire <br />
+          votre avenir professionnel
+        </h1>
+
+        <p class="max-w-xl text-slate-600 text-base sm:text-lg leading-8">
+          Développez vos compétences grâce à des formations pratiques, certifiantes et adaptées au marché du travail.
+        </p>
+
+        <!-- BOUTONS -->
+        <div class="flex flex-wrap items-center gap-4">
+          <button type="button" routerLink="/signup"
+            class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 px-8 py-3 text-lg font-semibold text-white shadow-2xl shadow-sky-200/30 transition duration-200 hover:from-sky-700 hover:to-indigo-700">
+            Inscription
+          </button>
+
+          <button type="button"
+            class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-8 py-3 text-lg font-semibold text-slate-700 transition duration-200 hover:border-slate-300 hover:bg-slate-100">
+            Découvrir nos formations
+          </button>
+        </div>
+
+      </div>
+
+      <!-- IMAGE -->
+      <div class="flex-shrink-0">
+        <img src="/images/Acceuil1.jpg" class="w-full max-w-xl rounded-[1.75rem] object-cover shadow-2xl ring-1 ring-slate-200" />
+      </div>
+
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-8 py-16">
+
+    <!-- Chargement -->
+    @if (loading) {
+      <div class="flex flex-col items-center justify-center py-28 gap-5">
+        <div class="w-10 h-10 border-2 border-slate-700 border-t-violet-500 rounded-full animate-spin"></div>
+        <p class="text-slate-500 text-sm">Chargement des sessions…</p>
+      </div>
+    }
+
+    <!-- Erreur backend / fallback -->
+    @if (!loading && errorLoadingSessions) {
+      <div class="mb-8 rounded-2xl border border-rose-200 bg-rose-50 px-6 py-5 text-rose-700">
+        <strong>Pas de backend disponible.</strong> Affichage en mode démo pour le design.
+      </div>
+    }
+
+    <!-- Aucune session -->
+    @if (!loading && sessions.length === 0) {
+      <div class="flex flex-col items-center justify-center py-28 gap-4 text-center bg-slate-50 rounded-3xl border border-slate-200 shadow-sm">
+        <span class="text-5xl">📭</span>
+        <h3 class="text-2xl font-bold text-slate-900">Aucune session disponible</h3>
+        <p class="text-slate-500 text-sm">Revenez bientôt pour découvrir nos nouveaux contenus.</p>
+      </div>
+    }
+
+    <!-- Liste des sessions -->
+    @if (!loading && sessions.length > 0) {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        @for (s of sessions; track s.id; let i = $index) {
+          <article class="group bg-white border border-slate-200/80 shadow-sm rounded-[1.75rem] flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-sky-300 hover:shadow-2xl">
+
+            <!-- Barre colorée en haut -->
+            <div class="h-1 w-full flex-shrink-0"
+                 [ngClass]="{
+                   'bg-gradient-to-r from-blue-500 to-cyan-400': i % 5 === 0,
+                   'bg-gradient-to-r from-pink-500 to-yellow-400':    i % 5 === 1,
+                   'bg-gradient-to-r from-emerald-400 to-cyan-500':   i % 5 === 2,
+                   'bg-gradient-to-r from-yellow-400 to-orange-500':  i % 5 === 3,
+                   'bg-gradient-to-r from-orange-500 to-pink-500':    i % 5 === 4
+                 }">
+            </div>
+
+            <div class="flex flex-col flex-1 p-6">
+
+              <!-- Code -->
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-bold tracking-widest text-slate-600 uppercase">
+                  {{ s.code }}
+                </span>
+                <span class="text-[10px] font-medium text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
+                  {{ s.statut }}
+                </span>
+              </div>
+
+              <!-- Nom -->
+              <h2 class="text-2xl font-semibold text-slate-900 leading-snug mb-3 transition-colors duration-200 group-hover:text-sky-700">
+                {{ s.nom }}
+              </h2>
+
+              <!-- Formation -->
+              @if (s.formationNom) {
+                <p class="text-slate-400 text-sm leading-relaxed mb-4 flex-1">
+                  {{ s.formationNom }}
+                </p>
+              }
+
+              <!-- Mode -->
+              @if (s.mode) {
+                <div class="flex items-start gap-2 mb-4">
+                  <svg class="w-3.5 h-3.5 text-violet-400 mt-0.5 flex-shrink-0"
+                       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                  </svg>
+                  <span class="text-xs text-slate-400">{{ s.mode }}</span>
+                </div>
+              }
+
+              <div class="flex flex-wrap gap-2 mt-auto">
+
+                <!-- Dates -->
+                <span class="flex items-center gap-1.5 text-xs  bg-blue-50 border border-blue-200 text-blue-700 px-3 py-1 rounded-full">
+                  <svg class="w-3 h-3 opacity-70" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                  {{ s.dateDebut }} → {{ s.dateFin }}
+                </span>
+
+                <!-- Places restantes -->
+                <span class="flex items-center gap-1.5 text-xs font-semibold text-blue-700
+                             bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+                  <svg class="w-3 h-3 opacity-80" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                  </svg>
+                  {{ s.placesRestantes }} / {{ s.placesMax }} places
+                </span>
+
+                <!-- Formateur -->
+                @if (s.formateurNom) {
+                  <span class="flex items-center gap-1.5 text-xs text-sky-400
+                               bg-sky-400/10 border border-sky-400/20 px-3 py-1 rounded-full">
+                    <svg class="w-3 h-3 opacity-80" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    {{ s.formateurNom }}
+                  </span>
+                }
+
+                <!-- Lieu -->
+                @if (s.lieu) {
+                  <span class="flex items-center gap-1.5 text-xs text-blue-700
+                               bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+                    <svg class="w-3 h-3 opacity-70" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    {{ s.lieu }}
+                  </span>
+                }
+
+              </div>
+            </div>
+
+            <!-- Footer carte -->
+            <div class="flex items-center justify-between px-6 py-4 border-t border-white/10 gap-3">
+
+              <!-- Statut badge -->
+              <span class="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full"
+                    [ngClass]="{
+                    'text-green-700 bg-green-100 border-green-200': s.statut === 'OUVERTE',
+                    'text-blue-700 bg-blue-100 border-blue-200': s.statut === 'PLANIFIEE',
+        
+                  }">
+                <span class="w-1.5 h-1.5 rounded-full"
+                      [ngClass]="{
+                      'bg-green-500': s.statut === 'OUVERTE',
+                      'bg-blue-500': s.statut === 'PLANIFIEE',
+          
+                }">
+                </span>
+                {{ s.statut === 'OUVERTE' ? 'Disponible' : 'Indisponible' }}
+              </span>
+
+              <!-- Bouton S'inscrire -->
+              <button
+                (click)="handleInscription(s)"
+                [disabled]="s.statut !== 'OUVERTE'"
+                class="text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-blue-500
+                       px-4 py-2 rounded-lg transition-all duration-200
+                       hover:opacity-85 hover:scale-105 active:scale-95
+                       disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100">
+                S'inscrire →
+              </button>
+
+            </div>
+          </article>
+        }
+
+      </div>
+    }
+
+  </main>
+  <div class="flex flex-col lg:flex-row items-center justify-between px-6 py-12 bg-white">
+</div>
+
+
+ <div class="w-full bg-sky-50 py-24 rounded-t-[150px] -mt-20">
+  
+  <div class="max-w-6xl mx-auto px-6">
+  
+    <div class="flex flex-col lg:flex-row items-center justify-between gap-16">
+      
+      <!-- TEXTE -->
+      <div class="w-full lg:w-1/2 flex flex-col gap-6">
+        
+        <h2 class="text-3xl font-bold text-gray-800 leading-snug">
+          Pourquoi dois-je créer un compte ? 
+        </h2>
+
+        <p class="text-gray-600 text-base">
+          Créer un compte vous permet d’accéder à nos formations, suivre votre progression et obtenir des certificats à la fin de vos cours.
+        </p>
+
+      </div>
+
+      <!-- FORMULAIRE -->
+        <div class="flex items-center justify-center w-full lg:w-1/2">
+
+    <app-formulaire-signup [showLogo]="false"></app-formulaire-signup>
+
+  </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+  <app-confirmation-modal
+  [visible]="showLoginModal"
+  type="info"
+  titre="Connexion requise"
+  message="Vous devez être connecté pour vous inscrire à une formation."
+  labelConfirmer="Se connecter"
+  labelAnnuler="Annuler"
+  (confirmer)="onConfirmerConnexion()"
+  (annuler)="showLoginModal = false">
+</app-confirmation-modal>
+

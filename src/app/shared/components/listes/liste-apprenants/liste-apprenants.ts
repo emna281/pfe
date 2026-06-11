@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UserListConfig, UserListPage } from '../../reutilisable/user-list-page/user-list-page';
 import { Apprenant, Formateur } from '../../../services/auth.service';
 import { BaseUser } from '../../../services/auth.service';
@@ -8,11 +8,14 @@ import { Subject, switchMap, takeUntil } from 'rxjs';
 import { ExtraField } from '../../reutilisable/user-card/user-card';
 import { inject,PLATFORM_ID } from '@angular/core';
 import { platformBrowser } from '@angular/platform-browser';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormulaireInscrApprenant } from '../../formulaires/formulaire-inscr-apprenant/formulaire-inscr-apprenant';
+import { InscriptionResponseDTO } from '../../../../services/inscription-service';
+import { CertificatDialog } from '../../ui/certificat-dialog/certificat-dialog';
 
 @Component({
   selector: 'app-liste-apprenants',
-  imports: [RouterModule,UserListPage],
+  imports: [CommonModule,RouterModule,UserListPage,FormulaireInscrApprenant,CertificatDialog],
   templateUrl: './liste-apprenants.html',
   styleUrl: './liste-apprenants.css',
 })
@@ -27,17 +30,34 @@ export class ListeApprenants implements OnInit{
   apprenants: Apprenant[] | null = null;
   loading = false;
   totalCount = 0;
+
+  dialogImprimerOuvert = false;
+
   private searchTerm$ = new Subject<string>();
   private destroy$    = new Subject<void>();
-
+  afficherListe = false;
+searchEffectue = false;
   constructor(
     private utilisateurService: UtilisateurService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     
-    this.charger('');
+    this.utilisateurService.getApprenants('').pipe(
+    takeUntil(this.destroy$)
+  ).subscribe({
+    next: (response) => {
+      this.totalCount = Array.isArray(response) ? response.length : response.total;
+      // Si <= 5, affiche directement
+      if (this.totalCount <= 5) {
+        this.apprenants = Array.isArray(response) ? response : response.data;
+        this.afficherListe = true;
+      }
+      this.cdr.detectChanges();
+    }
+  });
     this.searchTerm$.pipe(
       switchMap(term=>{
         this.loading=true;
@@ -49,14 +69,24 @@ export class ListeApprenants implements OnInit{
       next:(response)=>{
         this.apprenants = Array.isArray(response) ? response : response.data;
         this.totalCount = Array.isArray(response) ? response.length : response.total;
+        this.cdr.detectChanges();
         this.loading=false;
       },
-      error: () => { this.loading = false; }
+      error: () => { 
+        this.loading = false; 
+        this.cdr.detectChanges();
+      }
     });
   }
 
   charger(search:string):void{
     if (!isPlatformBrowser(this.plateformId)) return;
+    if (!search && this.totalCount > 5 && !this.searchEffectue) {
+    this.loading = false;
+    this.afficherListe = false;
+    this.cdr.detectChanges();
+    return;
+  }
     this.loading=true;
     console.log('🔵 Chargement apprenants...');
     this.utilisateurService.getApprenants(search)
@@ -67,7 +97,9 @@ export class ListeApprenants implements OnInit{
         this.apprenants = Array.isArray(response) ? response : response.data;
         console.log('✅ apprenants filtrés :', this.apprenants);
         this.totalCount = Array.isArray(response) ? response.length : response.total;
+        this.afficherListe = true;
         this.loading=false;
+        this.cdr.detectChanges();
       },
       error: (err) => { 
         console.log('❌ Status :', err.status);
@@ -75,6 +107,7 @@ export class ListeApprenants implements OnInit{
         console.log('❌ URL :', err.url);
         console.log('❌ Error complet :', err);
         this.loading = false; 
+        this.cdr.detectChanges();
         
       }
   })
@@ -82,6 +115,8 @@ export class ListeApprenants implements OnInit{
     
   }
  onFilterChanged(term: string): void {
+    this.searchEffectue = term.length > 0;
+  this.afficherListe = term.length > 0;
     this.searchTerm$.next(term);
   }
  
@@ -99,9 +134,29 @@ export class ListeApprenants implements OnInit{
     this.router.navigate(['/apprenants', user.id]);
   }
  
-  ouvrirFormulaire(): void {
-    this.router.navigate(['/apprenants/nouveau']);
+  isModalOpen = false;
+  selectedApprenantEmail: string | null = null;
+  selectedSessionId: number | null = null;
+
+ouvrirFormulaire(): void {
+  this.selectedApprenantEmail = null;
+  this.selectedSessionId = null;
+  this.isModalOpen = true;
+}
+ouvrirImpression(): void {
+    console.log('apprenants:', this.apprenants);
+    if (!this.apprenants?.length) return;
+    this.dialogImprimerOuvert = true;
+    console.log('dialogImprimerOuvert:', this.dialogImprimerOuvert);
+    this.cdr.detectChanges();
   }
+
+  fermerImpression(): void { this.dialogImprimerOuvert = false; }
+
+onInscriptionCreee(inscription: InscriptionResponseDTO): void {
+  this.isModalOpen = false;
+  this.charger(''); 
+}
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

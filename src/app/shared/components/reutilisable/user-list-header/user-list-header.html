@@ -6,24 +6,18 @@
 
     <!-- Titre + compteur -->
     <div class="flex items-baseline gap-2">
-      <span class="text-3xl font-bold text-orange-500">{{ totalCount }}</span>
+      <span class="text-3xl font-bold text-blue-500">{{ totalCount }}</span>
       <h1 class="text-3xl font-bold text-gray-900">{{ config.title }}</h1>
     </div>
 
     <!-- Boutons -->
     <div class="flex items-center gap-3">
-      <button class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200
-                     rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition-colors">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-        </svg>
-        Filtrer
-      </button>
+      
 
       <button
-        class="flex items-center gap-2 px-5 py-2 bg-orange-500 hover:bg-orange-600
+        class="flex items-center gap-2 px-5 py-2 bg-blue-500 hover:bg-blue-600
                text-white rounded-xl text-sm font-semibold transition-all
-               hover:shadow-md hover:shadow-orange-200 hover:-translate-y-0.5"
+               hover:shadow-md hover:shadow-blue-200 hover:-translate-y-0.5"
         (click)="onAddClick()">
         + {{ config.addLabel }}
       </button>

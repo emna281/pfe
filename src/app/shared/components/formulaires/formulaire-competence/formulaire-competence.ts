@@ -3,10 +3,11 @@ import { Modal } from '../../ui/modal/modal';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CompetenceInfoDTO ,CompetenceRequest,CompetenceService} from '../../../../services/competence-service';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-formulaire-competence',
-  imports: [Modal,FormsModule,CommonModule],
+  imports: [Modal,FormsModule,CommonModule,LucideAngularModule],
   templateUrl: './formulaire-competence.html',
   styleUrl: './formulaire-competence.css',
 })

@@ -1,0 +1,65 @@
+ 
+<div class="overlay" (click)="fermer()">
+  <div class="dialog" (click)="$event.stopPropagation()">
+ 
+    <button class="btn-x" (click)="fermer()">✕</button>
+ 
+    <div class="header">
+      <span class="icone">🖨️</span>
+      <h2>Imprimer les attestations</h2>
+      <p class="sous">{{ apprenants.length }} apprenant(s) — une page par attestation</p>
+    </div>
+ 
+    <div class="form-body">
+      <div class="champ full">
+        <label>Intitulé de la formation *</label>
+        <input [(ngModel)]="formation" placeholder="ex : Développement Web Angular" />
+      </div>
+ 
+      <div class="row2">
+        <div class="champ">
+          <label>Date de début *</label>
+          <input type="date" [(ngModel)]="dateDebut" />
+        </div>
+        <div class="champ">
+          <label>Date de fin *</label>
+          <input type="date" [(ngModel)]="dateFin" />
+        </div>
+      </div>
+ 
+      <div class="row2">
+        <div class="champ">
+          <label>Formateur / Responsable</label>
+          <input [(ngModel)]="formateur" placeholder="Nom du formateur" />
+        </div>
+        <div class="champ">
+          <label>Durée (heures)</label>
+          <input type="number" [(ngModel)]="dureeHeures" placeholder="ex : 40" min="1" />
+        </div>
+      </div>
+    </div>
+ 
+    <div class="preview-band">
+      <span class="preview-label">Aperçu des apprenants inclus</span>
+      <div class="chips">
+        @for (a of apprenants.slice(0,8); track a.id) {
+          <span class="chip">{{ a.prenom }} {{ a.nom }}</span>
+        }
+        @if (apprenants.length > 8) {
+          <span class="chip more">+{{ apprenants.length - 8 }} autres</span>
+        }
+      </div>
+    </div>
+ 
+    <div class="footer">
+      <button class="btn-annuler" (click)="fermer()">Annuler</button>
+      <button class="btn-print" (click)="imprimer()" [disabled]="!peutImprimer()">
+        🖨️ &nbsp;Générer {{ apprenants.length }} attestation(s)
+      </button>
+    </div>
+ 
+  </div>
+</div>
+ 
+   
+   

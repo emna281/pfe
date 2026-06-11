@@ -1,0 +1,158 @@
+<app-modal [isOpen]="isOpen" (close)="closeModal()" className="max-w-[620px] w-full">
+  <div class="flex flex-col max-h-[90vh] overflow-hidden">
+
+    <!-- HEADER -->
+    <div class="flex items-center gap-3 px-6 pt-6 pb-4 border-b border-gray-100 dark:border-white/[0.07] flex-shrink-0">
+      <div class="flex items-center justify-center w-10 h-10 rounded-[10px] bg-[#e8f0fe] dark:bg-[#4285f4]/15 flex-shrink-0">
+        <lucide-icon [name]="selectedSalle ? 'square-pen' : 'building'" class="w-5 h-5 text-[#4285f4]"></lucide-icon>
+      </div>
+      <div>
+        <h2 class="text-[15px] font-semibold text-gray-900 dark:text-[#e2e8f0]">
+          {{ selectedSalle ? 'Modifier une salle' : 'Ajouter une salle' }}
+        </h2>
+        <p class="text-[12px] text-gray-400 dark:text-[#8b9ab8] mt-0.5">
+          Remplissez les informations du formulaire
+        </p>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="flex-1 overflow-y-auto px-6 py-5 custom-scrollbar">
+      <form #salleForm="ngForm" novalidate class="flex flex-col gap-5">
+
+        <!-- NUMÉRO -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+            Numéro de salle
+          </label>
+          <div class="relative">
+            <lucide-icon name="hash" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+            <input type="text" name="numero"
+              [(ngModel)]="salleData.numero"
+              required #numero="ngModel"
+              placeholder="Ex: S-101"
+              class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                     bg-gray-50 dark:bg-white/[0.04]
+                     border border-gray-200 dark:border-white/[0.09]
+                     text-gray-900 dark:text-[#e2e8f0]
+                     placeholder-gray-400 dark:placeholder-[#4a5568]
+                     focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                     focus:border-[#4285f4] transition-all duration-150" />
+          </div>
+          <span *ngIf="numero.invalid && numero.touched" class="text-[11px] text-red-500">
+            Champ obligatoire
+          </span>
+        </div>
+
+        <!-- BÂTIMENT + CAPACITÉ -->
+        <div class="grid grid-cols-2 gap-4">
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Bâtiment
+            </label>
+            <div class="relative">
+              <lucide-icon name="building" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+              <input type="text" name="batiment"
+                [(ngModel)]="salleData.batiment"
+                required #batiment="ngModel"
+                placeholder="Ex: Bâtiment A"
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       placeholder-gray-400 dark:placeholder-[#4a5568]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150" />
+            </div>
+            <span *ngIf="batiment.invalid && batiment.touched" class="text-[11px] text-red-500">
+              Champ obligatoire
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+              Capacité
+            </label>
+            <div class="relative">
+              <lucide-icon name="users" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+              <input type="number" name="capacite"
+                [(ngModel)]="salleData.capacite"
+                required #capacite="ngModel"
+                placeholder="Ex: 30"
+                class="w-full h-10 pl-11 pr-3 rounded-[9px] text-[13px]
+                       bg-gray-50 dark:bg-white/[0.04]
+                       border border-gray-200 dark:border-white/[0.09]
+                       text-gray-900 dark:text-[#e2e8f0]
+                       placeholder-gray-400 dark:placeholder-[#4a5568]
+                       focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                       focus:border-[#4285f4] transition-all duration-150" />
+            </div>
+            <span *ngIf="capacite.invalid && capacite.touched" class="text-[11px] text-red-500">
+              Champ obligatoire
+            </span>
+          </div>
+
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+            Description
+          </label>
+          <div class="relative">
+            <lucide-icon name="file-text" class="absolute left-3 top-3 w-4 h-4 text-gray-400 dark:text-[#4a5568]"></lucide-icon>
+            <textarea name="description"
+              [(ngModel)]="salleData.description"
+              rows="3"
+              placeholder="Décrire la salle..."
+              class="w-full pt-2.5 pb-2.5 pl-11 pr-3 rounded-[9px] text-[13px]
+                     bg-gray-50 dark:bg-white/[0.04]
+                     border border-gray-200 dark:border-white/[0.09]
+                     text-gray-900 dark:text-[#e2e8f0]
+                     placeholder-gray-400 dark:placeholder-[#4a5568]
+                     focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+                     focus:border-[#4285f4] transition-all duration-150 resize-none">
+            </textarea>
+          </div>
+        </div>
+
+        <!-- SWITCH ACTIF -->
+        <div class="flex items-center gap-3 pt-2 border-t border-gray-100 dark:border-white/[0.07]">
+          <app-switch
+            name="active"
+            [defaultChecked]="salleData.active"
+            color="blue"
+            (valueChange)="salleData.active = $event">
+          </app-switch>
+          <span class="text-[13px] font-medium text-gray-900 dark:text-[#e2e8f0]">
+            {{ salleData.active ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-gray-100 dark:border-white/[0.07] flex-shrink-0">
+      <button type="button" (click)="closeModal()"
+        class="px-4 py-2 rounded-[9px] text-[13px] font-medium
+               text-gray-600 dark:text-[#8b9ab8]
+               bg-gray-100 dark:bg-white/[0.06]
+               hover:bg-gray-200 dark:hover:bg-white/[0.10]
+               transition-all duration-150">
+        Annuler
+      </button>
+      <button type="button" (click)="handleAddOrUpdateEvent()"
+        [disabled]="salleForm.invalid || isLoading"
+        class="px-4 py-2 rounded-[9px] text-[13px] font-medium
+               text-white bg-[#4285f4] hover:bg-[#2563c9]
+               disabled:opacity-50 disabled:cursor-not-allowed
+               transition-all duration-150 flex items-center gap-2">
+        <lucide-icon [name]="selectedSalle ? 'save' : 'plus'" class="w-3.5 h-3.5"></lucide-icon>
+        {{ isLoading ? 'Chargement...' : (selectedSalle ? 'Modifier la salle' : 'Ajouter la salle') }}
+      </button>
+    </div>
+
+  </div>
+</app-modal>

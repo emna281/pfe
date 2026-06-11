@@ -154,5 +154,70 @@ modalSuppressionVisisble=false;
     this.sessionASupprimer=null;
   }
 
+  currentStatus: string = 'all';
 
+filterSessionAndStatus(searchTerm: string, status: string): void {
+  this.currentStatus = status;
+  this.searchTerm = searchTerm;
+
+  let filtered = [...this.sessions];
+
+  if (status !== 'all') {
+    filtered = filtered.filter(s => s.statut === status);
+  }
+
+  if (searchTerm.trim()) {
+    const term = searchTerm.toLowerCase();
+    filtered = filtered.filter(s =>
+      s.nom?.toLowerCase().includes(term) ||
+      s.formationNom?.toLowerCase().includes(term) ||
+      s.mode?.toLowerCase().includes(term) ||
+      s.lieu?.toLowerCase().includes(term) ||
+      s.statut?.toLowerCase().includes(term)
+    );
+  }
+
+  this.filtredSessions = filtered;
+  this.currentPage = 1;
+}
+
+getStatutClass(statut: string): string {
+  const map: Record<string, string> = {
+    'OUVERTE':   'bg-green-50 text-green-600',
+    'PLANIFIEE': 'bg-blue-50 text-blue-600',
+    'FERMEE':    'bg-gray-100 text-gray-500',
+    'ANNULEE':   'bg-red-50 text-red-500',
+    'TERMINEE':  'bg-purple-50 text-purple-600',
+  };
+  return map[statut] ?? 'bg-gray-100 text-gray-500';
+}
+
+getStatutDotClass(statut: string): string {
+  const map: Record<string, string> = {
+    'OUVERTE':   'bg-green-400',
+    'PLANIFIEE': 'bg-blue-400',
+    'FERMEE':    'bg-gray-400',
+    'ANNULEE':   'bg-red-400',
+    'TERMINEE':  'bg-purple-400',
+  };
+  return map[statut] ?? 'bg-gray-400';
+}
+
+getPlacesPercent(item: SessionDTO): number {
+  if (!item.placesMax || item.placesMax === 0) return 0;
+  return Math.round(((item.placesMax - item.placesRestantes) / item.placesMax) * 100);
+}
+
+getDebut(): number {
+  return this.filtredSessions.length === 0 ? 0
+    : (this.currentPage - 1) * this.itemsPerPage + 1;
+}
+
+getFin(): number {
+  return Math.min(this.currentPage * this.itemsPerPage, this.filtredSessions.length);
+}
+
+getPages(): number[] {
+  return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+}
 }

@@ -1,0 +1,144 @@
+<div class="w-full">
+
+  <!-- Layout : texte gauche + formulaire droite -->
+  <div class="flex flex-col lg:flex-row items-center gap-16">
+
+    <!-- TEXTE GAUCHE -->
+    <div class="w-full lg:w-1/2 flex flex-col gap-4">
+      <span class="inline-flex items-center gap-2 text-xs font-bold tracking-widest
+                   text-sky-700 uppercase bg-sky-100 border border-sky-200
+                   px-3 py-1 rounded-full w-fit">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2"
+             viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+        </svg>
+        Inscription rapide
+      </span>
+
+      <h2 class="text-4xl font-extrabold text-slate-900 leading-tight">
+        Prêt à construire <br/> votre avenir ?
+      </h2>
+
+      <p class="text-slate-500 text-base leading-relaxed max-w-sm">
+        Créer un compte vous permet d'accéder à nos formations, suivre votre 
+        progression et obtenir des certificats à la fin de vos cours.
+      </p>
+
+      <!-- Points forts -->
+      <ul class="flex flex-col gap-3 mt-2">
+        <li class="flex items-center gap-3 text-sm text-slate-600">
+          <span class="w-6 h-6 rounded-full bg-sky-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor"
+                 stroke-width="2.5" viewBox="0 0 24 24">
+              <path d="M5 13l4 4L19 7"/>
+            </svg>
+          </span>
+          Formations certifiantes reconnues
+        </li>
+        <li class="flex items-center gap-3 text-sm text-slate-600">
+          <span class="w-6 h-6 rounded-full bg-sky-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor"
+                 stroke-width="2.5" viewBox="0 0 24 24">
+              <path d="M5 13l4 4L19 7"/>
+            </svg>
+          </span>
+          Suivi de progression en temps réel
+        </li>
+        <li class="flex items-center gap-3 text-sm text-slate-600">
+          <span class="w-6 h-6 rounded-full bg-sky-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor"
+                 stroke-width="2.5" viewBox="0 0 24 24">
+              <path d="M5 13l4 4L19 7"/>
+            </svg>
+          </span>
+          Accès immédiat après inscription
+        </li>
+      </ul>
+    </div>
+
+    <!-- FORMULAIRE DROITE -->
+    <div class="w-full lg:w-1/2">
+      <form (ngSubmit)="onSignIn()"
+            class="backdrop-blur-md bg-white/40 border border-white/60 
+             rounded-2xl p-8 shadow-xl">
+
+        <!-- Ligne 1 : Prénom + Nom -->
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <input type="text" [(ngModel)]="prenom" name="prenom"
+                 placeholder="Prénom"
+                 class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+       bg-white/50 border border-white/70
+       placeholder-slate-400
+       focus:outline-none focus:ring-2 focus:ring-sky-400
+       transition backdrop-blur-sm" />
+          <input type="text" [(ngModel)]="nom" name="nom"
+                 placeholder="Nom"
+                 class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+       bg-white/50 border border-white/70
+       placeholder-slate-400
+       focus:outline-none focus:ring-2 focus:ring-sky-400
+       transition backdrop-blur-sm" />
+        </div>
+
+        <!-- Ligne 2 : Téléphone + Email -->
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <input type="tel" [(ngModel)]="telephone" name="telephone"
+                 placeholder="Téléphone"
+                 class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+       bg-white/50 border border-white/70
+       placeholder-slate-400
+       focus:outline-none focus:ring-2 focus:ring-sky-400
+       transition backdrop-blur-sm" />
+          <input type="email" [(ngModel)]="email" name="email"
+                 placeholder="Email"
+                 class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+       bg-white/50 border border-white/70
+       placeholder-slate-400
+       focus:outline-none focus:ring-2 focus:ring-sky-400
+       transition backdrop-blur-sm" />
+        </div>
+
+        <div class="mb-3">
+  <input [type]="showPassword ? 'text' : 'password'"
+         [(ngModel)]="motDePasse" name="motDePasse"
+         placeholder="Mot de passe"
+         class="w-full px-4 py-3 rounded-xl text-sm text-slate-800
+                bg-white/50 border border-white/70
+                placeholder-slate-400
+                focus:outline-none focus:ring-2 focus:ring-sky-400
+                transition backdrop-blur-sm" />
+</div>
+          <button type="submit" [disabled]="loading"
+        class="w-full px-6 py-3  text-sm font-bold text-white
+               rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 hover:bg-slate-700
+               disabled:opacity-50 transition-all duration-200
+               flex items-center justify-center gap-2 mb-5">
+  <svg *ngIf="loading" class="w-4 h-4 animate-spin"
+       fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10"
+            stroke="currentColor" stroke-width="4"/>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+  </svg>
+  {{ loading ? 'Création...' : "S'inscrire →" }}
+</button>
+        
+
+        <!-- Erreur -->
+        @if (errorMsg) {
+          <p class="mb-3 text-xs text-red-500 text-center">{{ errorMsg }}</p>
+        }
+
+        <!-- Lien connexion -->
+        <p class="text-xs text-center text-slate-500">
+          Vous avez déjà un compte ?
+          <a routerLink="/login" class="text-sky-600 hover:underline font-medium">
+            Se connecter
+          </a>
+        </p>
+
+      </form>
+    </div>
+
+  </div>
+</div>

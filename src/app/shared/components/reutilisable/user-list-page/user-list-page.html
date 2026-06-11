@@ -1,4 +1,5 @@
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-gray-50 p-6">
+
   <app-user-list-header
     [config]="config"
     [totalCount]="totalCount"
@@ -6,30 +7,142 @@
     (filterChanged)="onFilterChanged($event)">
   </app-user-list-header>
 
-<!-- État de chargement -->
-<div class="user-list__loader" *ngIf="loading">
-  <span>Chargement...</span>
-</div>
-
-<!-- État vide -->
-<div class="user-list__empty" 
-     *ngIf="!loading && users !== null && filteredUsers?.length === 0">
-  <p>Aucun résultat trouvé.</p>
-</div>
-<!-- Grille de cards -->
-<div class="p-4" *ngIf="!loading && filteredUsers && filteredUsers.length > 0">
-  
-  <div class="bg-white rounded-2xl shadow-md p-4">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4" 
-    *ngIf="!loading && filteredUsers && filteredUsers.length > 0">
-      <app-user-card
-      *ngFor="let user of filteredUsers; trackBy: trackById"
-      [user]="user"
-      [extraFields]="getExtraFields(user)"
-      (cardClicked)="onUserClicked($event)">
-      </app-user-card>
+  <!-- Chargement -->
+  @if (loading) {
+    <div class="flex flex-col items-center justify-center py-28 gap-3">
+      <div class="w-8 h-8 border-2 border-orange-500 border-t-transparent 
+                  rounded-full animate-spin"></div>
+      <p class="text-sm text-gray-400">Chargement...</p>
     </div>
-  </div>
+  }
 
-</div>
+  <!-- Tableau -->
+  @if (!loading && filteredUsers && filteredUsers.length > 0) {
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+
+          <!-- Thead -->
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-bold tracking-widest uppercase text-gray-400">
+                Utilisateur
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-bold tracking-widest uppercase text-gray-400">
+                Email
+              </th>
+
+              <!-- Colonnes extra dynamiques -->
+              @for (field of getExtraFields(filteredUsers[0]); track field.label) {
+                <th class="px-6 py-3 text-left text-xs font-bold tracking-widest uppercase text-gray-400">
+                  {{ field.label }}
+                </th>
+              }
+              <th class="px-6 py-3 text-left text-xs font-bold tracking-widest uppercase text-gray-400">
+                Statut
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-bold tracking-widest uppercase text-gray-400">
+                Actions
+              </th>
+            </tr>
+          </thead>
+
+          <!-- Tbody -->
+          <tbody class="divide-y divide-gray-100">
+            @for (user of filteredUsers; track user.id) {
+              <tr class="hover:bg-gray-50 transition-colors duration-150 cursor-pointer"
+                  (click)="onUserClicked(user)">
+
+                <!-- Avatar + Nom -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="relative flex-shrink-0">
+                      <div class="w-9 h-9 rounded-full flex items-center justify-center 
+                                  text-sm font-semibold"
+                           [ngClass]="getAvatarColor(user.nom + user.prenom)">
+                        {{ user.prenom[0] }}{{ user.nom[0] }}
+                      </div>
+                      <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full 
+                                   border-2 border-white"
+                            [ngClass]="user.actif ? 'bg-green-400' : 'bg-red-400'">
+                      </span>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-gray-800">
+                        {{ user.prenom }} {{ user.nom }}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Email -->
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-500">{{ user.email }}</span>
+                </td>
+
+
+                <!-- Extra fields dynamiques -->
+                @for (field of getExtraFields(user); track field.label) {
+                  <td class="px-6 py-4">
+                    <span class="text-sm text-gray-700">{{ field.value || '—' }}</span>
+                  </td>
+                }
+
+                <!-- Statut -->
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold"
+                        [ngClass]="user.actif 
+                          ? 'bg-green-50 text-green-600' 
+                          : 'bg-red-50 text-red-500'">
+                    <span class="w-1.5 h-1.5 rounded-full"
+                          [ngClass]="user.actif ? 'bg-green-400' : 'bg-red-400'">
+                    </span>
+                    {{ user.actif ? 'Actif' : 'Inactif' }}
+                  </span>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-6 py-4" (click)="$event.stopPropagation()">
+                  <button (click)="navigateToProfile(user)"
+                          title="Voir profil"
+                          class="text-blue-400 hover:text-blue-600 transition">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 
+                               4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 
+                               0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573
+                               -3.007-9.963-7.178Z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                    </svg>
+                  </button>
+                </td>
+
+              </tr>
+            }
+          </tbody>
+
+        </table>
+      </div>
+
+      <!-- Footer pagination -->
+      <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100">
+        <p class="text-sm text-gray-400">
+          {{ filteredUsers.length }} utilisateur(s) trouvé(s)
+        </p>
+      </div>
+
+    </div>
+  }
+
+  <!-- Vide -->
+  @if (!loading && filteredUsers?.length === 0) {
+    <div class="flex flex-col items-center justify-center py-28 gap-3 text-center">
+      <span class="text-5xl">📭</span>
+      <p class="text-gray-400 text-sm">Aucun résultat trouvé.</p>
+    </div>
+  }
+
 </div>

@@ -33,10 +33,15 @@ import { Component } from 'lucide-angular';
 import { ApprenantLayout } from './shared/layout/app-layout/apprenant-layout/apprenant-layout';
 import { ProfilApprenant } from './Pages/Profiles/profil-apprenant/profil-apprenant';
 import { FormateurLayout } from './shared/layout/app-layout/formateur-layout/formateur-layout';
-import { format } from 'path';
+
 import { ProfilFormateur } from './Pages/Profiles/profil-formateur/profil-formateur';
 import { FinancierApprenants } from './Pages/finance/financier-apprenants/financier-apprenants';
 import { Rappel } from './Pages/finance/rappel/rappel';
+import { ListeCharge } from './shared/components/listes/liste-charge/liste-charge';
+
+import { Salle } from './Pages/programme/salle/salle';
+import path from 'path';
+import { CandidaturesList } from './shared/components/reutilisable/candidatures/candidatures-list/candidatures-list';
 export const routes: Routes = [
      { path: 'inscription/:sessionId', component: FormulaireInscription },
     { path:'apprenant',component : Apprenant},
@@ -112,7 +117,9 @@ export const routes: Routes = [
             { path: 'detailSession/:id',  component: DetailSession },                                        
             { path: '',                   redirectTo: 'planificateurDashboard', pathMatch: 'full' },
             { path:'formateurPresence/:id', component:FormateurPresence,title:'Interface de admin'},
-            { path:'profile', component:ProfilComponent}
+            { path:'profile', component:ProfilComponent},
+            { path:'tableSalle',component:Salle},
+            { path:'candidaturesList',component:CandidaturesList}
         ]
     },
     { 
@@ -128,7 +135,8 @@ export const routes: Routes = [
             { path:'profile', component:ProfilComponent},
             { path:'FinancierApprenants',component:FinancierApprenants},
             { path:'rappel',component:Rappel},
-            { path: 'demandeInscription', component: TableDemandesInscriptions,  title: 'Inscriptions' }, 
+            { path: 'demandeInscription', component: TableDemandesInscriptions,  title: 'Inscriptions' },
+            { path:'ListeCharge', component:ListeCharge} 
         ]
     },
     { 

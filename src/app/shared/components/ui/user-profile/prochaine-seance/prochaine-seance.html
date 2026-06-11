@@ -1,0 +1,47 @@
+<div *ngIf="seance" 
+     class="rounded-xl px-6 py-5 flex items-center justify-between"
+     style="background: linear-gradient(135deg, #0f2557 0%, #1a3a8f 50%, #1e4fc2 100%);">
+
+  <div>
+
+    <div class="flex items-center gap-2 mb-2">
+      <span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
+      <span class="text-xs font-semibold uppercase tracking-widest text-blue-200">
+        Prochaine séance à animer
+      </span>
+    </div>
+
+    <p class="text-white font-bold text-lg leading-tight mb-1">
+      {{ seance.sessionNom }} — {{ seance.titre }}
+    </p>
+
+    <p class="text-blue-200 text-sm">
+      {{ seance.date | date:'EEE. d MMM':'':'fr' }}
+      &nbsp;•&nbsp;
+      {{ seance.heureDebut }} — {{ seance.heureFin }}
+      <ng-container *ngIf="seance.salleNumero">
+        &nbsp;•&nbsp; {{ seance.salleNumero }}
+      </ng-container>
+    </p>
+
+  </div>
+
+  <!-- RIGHT : boutons -->
+  <div class="flex items-center gap-3 ml-6 shrink-0">
+
+    <button
+      [routerLink]="['/formateurPresence', seance.id]"
+      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+             text-white border border-white/30 hover:bg-white/10 transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1
+             m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+      </svg>
+      Feuille de présence
+    </button>
+
+    
+
+  </div>
+</div>
