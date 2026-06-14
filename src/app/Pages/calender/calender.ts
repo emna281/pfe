@@ -16,6 +16,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { ModalEvent } from '../../shared/components/ui/modal-event/modal-event';
 import { EventService } from '../../services/event-service';
+import { AuthService } from '../../shared/services/auth.service';
 
 interface CalendarEvent extends EventInput {
   extendedProps: {
@@ -53,44 +54,46 @@ export class Calender implements OnInit, AfterViewInit {
 
   calendarOptions: CalendarOptions;
 
+  isAdmin = false;
+
   constructor(
     private eventService: EventService,
     private cdr: ChangeDetectorRef,
+    private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-
+    const user = this.authService.getUser();
+    this.isAdmin = user?.role === 'ADMIN';
     this.calendarOptions = {
-      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-      initialView: 'dayGridMonth',
-      headerToolbar: {
-        left: 'prev,next addEventButton',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
-      selectable: true,
-      events: [],
-
-      // ✅ NgZone.run() force Angular à détecter les changements
-      select: (info) => {
-        this.handleDateSelect(info);
+  plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+  initialView: 'dayGridMonth',
+  headerToolbar: {
+    left: this.isAdmin ? 'prev,next addEventButton' : 'prev,next',
+    center: 'title',
+    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+  },
+  selectable: this.isAdmin,
+  events: [],
+  select: (info) => {
+    this.handleDateSelect(info);
+    this.cdr.detectChanges();
+  },
+  eventClick: (info) => {
+    this.handleEventClick(info);
+    this.cdr.detectChanges();
+  },
+  customButtons: this.isAdmin ? {
+    addEventButton: {
+      text: 'Add Event +',
+      click: () => {
+        this.openModal();
         this.cdr.detectChanges();
-      },
-      eventClick: (info) => {
-        this.handleEventClick(info);
-        this.cdr.detectChanges();
-      },
-      customButtons: {
-        addEventButton: {
-          text: 'Add Event +',
-          click: () => {
-            this.openModal();
-            this.cdr.detectChanges();
-          }
-        }
-      },
-      eventContent: (arg) => this.renderEventContent(arg)
-    };
+      }
+    }
+  } : {},
+  eventContent: (arg) => this.renderEventContent(arg)
+};
   }
 
   ngOnInit() {}
@@ -137,6 +140,7 @@ export class Calender implements OnInit, AfterViewInit {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
+    if (!this.isAdmin) return;
     const event = clickInfo.event as any;
     const toDateInput = (str: string): string => str ? str.substring(0, 10) : '';
 

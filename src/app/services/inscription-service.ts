@@ -21,6 +21,7 @@ export interface InscriptionResponseDTO{
   statutFacture: string;
   facturee: boolean;
   prixSession: number;
+  statutSession: string;
 }
 @Injectable({
   providedIn: 'root',

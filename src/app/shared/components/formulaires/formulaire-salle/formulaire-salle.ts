@@ -4,12 +4,12 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SalleRequestDTO, SalleResponsetDTO, SalleService } from '../../../../services/salle-service';
 import { SwitchComponent } from '../../ui/switch.component';
-import { ConfirmationModal } from '../../ui/confirmation-modal/confirmation-modal';
+
 import { LucideAngularModule ,Plus} from 'lucide-angular';
 
 @Component({
   selector: 'app-formulaire-salle',
-  imports: [Modal,FormsModule,CommonModule,SwitchComponent,ConfirmationModal,LucideAngularModule],
+  imports: [Modal,FormsModule,CommonModule,SwitchComponent,LucideAngularModule],
   templateUrl: './formulaire-salle.html',
   styleUrl: './formulaire-salle.css',
 })

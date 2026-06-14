@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApprenantService, FactureApprenant, SessionApprenant } from '../../../../../services/apprenant-service';
 import { InscriptionResponseDTO } from '../../../../../services/inscription-service';
@@ -21,38 +21,38 @@ export class SessionPanel {
 
   noteFormateur = 0;
   noteFormation = 0;
-  succes = false;
-  erreur = '';
+succes = signal(false);
+erreur = signal('');
 
   constructor(private apprenantService: ApprenantService) {}
 
  
   ngOnChanges(): void {
-    this.noteFormateur = this.inscription?.noteFormateur ?? 0;
-    this.noteFormation = this.inscription?.noteFormation ?? 0;
-    this.succes = false;
-    this.erreur = '';
-  }
+  this.noteFormateur = this.inscription?.noteFormateur ?? 0;
+  this.noteFormation = this.inscription?.noteFormation ?? 0;
+  this.succes.set(false);
+  this.erreur.set('');
+}
 
   get estTerminee(): boolean {
     return this.inscription?.statut === 'TERMINEE';
   }
 
-  sauvegarder(): void {
-    if (!this.inscription) return;
-    this.apprenantService.noterInscription(
-      this.inscription.id,
-      this.noteFormateur,
-      this.noteFormation
-    ).subscribe({
-      next: () => {
-        this.succes = true;
-        this.erreur = '';
-        this.notesSauvegardees.emit();
-      },
-      error: () => this.erreur = 'Erreur lors de la sauvegarde.'
-    });
-  }
+sauvegarder(): void {
+  if (!this.inscription) return;
+  this.apprenantService.noterInscription(
+    this.inscription.id,
+    this.noteFormateur,
+    this.noteFormation
+  ).subscribe({
+    next: () => {
+      this.succes.set(true);
+      this.erreur.set('');
+      this.notesSauvegardees.emit();
+    },
+    error: () => this.erreur.set('Erreur lors de la sauvegarde.')
+  });
+}
 
   getStatutClass(statut: string): string {
     const map: Record<string, string> = {

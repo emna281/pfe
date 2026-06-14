@@ -12,6 +12,8 @@ import { Label } from '../input/label/label';
 import { Apprenant } from '../../services/auth.service';
 import { CertificatBatchConfig } from '../../services/certification.service';
 import { CertificatDialog } from '../ui/certificat-dialog/certificat-dialog';
+import { FormationAdminDTO, FormationService } from '../../../services/formation-service';
+
 
 @Component({
   selector: 'app-detail-session',
@@ -22,6 +24,7 @@ import { CertificatDialog } from '../ui/certificat-dialog/certificat-dialog';
 })
 export class DetailSession implements OnInit{
   session!:SessionDTO;
+  formation?: FormationAdminDTO;
   role: RoleUser = 'PLANIFICATEUR';
   infoFields: { label: string; value: string }[] = [];
   activeTab = 'infos';
@@ -31,6 +34,7 @@ export class DetailSession implements OnInit{
     private cdr:ChangeDetectorRef,
     private sessionService:SessionService,
     private inscriptionService:InscriptionService,
+    private formationService :FormationService,
   @Inject(PLATFORM_ID) private platformId: Object){}
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -51,9 +55,16 @@ export class DetailSession implements OnInit{
       this.buildInfoFields();
       this.loadApprenants();
       this.loadApprenantsCertifiables();
+
+      this.formationService.getFormationByCode(s.formationCode).subscribe(f => {
+      this.formation = f;
+      this.cdr.markForCheck();
+    });
       this.cdr.markForCheck();
     })
+    
   }
+ 
   private buildInfoFields(): void {
     if (!this.session) { this.infoFields = []; return; }
     const s = this.session;

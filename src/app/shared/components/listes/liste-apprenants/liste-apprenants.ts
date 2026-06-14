@@ -9,13 +9,13 @@ import { ExtraField } from '../../reutilisable/user-card/user-card';
 import { inject,PLATFORM_ID } from '@angular/core';
 import { platformBrowser } from '@angular/platform-browser';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormulaireInscrApprenant } from '../../formulaires/formulaire-inscr-apprenant/formulaire-inscr-apprenant';
-import { InscriptionResponseDTO } from '../../../../services/inscription-service';
-import { CertificatDialog } from '../../ui/certificat-dialog/certificat-dialog';
+import { UserListHeader } from '../../reutilisable/user-list-header/user-list-header';
+import { FormulaireUtilisateur } from '../../formulaires/formulaire-utilisateur/formulaire-utilisateur';
+import { UtilisateurResponse } from '../../../../services/admin-service';
 
 @Component({
   selector: 'app-liste-apprenants',
-  imports: [CommonModule,RouterModule,UserListPage,FormulaireInscrApprenant,CertificatDialog],
+  imports: [CommonModule,RouterModule,UserListHeader,UserListPage,FormulaireUtilisateur],
   templateUrl: './liste-apprenants.html',
   styleUrl: './liste-apprenants.css',
 })
@@ -134,33 +134,35 @@ searchEffectue = false;
     this.router.navigate(['/apprenants', user.id]);
   }
  
-  isModalOpen = false;
-  selectedApprenantEmail: string | null = null;
-  selectedSessionId: number | null = null;
+  //isModalOpen = false;
+  //selectedApprenantEmail: string | null = null;
+  //selectedSessionId: number | null = null;
 
-ouvrirFormulaire(): void {
-  this.selectedApprenantEmail = null;
-  this.selectedSessionId = null;
-  this.isModalOpen = true;
-}
-ouvrirImpression(): void {
-    console.log('apprenants:', this.apprenants);
-    if (!this.apprenants?.length) return;
-    this.dialogImprimerOuvert = true;
-    console.log('dialogImprimerOuvert:', this.dialogImprimerOuvert);
-    this.cdr.detectChanges();
-  }
+//ouvrirFormulaire(): void {
+  //this.selectedApprenantEmail = null;
+  //this.selectedSessionId = null;
+  //this.isModalOpen = true;
+//}
 
-  fermerImpression(): void { this.dialogImprimerOuvert = false; }
 
-onInscriptionCreee(inscription: InscriptionResponseDTO): void {
-  this.isModalOpen = false;
-  this.charger(''); 
-}
+
+//onInscriptionCreee(inscription: InscriptionResponseDTO): void {
+  //this.isModalOpen = false;
+  //this.charger(''); 
+//}
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
-  
-
+  isModalOpen = false;
+      selectedUtilisateur: UtilisateurResponse | null = null;
+   onFormulaireClose(): void {
+       this.isModalOpen = false;
+       this.selectedUtilisateur = null;
+       this.charger(''); 
+     }
+ouvrirFormulaire(): void {
+       this.selectedUtilisateur = null;
+       this.isModalOpen = true;
+     }
 }

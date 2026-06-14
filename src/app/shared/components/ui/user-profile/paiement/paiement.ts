@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, signal } from '@angular/core';
 import { ApprenantService, FactureApprenant } from '../../../../../services/apprenant-service';
 import { HttpClient } from '@angular/common/http';
 import { loadStripe } from '@stripe/stripe-js';
@@ -11,66 +11,70 @@ import { loadStripe } from '@stripe/stripe-js';
   styleUrl: './paiement.css',
 })
 export class Paiement {
-  factures: FactureApprenant[] = [];
-  selectedFacture: FactureApprenant | null = null;
-  isModalOpen = false;
-  loading = true;
+
+  factures = signal<FactureApprenant[]>([]);
+  selectedFacture = signal<FactureApprenant | null>(null);
+  isModalOpen = signal(false);
+  loading = signal(true);
 
   // ── Stripe ──
   stripe: any = null;
   cardElement: any = null;
-  showPaymentForm = false;
-  paymentLoading = false;
-  paymentMessage = '';
-  paymentMessageType: 'success' | 'error' = 'success';
+  showPaymentForm = signal(false);
+  paymentLoading = signal(false);
+  paymentMessage = signal('');
+  paymentMessageType = signal<'success' | 'error'>('success');
 
-  currentPage = 1;
+  montantSaisi = signal<number>(0);
+  erreurMontant = signal('');
+
+  currentPage = signal(1);
   itemsPerPage = 5;
 
   private apiUrl = 'http://localhost:8081/api/payment';
 
-  constructor(private apprenantService: ApprenantService, private http: HttpClient,private cdr: ChangeDetectorRef) {}
+  constructor(
+    private apprenantService: ApprenantService,
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.apprenantService.getMesFactures().subscribe({
-      next: (data) => { this.factures = data; this.loading = false; },
-      error: (err) => { console.error(err); this.loading = false; }
+      next: (data) => { this.factures.set(data); this.loading.set(false); },
+      error: (err) => { console.error(err); this.loading.set(false); }
     });
   }
 
-  // ── Ouvrir modal facture ──
   ouvrirFacture(facture: FactureApprenant): void {
-    this.selectedFacture = facture;
-    this.isModalOpen = true;
-    this.showPaymentForm = false;
-    this.paymentMessage = '';
+    this.selectedFacture.set(facture);
+    this.isModalOpen.set(true);
+    this.showPaymentForm.set(false);
+    this.paymentMessage.set('');
     this.stripe = null;
     this.cardElement = null;
   }
 
   fermerModal(): void {
-    this.isModalOpen = false;
-    this.selectedFacture = null;
-    this.showPaymentForm = false;
-    this.paymentMessage = '';
-    this.paymentLoading = false;
+    this.isModalOpen.set(false);
+    this.selectedFacture.set(null);
+    this.showPaymentForm.set(false);
+    this.paymentMessage.set('');
+    this.paymentLoading.set(false);
     this.stripe = null;
     this.cardElement = null;
   }
 
-  // ── Ouvrir formulaire Stripe ──
   async ouvrirPaiement(): Promise<void> {
-    this.showPaymentForm = true;
-    this.paymentMessage = '';
-
-    this.stripe = await loadStripe('pk_test_51TJU6iAbxlwx31u9z46yC3ZnmgmRYXET6J5hYLCCm27f6XA69fp9yOwca5zOFlkkxT8HuYeAnnhitpJqX4xbdJOt00nZaTZCrr'); 
-      const elements = this.stripe.elements({
-      locale: 'fr'
-    });
-
+    this.showPaymentForm.set(true);
+    this.paymentMessage.set('');
+    this.montantSaisi.set(this.selectedFacture()?.montantRestant ?? 0);
+    this.erreurMontant.set('');
+    this.stripe = await loadStripe('pk_test_51TJU6iAbxlwx31u9z46yC3ZnmgmRYXET6J5hYLCCm27f6XA69fp9yOwca5zOFlkkxT8HuYeAnnhitpJqX4xbdJOt00nZaTZCrr');
+    const elements = this.stripe.elements({ locale: 'fr' });
     setTimeout(() => {
       this.cardElement = elements.create('card', {
-        hidePostalCode: true, 
+        hidePostalCode: true,
         style: {
           base: {
             fontSize: '15px',
@@ -83,15 +87,21 @@ export class Paiement {
     }, 150);
   }
 
-  // ── Payer ──
   async payer(): Promise<void> {
-    if (!this.selectedFacture) return;
-    this.paymentLoading = true;
-    this.paymentMessage = '';
-    this.cdr.detectChanges(); 
+    const facture = this.selectedFacture();
+    if (!facture) return;
+
+    if (this.montantSaisi() <= 0 || this.erreurMontant()) {
+      this.erreurMontant.set('Veuillez saisir un montant valide');
+      return;
+    }
+
+    this.paymentLoading.set(true);
+    this.paymentMessage.set('');
+
     this.http.post<{ clientSecret: string }>(`${this.apiUrl}/create-intent`, {
-      montant: this.selectedFacture.montantRestant,
-      factureId: this.selectedFacture.id
+      montant: this.montantSaisi(),
+      factureId: facture.id
     }).subscribe({
       next: async (res) => {
         const result = await this.stripe.confirmCardPayment(res.clientSecret, {
@@ -99,71 +109,84 @@ export class Paiement {
         });
 
         if (result.error) {
-          this.paymentMessage = result.error.message;
-          this.paymentMessageType = 'error';
-          this.paymentLoading = false;
-          this.cdr.detectChanges(); 
+          this.paymentMessage.set(result.error.message);
+          this.paymentMessageType.set('error');
+          this.paymentLoading.set(false);
         } else {
           this.http.post(`${this.apiUrl}/confirm`, {
-            factureId: this.selectedFacture!.id
+            factureId: facture.id,
+            montantPaye: this.montantSaisi()
           }).subscribe({
             next: () => {
-              this.paymentMessage = 'Paiement réussi !';
-              this.paymentMessageType = 'success';
-              this.paymentLoading = false;
-              this.showPaymentForm = false;
+              this.paymentMessage.set('Paiement enregistré !');
+              this.paymentMessageType.set('success');
+              this.paymentLoading.set(false);
+              this.showPaymentForm.set(false);
 
-              // Mettre à jour localement la facture
-              this.selectedFacture!.statut = 'PAYEE';
-              this.selectedFacture!.montantPaye = this.selectedFacture!.montantTTC;
-              this.selectedFacture!.montantRestant = 0;
-
-              // Mettre à jour dans la liste aussi
-              const idx = this.factures.findIndex(f => f.id === this.selectedFacture!.id);
-              if (idx !== -1) {
-                this.factures[idx] = { ...this.selectedFacture! };
-              }
-              this.cdr.detectChanges(); 
+              this.apprenantService.getMesFactures().subscribe({
+                next: (data) => {
+                  this.factures.set(data);
+                  const updated = data.find(f => f.id === facture.id);
+                  if (updated) this.selectedFacture.set(updated);
+                }
+              });
             },
-            error: () => {
-              this.paymentMessage = 'Paiement reçu mais erreur de confirmation.';
-              this.paymentMessageType = 'error';
-              this.paymentLoading = false;
-              this.cdr.detectChanges(); 
+            error: (err) => {
+              this.paymentMessage.set(err.error?.error || 'Erreur de confirmation');
+              this.paymentMessageType.set('error');
+              this.paymentLoading.set(false);
             }
           });
         }
       },
       error: (err) => {
-        this.paymentMessage = err.error?.error || 'Erreur serveur';
-        this.paymentMessageType = 'error';
-        this.paymentLoading = false;
-        this.cdr.detectChanges(); 
+        this.paymentMessage.set(err.error?.error || 'Erreur serveur');
+        this.paymentMessageType.set('error');
+        this.paymentLoading.set(false);
       }
     });
   }
 
-  // ── Helpers ──
+  onMontantChange(event: Event): void {
+    const val = parseFloat((event.target as HTMLInputElement).value);
+    const restant = this.selectedFacture()?.montantRestant ?? 0;
+    if (isNaN(val) || val <= 0) {
+      this.erreurMontant.set('Le montant doit être supérieur à 0');
+      this.montantSaisi.set(0);
+    } else if (val > restant) {
+      this.erreurMontant.set(`Maximum : ${this.formatCurrency(restant)}`);
+      this.montantSaisi.set(0);
+    } else {
+      this.erreurMontant.set('');
+      this.montantSaisi.set(val);
+    }
+  }
+
   get soldeTotalRestant(): number {
-    return this.factures
+    return this.factures()
       .filter(f => f.statut !== 'PAYEE')
       .reduce((sum, f) => sum + (f.montantRestant || 0), 0);
   }
+
   get nbFacturesEnAttente(): number {
-    return this.factures.filter(f => f.statut !== 'PAYEE').length;
+    return this.factures().filter(f => f.statut !== 'PAYEE').length;
   }
+
   get totalPages(): number {
-    return Math.ceil(this.factures.length / this.itemsPerPage) || 1;
+    return Math.ceil(this.factures().length / this.itemsPerPage) || 1;
   }
+
   get currentItems(): FactureApprenant[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.factures.slice(start, start + this.itemsPerPage);
+    const start = (this.currentPage() - 1) * this.itemsPerPage;
+    return this.factures().slice(start, start + this.itemsPerPage);
   }
+
   get pages(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
+
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) this.currentPage = page;
+    if (page >= 1 && page <= this.totalPages) this.currentPage.set(page);
   }
 
   getStatutClass(statut: string): string {
@@ -173,16 +196,20 @@ export class Paiement {
       EN_ATTENTE: 'bg-blue-100 text-blue-800',
       EMISE: 'bg-blue-100 text-blue-800',
       PARTIELLE: 'bg-amber-100 text-amber-800',
+      PARTIELLEMENT_PAYEE: 'bg-amber-100 text-amber-800',
     };
     return map[statut] ?? 'bg-gray-100 text-gray-600';
   }
+
   getStatutLabel(statut: string): string {
     const map: Record<string, string> = {
       PAYEE: 'Payée', IMPAYEE: 'Impayée',
-      EN_ATTENTE: 'En attente', EMISE: 'Émise', PARTIELLE: 'Partielle',
+      EN_ATTENTE: 'En attente', EMISE: 'Émise',
+      PARTIELLE: 'Partielle', PARTIELLEMENT_PAYEE: 'Partielle',
     };
     return map[statut] ?? statut;
   }
+
   getStatutAlertClass(statut: string): string {
     const map: Record<string, string> = {
       PAYEE: 'bg-green-50 text-green-800 border border-green-200',
@@ -193,6 +220,7 @@ export class Paiement {
     };
     return map[statut] ?? 'bg-gray-50 text-gray-600';
   }
+
   getStatutAlertMessage(facture: FactureApprenant): string {
     switch (facture.statut) {
       case 'PAYEE': return '✓ Facture entièrement réglée';
@@ -200,9 +228,11 @@ export class Paiement {
       default: return `Montant dû : ${this.formatCurrency(facture.montantTTC)} — Échéance : ${this.formatDate(facture.dateEcheance)}`;
     }
   }
+
   formatCurrency(val: number): string {
     return new Intl.NumberFormat('fr-TN', { minimumFractionDigits: 2 }).format(val) + ' DT';
   }
+
   formatDate(date: string): string {
     if (!date) return '—';
     return new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });

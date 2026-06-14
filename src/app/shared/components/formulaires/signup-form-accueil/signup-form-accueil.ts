@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { Label } from '../../input/label/label';
-import { CheckboxComponent } from '../../ui/checkbox.component';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -8,7 +6,7 @@ import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-signup-form-accueil',
-  imports: [Label,CheckboxComponent,RouterModule,FormsModule,CommonModule],
+  imports: [RouterModule,FormsModule,CommonModule],
   templateUrl: './signup-form-accueil.html',
   styleUrl: './signup-form-accueil.css',
 })

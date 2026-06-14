@@ -24,6 +24,7 @@ export class FormulaireUtilisateur {
   competences: CompetenceInfoDTO[] = [];
   selectedCompetenceNoms: string[] = [];
   cvExistant: string | null = null;
+  errorMessage: string | null = null;
   ngOnInit(): void {
     this.competenceService.getAllCompetence().subscribe({
       next:(data)=>{
@@ -130,10 +131,16 @@ onCompetenceChange(event: Event): void {
   };
 
   const uploadCvSiPresent = (userId: number) => {
-    if (this.cvFile != null) {
-      this.adminService.uploadCv(userId, this.cvFile!).subscribe();
-    }
-  };
+  if (this.cvFile != null) {
+    this.adminService.uploadCv(userId, this.cvFile!).subscribe({
+      next: () => {},
+      error: (err: any) => {
+        this.errorMessage = err.error?.message || 'Erreur lors de l\'upload du CV';
+        setTimeout(() => this.errorMessage = null, 3000);
+      }
+    });
+  }
+};
 
   if (this.selectedUtilisateur != null) {
     const id = this.selectedUtilisateur.id;

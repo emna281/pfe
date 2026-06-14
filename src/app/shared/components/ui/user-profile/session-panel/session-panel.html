@@ -30,7 +30,7 @@
         </p>
         <p class="text-sm text-gray-500" *ngIf="s.mode !== 'DISTANCIEL'">📍 {{ s.lieu }}</p>
         <p class="text-sm text-gray-500" *ngIf="s.mode === 'DISTANCIEL'">
-          🎥 <a [href]="s.lienVisio" target="_blank" class="text-violet-500 underline">Lien Zoom</a>
+          🎥 <a [href]="s.lienVisio" target="_blank" class="text-blue-500 underline">Lien Zoom</a>
         </p>
         <p class="text-sm text-gray-500">👨‍🏫 {{ s.formateurNom }}</p>
         <span class="text-xs px-2 py-1 rounded-full font-medium w-fit mt-1"
@@ -126,8 +126,8 @@
           </div>
         </div>
 
-        <p *ngIf="succes" class="text-sm text-green-600">✅ Notes sauvegardées !</p>
-        <p *ngIf="erreur" class="text-sm text-red-500">{{ erreur }}</p>
+        <p *ngIf="succes()" class="text-sm text-green-600">✅ Notes sauvegardées !</p>
+        <p *ngIf="erreur()" class="text-sm text-red-500">{{ erreur() }}</p>
 
         <button (click)="sauvegarder()"
           class="w-full bg-violet-600 hover:bg-violet-700 text-white py-2 rounded-lg text-sm font-medium transition-colors">
@@ -136,11 +136,7 @@
       </div>
     </div>
 
-    <!-- ✅ Message si pas terminée -->
-    <div *ngIf="!estTerminee && inscription"
-      class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-700">
-      ⏳ L'évaluation sera disponible une fois la formation terminée.
-    </div>
+   
 
   </div>
 </div>

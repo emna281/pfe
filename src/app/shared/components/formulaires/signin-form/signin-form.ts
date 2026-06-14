@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Label } from '../../input/label/label';
-import { CheckboxComponent } from '../../ui/checkbox.component';
 import { Boutton } from '../../button/boutton/boutton';
 import { InputFieldComponent } from '../../ui/input-field';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -10,7 +9,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-signin-form',
-  imports: [Label,CheckboxComponent,Boutton,RouterModule,FormsModule,CommonModule],
+  imports: [Label,Boutton,RouterModule,FormsModule,CommonModule],
   templateUrl: './signin-form.html',
   styleUrl: './signin-form.css',
 })

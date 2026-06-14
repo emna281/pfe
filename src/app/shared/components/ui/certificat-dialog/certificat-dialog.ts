@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Apprenant } from '../../../services/auth.service';
 import { CertificatBatchConfig, CertificatService } from '../../../services/certification.service';
@@ -10,9 +10,15 @@ import { CertificatBatchConfig, CertificatService } from '../../../services/cert
   templateUrl: './certificat-dialog.html',
   styleUrl: './certificat-dialog.css',
 })
-export class CertificatDialog {
+export class CertificatDialog implements OnInit{
   @Input()  apprenants: Apprenant[] = [];
   @Output() closed = new EventEmitter<void>();
+
+  @Input() sessionFormation = '';
+  @Input() sessionDateDebut = '';
+  @Input() sessionDateFin   = '';
+  @Input() sessionFormateur = '';
+  @Input() sessionDuree?: number;
  
   formation    = '';
   dateDebut    = '';
@@ -22,6 +28,15 @@ export class CertificatDialog {
  
   constructor(private certificatService: CertificatService) {}
  
+
+  ngOnInit(): void {
+    this.formation   = this.sessionFormation;
+    this.dateDebut   = this.sessionDateDebut;  
+    this.dateFin     = this.sessionDateFin;
+    this.formateur   = this.sessionFormateur;
+    this.dureeHeures = this.sessionDuree;
+  }
+
   peutImprimer(): boolean {
     return !!this.formation && !!this.dateDebut && !!this.dateFin && this.apprenants.length > 0;
   }

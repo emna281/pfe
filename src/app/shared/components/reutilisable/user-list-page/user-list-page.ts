@@ -2,7 +2,6 @@ import { Component ,Input,Output,EventEmitter, ChangeDetectorRef} from '@angular
 import { BaseUser } from '../../../services/auth.service';
 import { ExtraField } from '../user-card/user-card';
 import { CommonModule } from '@angular/common';
-import { UserListHeader } from '../user-list-header/user-list-header';
 import { Router, RouterModule } from '@angular/router';
 
 
@@ -14,7 +13,7 @@ export interface UserListConfig {
 }
 @Component({
   selector: 'app-user-list-page',
-  imports: [CommonModule,UserListHeader,RouterModule],
+  imports: [CommonModule,RouterModule],
   standalone: true,
   templateUrl: './user-list-page.html',
   styleUrl: './user-list-page.css',
@@ -25,10 +24,9 @@ export class UserListPage {
   @Input() loading: boolean = false;
   @Input() totalCount: number = 0;    
   @Input() getExtraFields: (user: BaseUser) => ExtraField[] = () => [];
- 
+ @Output() addClicked = new EventEmitter<void>();
   @Output() userClicked    = new EventEmitter<BaseUser>(); 
-  @Output() addClicked     = new EventEmitter<void>();     
-  @Output() filterChanged  = new EventEmitter<string>();   
+  @Output() filterChanged = new EventEmitter<string>();
 
   constructor(private cdr:ChangeDetectorRef,private router:Router){}
   searchTerm: string = '';
@@ -48,13 +46,16 @@ export class UserListPage {
     this.userClicked.emit(user);
   }
 
+
   onAddClicked(): void {
-    this.addClicked.emit();
-  }
-  onFilterChanged(term: string): void {
-    this.searchTerm = term;
-    this.filterChanged.emit(term);
-  }
+  this.addClicked.emit();
+}
+
+onFilterChanged(term: string): void {
+  this.searchTerm = term;
+  this.filterChanged.emit(term);
+}
+
   trackById(_index: number, user: BaseUser): string {
     return user.id;
   }

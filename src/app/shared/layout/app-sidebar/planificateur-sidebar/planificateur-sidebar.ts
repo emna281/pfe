@@ -83,6 +83,13 @@ export class PlanificateurSidebar {
       ],
     },
     {
+      name: "Calendrier",
+      icon: Calendar,
+      subItems: [    
+        { name: "Calendrier", path: "/planificateur/calendar", pro: false},
+      ],
+    },
+    {
         name:"Profil",
         icon:User,
         subItems:[

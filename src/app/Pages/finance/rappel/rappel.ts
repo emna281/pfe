@@ -19,6 +19,19 @@ export class Rappel {
   allEcheances: FactureResponseDTO[] = [];
   currentPageEcheance = 1;
 
+  toastMessage = '';
+toastVisible = false;
+private toastTimeout: any;
+
+showToast(message: string): void {
+  this.toastMessage = message;
+  this.toastVisible = true;
+  clearTimeout(this.toastTimeout);
+  this.toastTimeout = setTimeout(() => {
+    this.toastVisible = false;
+  }, 3000);
+}
+
   constructor(private factureService: FactureService) {}
 
   ngOnInit(): void {
@@ -77,14 +90,14 @@ export class Rappel {
   // ==================== ACTIONS ====================
   relancer(id: number): void {
     this.factureService.relancerFacture(id).subscribe({
-      next: () => alert('Relance envoyée avec succès'),
+      next: () => this.showToast('Relance envoyée avec succès ✓'),
       error: (err) => console.error(err)
     });
   }
 
   envoyerAlerte(id: number): void {
     this.factureService.envoyerAlerte(id).subscribe({
-      next: () => alert('Alerte envoyée avec succès'),
+      next: () => this.showToast('Relance envoyée avec succès ✓'),
       error: (err) => console.error(err)
     });
   }

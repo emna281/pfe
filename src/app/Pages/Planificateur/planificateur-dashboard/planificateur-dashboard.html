@@ -6,7 +6,7 @@
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">
-            Bonjour, <span class="text-blue-600">{{ nomPlanificateur }}</span> 👋
+            Bonjour, <span class="text-blue-600">{{ nomPlanificateur() }}</span> 👋
           </h1>
           <p class="text-sm text-gray-400 mt-0.5">
             Tableau de bord planificateur — {{ today | date:'EEEE d MMMM yyyy' }}
@@ -19,29 +19,21 @@
             <lucide-icon name="Activity" class="w-4 h-4"></lucide-icon>
             Actualiser
           </button>
-          <a routerLink="/planificateur/sessions/creer"
-            class="bg-blue-600 text-white text-sm font-medium
-                   px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-            + Nouvelle session
-          </a>
+          
         </div>
       </div>
     </div>
 
     <!-- Loading -->
-    <div *ngIf="isLoading" class="flex items-center justify-center py-16">
+    <div *ngIf="isLoading()" class="flex items-center justify-center py-16">
       <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent
                   rounded-full animate-spin"></div>
     </div>
 
     <!-- Erreur -->
-    <div *ngIf="errorMsg"
-         class="px-4 py-3 bg-red-50 border border-red-200 text-red-600
-                text-sm rounded-xl mb-4">
-      {{ errorMsg }}
-    </div>
+   
 
-    <ng-container *ngIf="dashboard && !isLoading">
+    <ng-container *ngIf="dashboard() && !isLoading()">
 
       <!-- ══ KPIs Sessions ══ -->
       <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Sessions</p>
@@ -52,10 +44,13 @@
             <p class="text-sm font-medium text-gray-500">Planifiées</p>
             <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span>
           </div>
-          <p class="text-3xl font-bold text-gray-700">{{ dashboard.nbSessionsPlanifiees }}</p>
+          <p class="text-3xl font-bold text-gray-700">{{ dashboard()?.nbSessionsPlanifiees ?? 0
+ }}</p>
           <div class="mt-2 h-1 bg-gray-100 rounded-full">
             <div class="h-full bg-gray-400 rounded-full"
-                 [style.width]="getBarHeight(dashboard.nbSessionsPlanifiees, dashboard.nbSessionsTotal)">
+                 [style.width]="getBarHeight(dashboard()?.nbSessionsPlanifiees ?? 0
+, dashboard()?.nbSessionsTotal ?? 0
+)">
             </div>
           </div>
         </div>
@@ -65,10 +60,13 @@
             <p class="text-sm font-medium text-gray-500">Ouvertes</p>
             <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
           </div>
-          <p class="text-3xl font-bold text-blue-600">{{ dashboard.nbSessionsOuvertes }}</p>
+          <p class="text-3xl font-bold text-blue-600">{{ dashboard()?.nbSessionsOuvertes ?? 0
+ }}</p>
           <div class="mt-2 h-1 bg-gray-100 rounded-full">
             <div class="h-full bg-blue-500 rounded-full"
-                 [style.width]="getBarHeight(dashboard.nbSessionsOuvertes, dashboard.nbSessionsTotal)">
+                 [style.width]="getBarHeight(dashboard()?.nbSessionsOuvertes ?? 0
+, dashboard()?.nbSessionsTotal ?? 0
+)">
             </div>
           </div>
         </div>
@@ -78,10 +76,13 @@
             <p class="text-sm font-medium text-gray-500">Confirmées</p>
             <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
           </div>
-          <p class="text-3xl font-bold text-green-600">{{ dashboard.nbSessionsConfirmees }}</p>
+          <p class="text-3xl font-bold text-green-600">{{ dashboard()?.nbSessionsConfirmees ?? 0
+}}</p>
           <div class="mt-2 h-1 bg-gray-100 rounded-full">
             <div class="h-full bg-green-500 rounded-full"
-                 [style.width]="getBarHeight(dashboard.nbSessionsConfirmees, dashboard.nbSessionsTotal)">
+                 [style.width]="getBarHeight(dashboard()?.nbSessionsConfirmees ?? 0
+, dashboard()?.nbSessionsTotal ?? 0
+)">
             </div>
           </div>
         </div>
@@ -91,10 +92,13 @@
             <p class="text-sm font-medium text-gray-500">Terminées</p>
             <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
           </div>
-          <p class="text-3xl font-bold text-purple-600">{{ dashboard.nbSessionsTerminees }}</p>
+          <p class="text-3xl font-bold text-purple-600">{{ dashboard()?.nbSessionsTerminees ?? 0
+}}</p>
           <div class="mt-2 h-1 bg-gray-100 rounded-full">
             <div class="h-full bg-purple-500 rounded-full"
-                 [style.width]="getBarHeight(dashboard.nbSessionsTerminees, dashboard.nbSessionsTotal)">
+                 [style.width]="getBarHeight(dashboard()?.nbSessionsTerminees ?? 0
+, dashboard()?.nbSessionsTotal ?? 0
+)">
             </div>
           </div>
         </div>
@@ -106,33 +110,34 @@
               <lucide-icon name="BookOpen" class="w-4 h-4 text-orange-500"></lucide-icon>
             </span>
           </div>
-          <p class="text-3xl font-bold text-gray-900">{{ dashboard.nbFormationsActives }}</p>
+          <p class="text-3xl font-bold text-gray-900">{{ dashboard()?.nbFormationsActives ?? 0
+}}</p>
           <p class="text-xs text-gray-400 mt-1">Actives</p>
         </div>
 
         <div class="bg-white rounded-xl border shadow-sm p-5"
-             [class.border-red-200]="dashboard.nbSessionsSansFormateur > 0"
-             [class.border-gray-200]="dashboard.nbSessionsSansFormateur === 0">
+             [class.border-red-200]="(dashboard()?.nbSessionsSansFormateur ?? 0) > 0"
+             [class.border-gray-200]="dashboard()?.nbSessionsSansFormateur === 0">
           <div class="flex items-center justify-between mb-3">
             <p class="text-sm font-medium text-gray-500">Sans formateur</p>
             <span class="w-9 h-9 rounded-xl flex items-center justify-center"
-                  [class.bg-red-50]="dashboard.nbSessionsSansFormateur > 0"
-                  [class.bg-gray-50]="dashboard.nbSessionsSansFormateur === 0">
-              <lucide-icon name="AlertTriangle" class="w-4 h-4"
-                [class.text-red-500]="dashboard.nbSessionsSansFormateur > 0"
-                [class.text-gray-400]="dashboard.nbSessionsSansFormateur === 0">
+                  [class.bg-red-50]="(dashboard()?.nbSessionsSansFormateur ?? 0) > 0"
+                  [class.bg-gray-50]="dashboard()?.nbSessionsSansFormateur === 0">
+              <lucide-icon name="TriangleAlert" class="w-4 h-4"
+                [class.text-red-500]="(dashboard()?.nbSessionsSansFormateur ?? 0) > 0"
+                [class.text-gray-400]="dashboard()?.nbSessionsSansFormateur === 0">
               </lucide-icon>
             </span>
           </div>
           <p class="text-3xl font-bold"
-             [class.text-red-500]="dashboard.nbSessionsSansFormateur > 0"
-             [class.text-gray-400]="dashboard.nbSessionsSansFormateur === 0">
-            {{ dashboard.nbSessionsSansFormateur }}
+             [class.text-red-500]="(dashboard()?.nbSessionsSansFormateur ?? 0) > 0"
+             [class.text-gray-400]="dashboard()?.nbSessionsSansFormateur === 0">
+            {{ dashboard()?.nbSessionsSansFormateur }}
           </p>
           <p class="text-xs mt-1"
-             [class.text-red-400]="dashboard.nbSessionsSansFormateur > 0"
-             [class.text-gray-400]="dashboard.nbSessionsSansFormateur === 0">
-            {{ dashboard.nbSessionsSansFormateur > 0 ? '⚠ Action requise' : 'Tout assigné ✓' }}
+             [class.text-red-400]="(dashboard()?.nbSessionsSansFormateur ?? 0) > 0"
+             [class.text-gray-400]="dashboard()?.nbSessionsSansFormateur === 0">
+            {{ (dashboard()?.nbSessionsSansFormateur ?? 0) > 0  ? '⚠ Action requise' : 'Tout assigné ✓' }}
           </p>
         </div>
 
@@ -152,7 +157,8 @@
               <lucide-icon name="MapPin" class="w-4 h-4 text-blue-600"></lucide-icon>
             </span>
           </div>
-          <p class="text-3xl font-bold text-gray-900">{{ dashboard.nbSallesActives }}</p>
+          <p class="text-3xl font-bold text-gray-900">{{ dashboard()?.nbSallesActives?? 0
+ }}</p>
           <div class="mt-3">
             <div class="flex justify-between text-xs text-gray-400 mb-1">
               <span>Occupées aujourd'hui</span>
@@ -163,7 +169,9 @@
                    [style.width]="getTauxOccupation() + '%'"></div>
             </div>
             <p class="text-xs text-gray-400 mt-1">
-              {{ dashboard.nbSallesOccupeesAujourdhui }} / {{ dashboard.nbSallesActives }} salles
+              {{ dashboard()?.nbSallesOccupeesAujourdhui ?? 0
+}} / {{ dashboard()?.nbSallesActives ?? 0
+ }} salles
             </p>
           </div>
         </div>
@@ -176,9 +184,11 @@
               <lucide-icon name="CalendarClock" class="w-4 h-4 text-green-600"></lucide-icon>
             </span>
           </div>
-          <p class="text-3xl font-bold text-gray-900">{{ dashboard.nbSeancesCeMois }}</p>
+          <p class="text-3xl font-bold text-gray-900">{{ dashboard()?.nbSeancesCeMois ?? 0
+}}</p>
           <p class="text-xs text-gray-400 mt-1">
-            <span class="font-medium text-green-600">{{ dashboard.nbSeancesAujourdhui }}</span>
+            <span class="font-medium text-green-600">{{ dashboard()?.nbSeancesAujourdhui ?? 0
+}}</span>
             séance(s) aujourd'hui
           </p>
         </div>
@@ -191,7 +201,8 @@
               <lucide-icon name="Award" class="w-4 h-4 text-purple-600"></lucide-icon>
             </span>
           </div>
-          <p class="text-3xl font-bold text-gray-900">{{ dashboard.nbCompetences }}</p>
+          <p class="text-3xl font-bold text-gray-900">{{ dashboard()?.nbCompetences ?? 0
+}}</p>
           <p class="text-xs text-gray-400 mt-1">Référentiel de compétences</p>
         </div>
 
@@ -203,7 +214,8 @@
               <lucide-icon name="Users" class="w-4 h-4 text-yellow-600"></lucide-icon>
             </span>
           </div>
-          <p class="text-3xl font-bold text-yellow-600">{{ dashboard.nbApprenantsCertifiables }}</p>
+          <p class="text-3xl font-bold text-yellow-600">{{ dashboard()?.nbApprenantsCertifiables ?? 0
+}}</p>
           <p class="text-xs text-gray-400 mt-1">Présence ≥ 75% + réussi</p>
         </div>
 
@@ -217,13 +229,14 @@
           <div class="flex items-center justify-between mb-1">
             <h2 class="text-sm font-semibold text-gray-800">Séances par mois</h2>
             <span class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full font-medium">
-              {{ dashboard.nbSeancesCeMois }} ce mois
+              {{ dashboard()?.nbSeancesCeMois }} ce mois
             </span>
           </div>
           <p class="text-xs text-gray-400 mb-4">6 derniers mois</p>
 
           <div class="flex items-end justify-around gap-3 h-48">
-            <ng-container *ngFor="let point of dashboard.seancesParMois">
+            <ng-container *ngFor="let point of dashboard()?.seancesParMois 
+">
               <div class="flex flex-col items-center gap-2 flex-1">
                 <p class="text-xs text-blue-600 font-medium">
                   {{ point.valeur > 0 ? point.valeur : '' }}
@@ -246,15 +259,15 @@
           <div class="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-gray-100">
             <div class="text-center">
               <p class="text-xs text-gray-400 mb-1">Séances aujourd'hui</p>
-              <p class="font-bold text-green-600">{{ dashboard.nbSeancesAujourdhui }}</p>
+              <p class="font-bold text-green-600">{{ dashboard()?.nbSeancesAujourdhui }}</p>
             </div>
             <div class="text-center">
               <p class="text-xs text-gray-400 mb-1">Ce mois</p>
-              <p class="font-bold text-blue-600">{{ dashboard.nbSeancesCeMois }}</p>
+              <p class="font-bold text-blue-600">{{ dashboard()?.nbSeancesCeMois }}</p>
             </div>
             <div class="text-center">
               <p class="text-xs text-gray-400 mb-1">Total sessions</p>
-              <p class="font-bold text-gray-700">{{ dashboard.nbSessionsTotal }}</p>
+              <p class="font-bold text-gray-700">{{ dashboard()?.nbSessionsTotal }}</p>
             </div>
           </div>
         </div>
@@ -265,7 +278,7 @@
             <h2 class="text-sm font-semibold text-gray-800">Demandes d'inscription</h2>
             <span class="text-xs bg-yellow-50 text-yellow-700 border border-yellow-200
                          px-2 py-1 rounded-full font-medium">
-              {{ dashboard.nbDemandesEnAttente }} en attente
+              {{ dashboard()?.nbDemandesEnAttente }} en attente
             </span>
           </div>
 
@@ -274,33 +287,33 @@
             <div>
               <div class="flex justify-between text-xs mb-1">
                 <span class="text-yellow-600 font-medium">En attente</span>
-                <span class="text-gray-500">{{ dashboard.nbDemandesEnAttente }}</span>
+                <span class="text-gray-500">{{ dashboard()?.nbDemandesEnAttente }}</span>
               </div>
               <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div class="h-full bg-yellow-400 rounded-full transition-all duration-700"
-                     [style.width]="getBarHeight(dashboard.nbDemandesEnAttente, getTotalDemandes())">
+                     [style.width]="getBarHeight(dashboard()?.nbDemandesEnAttente ?? 0, getTotalDemandes())">
                 </div>
               </div>
             </div>
             <div>
               <div class="flex justify-between text-xs mb-1">
                 <span class="text-green-600 font-medium">Acceptées</span>
-                <span class="text-gray-500">{{ dashboard.nbDemandesAcceptees }}</span>
+                <span class="text-gray-500">{{ dashboard()?.nbDemandesAcceptees ?? 0 }}</span>
               </div>
               <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div class="h-full bg-green-500 rounded-full transition-all duration-700"
-                     [style.width]="getBarHeight(dashboard.nbDemandesAcceptees, getTotalDemandes())">
+                     [style.width]="getBarHeight(dashboard()?.nbDemandesAcceptees ?? 0, getTotalDemandes())">
                 </div>
               </div>
             </div>
             <div>
               <div class="flex justify-between text-xs mb-1">
                 <span class="text-red-500 font-medium">Refusées</span>
-                <span class="text-gray-500">{{ dashboard.nbDemandesRefusees }}</span>
+                <span class="text-gray-500">{{ dashboard()?.nbDemandesRefusees  ?? 0}}</span>
               </div>
               <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div class="h-full bg-red-400 rounded-full transition-all duration-700"
-                     [style.width]="getBarHeight(dashboard.nbDemandesRefusees, getTotalDemandes())">
+                     [style.width]="getBarHeight(dashboard()?.nbDemandesRefusees  ?? 0, getTotalDemandes())">
                 </div>
               </div>
             </div>
@@ -310,7 +323,7 @@
           <div class="pt-4 border-t border-gray-100">
             <p class="text-xs font-semibold text-gray-500 mb-3">Top formations demandées</p>
             <div class="space-y-2">
-              <div *ngFor="let f of dashboard.topFormationsDemandees; let i = index"
+              <div *ngFor="let f of dashboard()?.topFormationsDemandees; let i = index"
                    class="flex items-center gap-3">
                 <span class="w-5 h-5 rounded-full flex items-center justify-center
                              text-xs font-bold flex-shrink-0"
@@ -354,12 +367,12 @@
         </div>
 
         <!-- Loading demandes -->
-        <div *ngIf="isLoadingDemandes" class="flex justify-center py-6">
+        <div *ngIf="isLoadingDemandes()" class="flex justify-center py-6">
           <div class="w-6 h-6 border-2 border-blue-500 border-t-transparent
                       rounded-full animate-spin"></div>
         </div>
 
-        <div *ngIf="!isLoadingDemandes">
+        <div *ngIf="!isLoadingDemandes()">
           <table class="w-full text-sm" *ngIf="demandesEnAttente.length > 0">
             <thead class="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -371,7 +384,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let d of demandesEnAttente"
+              <tr *ngFor="let d of demandesEnAttente()"
                   class="border-b border-gray-100 last:border-0 hover:bg-gray-50">
                 <td class="px-4 py-3">
                   <p class="font-medium text-gray-800">{{ d.prenom }} {{ d.nom }}</p>
@@ -394,13 +407,13 @@
                     <button (click)="traiter(d.id, 'ACCEPTER')"
                             class="text-xs bg-green-100 text-green-700 hover:bg-green-200
                                    px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1">
-                      <lucide-icon name="CheckCircle" class="w-3 h-3"></lucide-icon>
+                      <lucide-icon name="CircleCheck" class="w-3 h-3"></lucide-icon>
                       Accepter
                     </button>
                     <button (click)="traiter(d.id, 'REFUSER')"
                             class="text-xs bg-red-100 text-red-600 hover:bg-red-200
                                    px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1">
-                      <lucide-icon name="XCircle" class="w-3 h-3"></lucide-icon>
+                      <lucide-icon name="CircleX" class="w-3 h-3"></lucide-icon>
                       Refuser
                     </button>
                   </div>
@@ -409,9 +422,9 @@
             </tbody>
           </table>
 
-          <div *ngIf="demandesEnAttente.length === 0"
+          <div *ngIf="demandesEnAttente().length === 0"
                class="flex flex-col items-center justify-center py-10 text-gray-400">
-            <lucide-icon name="CheckCircle" class="w-10 h-10 mb-2 text-green-400"></lucide-icon>
+            <lucide-icon name="CircleCheck" class="w-10 h-10 mb-2 text-green-400"></lucide-icon>
             <p class="text-sm">Aucune demande en attente 🎉</p>
           </div>
         </div>

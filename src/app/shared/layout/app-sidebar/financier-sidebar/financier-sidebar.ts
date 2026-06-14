@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, Inject, PLATFORM_ID, QueryList, ViewChildren } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { LucideAngularModule ,ReceiptText,Send,ChartColumn,LayoutDashboard, User,Users} from 'lucide-angular';
+import { LucideAngularModule ,ReceiptText,Send,ChartColumn,LayoutDashboard, User,Users,Calendar} from 'lucide-angular';
 import { combineLatest, Subscription } from 'rxjs';
 import { SidebarService } from '../../../services/sidebar.service';
 import { AuthService } from '../../../services/auth.service';
@@ -26,6 +26,7 @@ export class FinancierSidebar {
   readonly ChartColumn= ChartColumn;
   readonly Users=Users;
   readonly User=User;
+  readonly Calendar=Calendar;
     navItems: NavItem[] = [
       {
         name: 'Dashboard',
@@ -59,6 +60,13 @@ export class FinancierSidebar {
         icon:Users,
         path:"/financier/FinancierApprenants"
       },
+      {
+      name: "Calendrier",
+      icon: Calendar,
+      subItems: [    
+        { name: "Calendrier", path: "/financier/calendar", pro: false},
+      ],
+    },
       {
         name:"Profil",
         icon:User,

@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class EventService {
-  private apiUrl='/api/admin/event'
+  private apiUrl='/api/event'
 
   constructor(private http: HttpClient) {}
 

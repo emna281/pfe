@@ -7,25 +7,49 @@
           <lucide-icon name="briefcase" class="w-5 h-5 text-blue-700"></lucide-icon>
         </div>
         <h4 class="text-xl font-semibold text-gray-800 dark:text-white ">
-        Informations professionnelles
+        Informations Professionnelles
         </h4>
       </div>
-    
 
-    <button
-      *ngIf="isAdminView"
-      (click)="openModal()"
-      class="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+    <button *ngIf="!editMode && isAdminView"
+      (click)="startEdit()"
+      class="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg
+             border border-gray-300 text-gray-200
+             bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]
+             transition-all duration-300
+             hover:bg-gradient-to-br hover:from-[#0f3460] hover:via-[#16213e] hover:to-[#1a1a2e]"
     >
     <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
     Modifier
     </button>
+
+    <div *ngIf="editMode" class="flex gap-2">
+      <button (click)="cancelEdit()"
+        class="text-xs px-3 py-1.5 rounded-lg"
+        style="border:0.5px solid #d1d5db; color:#6b7280; background:transparent">
+        Annuler
+      </button>
+      <button (click)="saveEdit()" [disabled]="saving"
+        class="text-xs px-3 py-1.5 rounded-lg text-white font-medium"
+        style="background:#378ADD; border:none"
+        [style.opacity]="saving ? '0.7' : '1'">
+        {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
   </div>
 
-  <!-- CONTENT -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+  <!-- Succès -->
+  <div *ngIf="success"
+    class="flex items-center gap-2 text-xs px-3 py-2 rounded-lg mb-4"
+    style="background:#EAF3DE; color:#3B6D11">
+    <i class="ti ti-circle-check" style="font-size:14px"></i>
+    Informations mises à jour avec succès.
+  </div>
 
-    <!-- FORMATEUR / STAFF -->
+  <!-- ═══ Mode lecture ═══ -->
+  <div *ngIf="!editMode" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+    <!-- FORMATEUR / PLANIFICATEUR / MANAGER / FINANCIER -->
     <ng-container *ngIf="hasProFields">
 
       <div *ngIf="specialite" class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
@@ -42,16 +66,6 @@
         </p>
       </div>
 
-      <div *ngIf="cvPath" class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 col-span-2">
-        <p class="text-xs text-gray-500 mb-2">CV</p>
-        <a 
-          [href]="cvPath" 
-          target="_blank"
-          class="inline-flex items-center gap-2 text-blue-600 hover:underline"
-        >
-          📄 Voir le CV
-        </a>
-      </div>
 
     </ng-container>
 
@@ -76,51 +90,43 @@
 
   </div>
 
-  <!-- Modal -->
-  <app-modal
-    [isOpen]="isOpen"
-    (close)="closeModal()"
-    className="max-w-[700px] m-4"
-  >
-    <div class="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
-      <div class="px-2 pr-14">
-        <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-          Edit Address
-        </h4>
-        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-          Update your details to keep your profile up-to-date.
-        </p>
+  <!-- ═══ Mode édition ═══ -->
+  <div *ngIf="editMode" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+    <ng-container *ngIf="hasProFields">
+      <div>
+        <label class="text-xs font-medium text-gray-500 block mb-1">Spécialité</label>
+        <input type="text" [(ngModel)]="form.specialite"
+          class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+                 focus:outline-none focus:ring-2 focus:ring-blue-300
+                 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
       </div>
-      <form class="flex flex-col" (ngSubmit)="handleSave()">
-        <div class="px-2 overflow-y-auto custom-scrollbar">
-          <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-            <ng-container *ngIf="hasProFields">
-            <div *ngIf="specialite">
-              <app-label>Specialité</app-label>
-              <app-input-field type="text" [value]="specialite" />
-            </div>
-            <div *ngIf="anneesExperience !== null">
-              <app-label>Années d'expérience</app-label>
-              <app-input-field type="text" [value]="anneesExperience" />
-            </div>
-            </ng-container>
-            <ng-container *ngIf="isApprenant">
-                <div *ngIf="posteActuel">
-                    <app-label>Poste Actuel</app-label>
-                    <app-input-field type="text" [value]="posteActuel" />
-                </div>
-                <div *ngIf="niveauEtude">
-                    <app-label>Niveau d'etude</app-label>
-                    <app-input-field type="text" [value]="niveauEtude" />
-                </div>
-            </ng-container>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-          <app-boutton size="sm" variant="outline" (btnClick)="closeModal()">Close</app-boutton>
-          <app-boutton size="sm" (btnClick)="handleSave()">Save Changes</app-boutton>
-        </div>
-      </form>
-    </div>
-  </app-modal>
+      <div>
+        <label class="text-xs font-medium text-gray-500 block mb-1">Années d'expérience</label>
+        <input type="number" min="0" [(ngModel)]="form.anneesExperience"
+          class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+                 focus:outline-none focus:ring-2 focus:ring-blue-300
+                 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isApprenant">
+      <div>
+        <label class="text-xs font-medium text-gray-500 block mb-1">Poste Actuel</label>
+        <input type="text" [(ngModel)]="form.posteActuel"
+          class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+                 focus:outline-none focus:ring-2 focus:ring-blue-300
+                 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-500 block mb-1">Niveau d'étude</label>
+        <input type="text" [(ngModel)]="form.niveauEtude"
+          class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
+                 focus:outline-none focus:ring-2 focus:ring-blue-300
+                 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      </div>
+    </ng-container>
+
+  </div>
+
 </div>

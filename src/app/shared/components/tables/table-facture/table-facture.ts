@@ -1,5 +1,5 @@
 import { Component ,ChangeDetectorRef, OnInit} from '@angular/core';
-import { Badge } from '../../ui/badge/badge';
+
 import { CheckboxComponent } from '../../ui/checkbox.component';
 import { FactureResponseDTO, FactureService } from '../../../../services/facture-service';
 import { CommonModule, DecimalPipe } from '@angular/common';
@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-table-facture',
-  imports: [Badge,CheckboxComponent,DecimalPipe,FormulaireFacture,DatailFacture ,FormulairePaiement,ConfirmationModal,CommonModule,FormsModule],
+  imports: [CheckboxComponent,DecimalPipe,FormulaireFacture,DatailFacture ,FormulairePaiement,ConfirmationModal,CommonModule,FormsModule],
   templateUrl: './table-facture.html',
   styleUrl: './table-facture.css',
 })

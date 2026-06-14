@@ -1,0 +1,59 @@
+<div class="flex flex-col gap-5 p-6 max-w-[700px]">
+
+  <!-- HEADER -->
+  <div class="flex items-center gap-3">
+    <div class="flex items-center justify-center w-10 h-10 rounded-[10px] bg-[#e8f0fe] dark:bg-[#4285f4]/15">
+      <lucide-icon name="settings" class="w-5 h-5 text-[#4285f4]"></lucide-icon>
+    </div>
+    <div>
+      <h2 class="text-[15px] font-semibold text-gray-900 dark:text-[#e2e8f0]">Paramètres système</h2>
+      <p class="text-[12px] text-gray-400 dark:text-[#8b9ab8] mt-0.5">
+        Configurez les limites globales de la plateforme
+      </p>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="text-[13px] text-gray-400 dark:text-[#8b9ab8]">
+    Chargement des paramètres...
+  </div>
+
+  <!-- FORM -->
+  <div *ngIf="!loading" class="flex flex-col gap-4">
+
+    <div *ngFor="let param of parametres" class="flex flex-col gap-1.5">
+      <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">
+        {{ param.label }}
+      </label>
+      <input type="number"
+        [(ngModel)]="param.valeur"
+        min="0"
+        class="w-full h-10 px-3 rounded-[9px] text-[13px]
+               bg-gray-50 dark:bg-white/[0.04]
+               border border-gray-200 dark:border-white/[0.09]
+               text-gray-900 dark:text-[#e2e8f0]
+               focus:outline-none focus:ring-2 focus:ring-[#4285f4]/25
+               focus:border-[#4285f4] transition-all duration-150" />
+      <p class="text-[11px] text-gray-400 dark:text-[#4a5568]">{{ param.description }}</p>
+    </div>
+
+    <!-- MESSAGES -->
+    <p *ngIf="successMessage" class="text-[12px] text-green-500">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="text-[12px] text-red-500">{{ errorMessage }}</p>
+
+    <!-- ACTIONS -->
+    <div class="flex justify-end mt-2">
+      <button type="button"
+        (click)="enregistrer()"
+        [disabled]="saving"
+        class="px-4 py-2 rounded-[9px] text-[13px] font-medium
+               text-white bg-[#4285f4] hover:bg-[#2563c9]
+               disabled:opacity-60
+               transition-all duration-150 flex items-center gap-2">
+        <lucide-icon name="save" class="w-3.5 h-3.5"></lucide-icon>
+        {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,59 +1,55 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
-import { AuthResponse, AuthService, BaseUser } from '../../../shared/services/auth.service';
-import { UtilisateurService } from '../../../services/utilisateur-service';
-import { UserMetaCard } from '../../../shared/components/ui/user-profile/user-meta-card/user-meta-card';
+import { Component, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ApprenantProfil, ApprenantService } from '../../../services/apprenant-service';
 import { Planing } from '../../../shared/components/ui/user-profile/planing/planing';
-import { FormsModule } from '@angular/forms';
 import { Historique } from '../../../shared/components/ui/user-profile/historique/historique';
 import { Paiement } from '../../../shared/components/ui/user-profile/paiement/paiement';
 import { ApprenantParametres } from '../../../shared/components/ui/apprenant-parametres/apprenant-parametres';
-
+import { ApprenantCertificats } from '../../../shared/components/ui/apprenant-certificats/apprenant-certificats';
 
 @Component({
   selector: 'app-profil-apprenant',
-  imports: [CommonModule,Planing,FormsModule,Historique,Paiement,ApprenantParametres],
+  imports: [CommonModule, Planing, FormsModule, Historique, Paiement, ApprenantParametres, ApprenantCertificats],
   templateUrl: './profil-apprenant.html',
   styleUrl: './profil-apprenant.css',
   host: { ngSkipHydration: 'true' }
 })
 export class ProfilApprenant {
 
-  profil: ApprenantProfil | null = null;
-  activeTab: string = 'planning';
-  anneeCourante: number = new Date().getFullYear();
+  profil = signal<ApprenantProfil | null>(null);
+  activeTab = signal<string>('planning');
+  anneeCourante = new Date().getFullYear();
+
   tabs = [
-    { id: 'planning',     label: 'Mon planning',  icon: 'calendar' },
-    { id: 'historique',   label: 'Historique',    icon: 'clock' },
-    { id: 'paiements',    label: 'Paiements',     icon: 'credit-card' },
-    { id: 'certificats',  label: 'Certificats',   icon: 'award' },
-    { id: 'parametres',   label: 'Profil',    icon: 'settings' },
+    { id: 'planning',    label: 'Mon planning' },
+    { id: 'historique',  label: 'Historique'   },
+    { id: 'paiements',   label: 'Paiements'    },
+    { id: 'certificats', label: 'Certificats'  },
+    { id: 'parametres',  label: 'Profil'       },
   ];
 
-  constructor(private apprenantService: ApprenantService,@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    private apprenantService: ApprenantService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-    this.apprenantService.getMonProfil().subscribe({
-      next: (profil) => {
-        console.log('profil assigné:', profil);
-        this.profil = profil;
-      },
-      error: (err) => {
-        console.error('Erreur chargement profil:', err)
-      }
-    });
-  }
+      this.apprenantService.getMonProfil().subscribe({
+        next: (p) => this.profil.set(p),
+        error: (err) => console.error('Erreur chargement profil:', err)
+      });
+    }
   }
 
   setTab(tabId: string): void {
-    this.activeTab = tabId;
+    this.activeTab.set(tabId);
   }
 
   getInitiales(): string {
-    if (!this.profil) return '';
-    return `${this.profil.prenom[0]}${this.profil.nom[0]}`.toUpperCase();
+    const p = this.profil();
+    if (!p) return '';
+    return `${p.prenom[0]}${p.nom[0]}`.toUpperCase();
   }
-
 }

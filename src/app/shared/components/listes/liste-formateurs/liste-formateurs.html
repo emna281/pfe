@@ -1,3 +1,11 @@
+<app-user-list-header
+    [config]="config"
+    [totalCount]="totalCount"
+    (addClicked)="ouvrirFormulaire()"
+    (filterChanged)="onFilterChanged($event)">
+  </app-user-list-header>
+
+
 @if (!afficherListe && totalCount > 5 && !loading) {
   <div class="flex flex-col items-center justify-center py-16 gap-4 text-center">
     <span class="text-5xl">🔍</span>
@@ -8,6 +16,9 @@
   </div>
 }
 
+
+
+
 <app-user-list-page
   [class.hidden]="!afficherListe && totalCount > 5"
   [config]="config"
@@ -16,8 +27,7 @@
   [totalCount]="totalCount"
   [getExtraFields]="getExtraFields"
   (userClicked)="voirDetail($event)"
-  (addClicked)="ouvrirFormulaire()"
-  (filterChanged)="onFilterChanged($event)">
+  (addClicked)="ouvrirFormulaire()">
 </app-user-list-page>
 
 <app-formulaire-utilisateur

@@ -1,11 +1,6 @@
 <div class="min-h-screen bg-gray-50 p-6">
 
-  <app-user-list-header
-    [config]="config"
-    [totalCount]="totalCount"
-    (addClicked)="onAddClicked()"
-    (filterChanged)="onFilterChanged($event)">
-  </app-user-list-header>
+  
 
   <!-- Chargement -->
   @if (loading) {
@@ -138,7 +133,7 @@
   }
 
   <!-- Vide -->
-  @if (!loading && filteredUsers?.length === 0) {
+  @if (!loading && filteredUsers.length === 0) {
     <div class="flex flex-col items-center justify-center py-28 gap-3 text-center">
       <span class="text-5xl">📭</span>
       <p class="text-gray-400 text-sm">Aucun résultat trouvé.</p>

@@ -59,7 +59,6 @@ export class AdminSidebar {
         //{ name: 'Créer utilisateur',  path: '/admin/utilisateurs/creer',       icon: 'user-plus' },
         { name: 'Formateurs',         path: '/admin/listeFormateurs',   icon: 'graduation-cap' },
         { name: 'Planificateurs',     path: '/admin/listePlanificateurs', icon: 'calendar-check' },
-        { name: 'Managers',           path: '/admin/listeManager',     icon: 'briefcase' },
         { name: 'Financiers',         path: '/admin/listeFinanciers',   icon: 'landmark' },
         { name: 'Apprenants',         path: '/admin/listeApprenants',   icon: 'user' },
         
@@ -75,9 +74,7 @@ export class AdminSidebar {
     {
       name: 'Paramètres',
       icon: Settings,
-      subItems: [
-        //{ name: 'Mon profil', path: '/admin/profil', icon: 'user-circle' },
-      ]
+      path:"/admin/parametresSysteme",
     }
   ]
   openSubmenu: string | null | number = null;

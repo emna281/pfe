@@ -1,6 +1,6 @@
 import { Component ,Input} from '@angular/core';
 import { Label } from '../../input/label/label';
-import { CheckboxComponent } from '../../ui/checkbox.component';
+
 import { Boutton } from '../../button/boutton/boutton';
 import { InputFieldComponent } from '../../ui/input-field';
 import { Router, RouterModule } from '@angular/router';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-formulaire-signup',
-  imports: [Label,CheckboxComponent,RouterModule,FormsModule,CommonModule],
+  imports: [Label,RouterModule,FormsModule,CommonModule,Boutton],
   templateUrl: './formulaire-signup.html',
   styleUrl: './formulaire-signup.css',
 })

@@ -73,14 +73,7 @@
       
 
       <!-- Edit Button -->
-      <button
-      *ngIf="isAdminView"
-        (click)="openModal()"
-        class="flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white shadow-md transition hover:bg-blue-700"
-      >
-      <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
-        Modifier le profil
-      </button>
+      
 
     </div>
   </div>
@@ -111,7 +104,7 @@
           <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
             <div class="col-span-2 lg:col-span-1">
               <label>Prénom</label>
-              <app-input-field type="text" [value]="user?.prenom  ?? ''" />
+              <app-input-field type="text" [value]="user.prenom" />
             </div>
             <div class="col-span-2 lg:col-span-1">
               <label>Nom</label>
@@ -119,11 +112,11 @@
             </div>
             <div class="col-span-2 lg:col-span-1">
               <label>Email </label>
-              <app-input-field type="text" [value]="user?.email ?? ''" readOnly />
+              <app-input-field type="text" [value]="user.email" readOnly />
             </div>
             <div class="col-span-2 lg:col-span-1">
               <label>Téléphone</label>
-              <app-input-field type="text" [value]="user?.telephone ?? ''" />
+              <app-input-field type="text" [value]="user.telephone ?? ''" />
             </div>
           </div>
         </div>

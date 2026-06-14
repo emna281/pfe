@@ -21,24 +21,13 @@
             </div>
           </div>
 
-          <div class="grid gap-4 sm:grid-cols-2 mb-6">
-            <button type="button" class="inline-flex items-center justify-center gap-3 rounded-3xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900">
-              <img src="/images/logo/google.svg" alt="Google" class="h-5 w-5" />
-              Google
-            </button>
-            <button type="button" class="inline-flex items-center justify-center gap-3 rounded-3xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900">
-              <img src="/images/logo/x.svg" alt="X" class="h-4 w-4" />
-              X
-            </button>
-          </div>
+          
 
           <div class="relative py-4 mb-6">
             <div class="absolute inset-0 flex items-center">
               <div class="w-full border-t border-slate-200 dark:border-slate-700"></div>
             </div>
-            <div class="relative flex justify-center">
-              <span class="bg-white px-4 text-sm text-slate-400 dark:bg-slate-900 dark:text-slate-400">Ou</span>
-            </div>
+            
           </div>
 
           <div *ngIf="errorMsg" class="mb-5 rounded-3xl bg-red-50 p-4 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300">
@@ -78,10 +67,10 @@
               </div>
             </div>
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <app-checkbox [(checked)]="isChecked" label="Rester connecté" />
-              <a routerLink="/reset-password" class="text-sm font-semibold text-brand-500 transition hover:text-brand-600 dark:text-brand-400">Mot de passe oublié ?</a>
+             <div class="flex items-center gap-3">
+              
             </div>
+
 
             <app-boutton className="w-full rounded-3xl bg-brand-500 text-white" size="sm" (btnClick)="onSignIn()">
               Se connecter

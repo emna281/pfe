@@ -1,0 +1,52 @@
+<div class="p-8">
+
+  <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">
+    Mes Attestations
+  </h2>
+
+  <div *ngIf="loading()" class="text-gray-400 text-sm">Chargement...</div>
+
+  <div *ngIf="!loading() && inscriptions().length === 0"
+       class="text-center py-16 text-gray-400">
+    <div class="text-5xl mb-4">🎓</div>
+    <p class="text-lg font-medium">Aucune attestation disponible</p>
+    <p class="text-sm mt-1">Vos attestations apparaîtront ici une fois vos formations validées.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+       *ngIf="!loading() && inscriptions().length > 0">
+    <div *ngFor="let i of inscriptions()"
+         class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100
+                dark:border-gray-700 p-5 flex flex-col gap-3">
+
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-xl flex-shrink-0">
+          🎓
+        </div>
+        <div>
+          <p class="font-semibold text-gray-800 dark:text-white text-sm leading-tight">
+            {{ i.sessionNom }}
+          </p>
+          <p class="text-xs text-gray-400 mt-0.5">{{ i.dateInscription | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+
+      <span class="self-start text-xs font-semibold px-2.5 py-1 rounded-full"
+            [ngClass]="{
+              'bg-green-100 text-green-600': i.statut === 'VALIDEE',
+              'bg-purple-100 text-purple-600': i.statut === 'TERMINEE'
+            }">
+        {{ i.statut }}
+      </span>
+
+      <button (click)="telecharger(i)"
+              class="mt-auto w-full flex items-center justify-center gap-2
+                     bg-amber-500 hover:bg-amber-600 text-white text-sm
+                     font-semibold py-2 rounded-xl transition-colors">
+        🖨️ Télécharger l'attestation
+      </button>
+
+    </div>
+  </div>
+
+</div>

@@ -2,14 +2,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit,ChangeDetectorRef,AfterViewInit } from '@angular/core';
 
-import { Boutton } from '../../button/boutton/boutton';
+
 import { CompetenceInfoDTO,CompetenceService } from '../../../../services/competence-service';
 import { FormsModule } from '@angular/forms';
 import { FormulaireCompetence } from '../../formulaires/formulaire-competence/formulaire-competence';
 import { ConfirmationModal } from '../../ui/confirmation-modal/confirmation-modal';
 @Component({
   selector: 'app-table-competence',
-  imports: [CommonModule,Boutton,FormsModule,FormulaireCompetence,ConfirmationModal],
+  imports: [CommonModule,FormsModule,FormulaireCompetence,ConfirmationModal],
   templateUrl: './table-competence.html',
   styleUrl: './table-competence.css',
 })

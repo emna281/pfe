@@ -42,6 +42,7 @@ import { ListeCharge } from './shared/components/listes/liste-charge/liste-charg
 import { Salle } from './Pages/programme/salle/salle';
 import path from 'path';
 import { CandidaturesList } from './shared/components/reutilisable/candidatures/candidatures-list/candidatures-list';
+import { ParametresSysteme } from './shared/components/parametres-systeme/parametres-systeme';
 export const routes: Routes = [
      { path: 'inscription/:sessionId', component: FormulaireInscription },
     { path:'apprenant',component : Apprenant},
@@ -119,7 +120,8 @@ export const routes: Routes = [
             { path:'formateurPresence/:id', component:FormateurPresence,title:'Interface de admin'},
             { path:'profile', component:ProfilComponent},
             { path:'tableSalle',component:Salle},
-            { path:'candidaturesList',component:CandidaturesList}
+            { path:'candidaturesList',component:CandidaturesList},
+            { path: 'calendar',  component: Calender },
         ]
     },
     { 
@@ -136,7 +138,8 @@ export const routes: Routes = [
             { path:'FinancierApprenants',component:FinancierApprenants},
             { path:'rappel',component:Rappel},
             { path: 'demandeInscription', component: TableDemandesInscriptions,  title: 'Inscriptions' },
-            { path:'ListeCharge', component:ListeCharge} 
+            { path:'ListeCharge', component:ListeCharge} ,
+            { path: 'calendar',  component: Calender },
         ]
     },
     { 
@@ -159,7 +162,7 @@ export const routes: Routes = [
             { path: 'listeManager',  component: ListeManager },
             { path: 'calendar',  component: Calender },
             { path:'profileAdmin', component:ProfileAdmin},
-            
+            { path:'parametresSysteme', component:ParametresSysteme}
         ]
     },
     {
@@ -186,5 +189,6 @@ export const routes: Routes = [
         ]
     },
     { path: '', redirectTo: 'apprenant', pathMatch: 'full' },
+    { path: 'calendar',  component: Calender },
 ];
 

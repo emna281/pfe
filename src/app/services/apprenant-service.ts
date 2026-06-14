@@ -72,7 +72,7 @@ export class ApprenantService {
   );
 }
   getInscriptions(): Observable<InscriptionResponseDTO[]> {
-    return this.http.get<InscriptionResponseDTO[]>('/api/apprenant/mes-inscriptions'); // ✅
+    return this.http.get<InscriptionResponseDTO[]>('http://localhost:8081/api/apprenant/mes-inscriptions'); // ✅
   }
   getMesSessions(): Observable<SessionApprenant[]> {
     return this.http.get<SessionApprenant[]>('/api/apprenant/mes-sessions');
@@ -95,5 +95,10 @@ getApprenantsPourFinancier(): Observable<ApprenantResponse[]> {
   }
   updateMonProfil(data: UpdateProfilRequest): Observable<any> {
   return this.http.put(`${this.baseUrl}/me`, data);
+}
+uploadCv(file: File): Observable<void> {
+  const formData = new FormData();
+  formData.append('file', file);
+  return this.http.post<void>(`${this.baseUrl}/cv`, formData);
 }
 }

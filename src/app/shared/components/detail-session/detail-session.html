@@ -257,7 +257,11 @@
 <app-certificat-dialog
   *ngIf="dialogImprimerOuvert && apprenantsCertifiables.length"
   [apprenants]="apprenantsCertifiables"
-
+  [sessionFormation]="session.formationNom"
+  [sessionDateDebut]="session.dateDebut"  
+  [sessionDateFin]="session.dateFin"
+  [sessionFormateur]="session.formateurNom"
+  [sessionDuree]="formation?.dureeHeures ?? undefined"
   (closed)="fermerImpression()">
 </app-certificat-dialog>
   

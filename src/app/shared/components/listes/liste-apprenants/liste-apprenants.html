@@ -1,14 +1,12 @@
 
-<div class="toolbar-impression">
-  <button
-    class="btn-imprimer-tout"
-    (click)="ouvrirImpression()"
-    [disabled]="!apprenants?.length">
-    🖨️ Imprimer les attestations
-    <span class="badge" *ngIf="apprenants?.length">{{ apprenants!.length }}</span>
-  </button>
-</div>
+<app-user-list-header
+  [config]="config"
+  [totalCount]="totalCount"
+  (addClicked)="ouvrirFormulaire()"
+  (filterChanged)="onFilterChanged($event)">
+</app-user-list-header>
 <app-user-list-page
+[class.hidden]="!afficherListe && totalCount > 5"
       [config]="config"
       [users]="apprenants"
       [loading]="loading"
@@ -16,19 +14,24 @@
       [getExtraFields]="getExtraFields"
       (userClicked)="voirDetail($event)"
       (addClicked)="ouvrirFormulaire()"
-      (filterChanged)="onFilterChanged($event)">
+>
     </app-user-list-page>
-<app-formulaire-inscr-apprenant
+<!--
+    <app-formulaire-inscr-apprenant
   [isOpen]="isModalOpen"
   [sessionId]="selectedSessionId"
   [apprenantEmail]="selectedApprenantEmail"
   (closeFormulaire)="isModalOpen = false"
   (inscriptionCreee)="onInscriptionCreee($event)">
 </app-formulaire-inscr-apprenant>
-<!-- ── Dialogue d'impression de toutes les attestations ── -->
+-->
 
-  <app-certificat-dialog
-    *ngIf="dialogImprimerOuvert && apprenants?.length"
-    [apprenants]="apprenants!"
-    (closed)="fermerImpression()">
-  </app-certificat-dialog>
+    <app-formulaire-utilisateur
+  [isOpen]="isModalOpen"
+  [selectedUtilisateur]="selectedUtilisateur"
+  [roleFixe]="'APPRENANT'"
+  (closeFormulaire)="onFormulaireClose()">
+</app-formulaire-utilisateur>
+
+
+ 

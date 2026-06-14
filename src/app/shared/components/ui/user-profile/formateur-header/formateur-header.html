@@ -35,7 +35,7 @@
   </div>
 
   <!-- STATS CARDS -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
 
     <!-- Sessions actives -->
     <div class="bg-gray-50 dark:bg-gray-700/50 border border-gray-300 rounded-xl p-4">
@@ -79,20 +79,7 @@
       <p class="text-xs text-gray-400 mt-1">7 jours</p>
     </div>
 
-    <!-- Note moyenne -->
-    <div class="bg-gray-50 dark:bg-gray-700/50 border border-gray-300 rounded-xl p-4">
-      <div class="flex items-center gap-2 text-gray-400 text-sm mb-2">
-        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-        <lucide-icon [img]="star" class="text-blue-600"></lucide-icon>
-        </div>
-        Note moyenne
-      </div>
-      <p class="text-3xl font-bold text-gray-900 dark:text-white">
-        {{ profil.noteMoyenne || '—' }}
-        <span class="text-lg font-normal text-gray-400">/5</span>
-      </p>
-      <p class="text-xs text-gray-400 mt-1">Feedback</p>
-    </div>
+    
 
   </div>
 

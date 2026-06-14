@@ -10,9 +10,10 @@ import { platformBrowser } from '@angular/platform-browser';
 import { UtilisateurService } from '../../../../services/utilisateur-service';
 import { UtilisateurResponse } from '../../../../services/admin-service';
 import { FormulaireUtilisateur } from '../../formulaires/formulaire-utilisateur/formulaire-utilisateur';
+import { UserListHeader } from '../../reutilisable/user-list-header/user-list-header';
 @Component({
   selector: 'app-liste-financiers',
-  imports: [RouterModule,UserListPage,CommonModule,FormulaireUtilisateur],
+  imports: [RouterModule,UserListPage,CommonModule,FormulaireUtilisateur,UserListHeader],
   templateUrl: './liste-financiers.html',
   styleUrl: './liste-financiers.css',
 })

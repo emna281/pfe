@@ -111,7 +111,7 @@
           </div>
 
         </div>
-
+<ng-container *ngIf="roleFixe !== 'APPRENANT'">
         <!-- ── Informations professionnelles ── -->
         <p class="text-[11px] font-medium text-[#4285f4] uppercase tracking-widest
                   border-l-[3px] border-[#4285f4] pl-2.5">
@@ -231,9 +231,9 @@
             </span>
           </div>
         </div>
-
+</ng-container>
         <!-- CV -->
-        <div class="flex flex-col gap-1.5">
+        <div *ngIf="roleFixe !== 'APPRENANT'" class="flex flex-col gap-1.5">
           <label class="text-[12px] font-medium text-gray-600 dark:text-[#8b9ab8]">CV</label>
 
           <!-- Afficher le CV existant en mode modification -->
@@ -265,7 +265,12 @@
               <lucide-icon name="check" class="w-3 h-3"></lucide-icon>
               {{ cvFile.name }} sélectionné
             </p>
-        </div>
+        <p *ngIf="errorMessage"
+  class="text-[11px] text-red-500 flex items-center gap-1">
+  <lucide-icon name="alert-circle" class="w-3 h-3"></lucide-icon>
+  {{ errorMessage }}
+</p>
+          </div>
 
       </form>
     </div>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Activity, AlertTriangle, Award, BarChart2, BookOpen, CalendarClock, CheckCircle, Clock, DoorOpen, LucideAngularModule, MapPin, Users, XCircle } from 'lucide-angular';
@@ -9,27 +9,24 @@ import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-planificateur-dashboard',
+  standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, LucideAngularModule],
+  
   templateUrl: './planificateur-dashboard.html',
   styleUrl: './planificateur-dashboard.css',
 })
 export class PlanificateurDashboard {
-  readonly icons = {
-    CalendarClock, BookOpen, Award, Users,
-    DoorOpen, Clock, CheckCircle, XCircle,
-    AlertTriangle, BarChart2, MapPin, Activity
-  };
+  
  
-  nomPlanificateur = '';
+  dashboard = signal<DashboardPlanificateurDTO | null>(null);
+  isLoading = signal(false);
+  errorMsg = signal('');
+  demandesEnAttente = signal<DemandeInscriptionResponse[]>([]);
+  isLoadingDemandes = signal(false);
+  nomPlanificateur = signal('Planificateur');
   today = new Date();
  
-  dashboard: DashboardPlanificateurDTO | null = null;
-  isLoading = false;
-  errorMsg = '';
- 
-  // Demandes récentes en attente
-  demandesEnAttente: DemandeInscriptionResponse[] = [];
-  isLoadingDemandes = false;
+  
  
   constructor(
     private planificateurDashboardService: PlanificateurDashboardService,
@@ -39,39 +36,39 @@ export class PlanificateurDashboard {
  
   ngOnInit(): void {
     const user = this.authService.getUser();
-    this.nomPlanificateur = user?.prenom ?? user?.nom ?? 'Planificateur';
+    this.nomPlanificateur.set(user?.prenom ?? user?.nom ?? 'Planificateur');
     this.charger();
     this.chargerDemandes();
   }
  
-  charger(): void {
-    this.isLoading = true;
-    this.errorMsg = '';
+ charger(): void {
+    this.isLoading.set(true);
+    this.errorMsg.set('');
     this.planificateurDashboardService.getDashboard().subscribe({
       next: (data) => {
-        this.dashboard = data;
-        this.isLoading = false;
+        this.dashboard.set(data);
+        this.isLoading.set(false);
       },
       error: () => {
-        this.errorMsg = 'Erreur lors du chargement du dashboard';
-        this.isLoading = false;
+        this.errorMsg.set('Erreur lors du chargement du dashboard');
+        this.isLoading.set(false);
       }
     });
   }
  
   chargerDemandes(): void {
-    this.isLoadingDemandes = true;
+    this.isLoadingDemandes.set(true);
     this.demandeService.getAllDemandes().subscribe({
       next: (data) => {
-        this.demandesEnAttente = data
-          .filter(d => d.statut === 'EN_ATTENTE')
-          .slice(0, 5);
-        this.isLoadingDemandes = false;
+        this.demandesEnAttente.set(
+          data.filter(d => d.statut === 'EN_ATTENTE').slice(0, 5)
+        );
+        this.isLoadingDemandes.set(false);
       },
-      error: () => { this.isLoadingDemandes = false; }
+      error: () => { this.isLoadingDemandes.set(false); }
     });
   }
- 
+
   traiter(id: number, action: ActionDemande): void {
     this.demandeService.traiterDemande(id, action).subscribe({
       next: () => {
@@ -87,24 +84,27 @@ export class PlanificateurDashboard {
   }
  
   getMaxSeances(): number {
-    if (!this.dashboard?.seancesParMois?.length) return 1;
-    return Math.max(...this.dashboard.seancesParMois.map(p => p.valeur), 1);
+    const d = this.dashboard();
+    if (!d?.seancesParMois?.length) return 1;
+    return Math.max(...d.seancesParMois.map(p => p.valeur), 1);
   }
  
   getMaxFormation(): number {
-    if (!this.dashboard?.topFormationsDemandees?.length) return 1;
-    return Math.max(...this.dashboard.topFormationsDemandees.map(f => f.nbDemandes), 1);
-  }
- 
-  getTotalDemandes(): number {
-    if (!this.dashboard) return 1;
-    return Math.max(
-      this.dashboard.nbDemandesEnAttente +
-      this.dashboard.nbDemandesAcceptees +
-      this.dashboard.nbDemandesRefusees,
-      1
-    );
-  }
+  const d = this.dashboard();
+  if (!d?.topFormationsDemandees?.length) return 1;
+  return Math.max(...d.topFormationsDemandees.map(f => f.nbDemandes), 1);
+}
+
+getTotalDemandes(): number {
+  const d = this.dashboard();
+  if (!d) return 1;
+  return Math.max(
+    d.nbDemandesEnAttente +
+    d.nbDemandesAcceptees +
+    d.nbDemandesRefusees,
+    1
+  );
+}
  
   getStatutDemandeClass(statut: string): string {
     switch (statut) {
@@ -124,10 +124,9 @@ export class PlanificateurDashboard {
     return map[statut] ?? statut;
   }
  
-  getTauxOccupation(): number {
-    if (!this.dashboard || !this.dashboard.nbSallesActives) return 0;
-    return Math.round(
-      (this.dashboard.nbSallesOccupeesAujourdhui / this.dashboard.nbSallesActives) * 100
-    );
+getTauxOccupation(): number {
+    const d = this.dashboard();
+    if (!d || !d.nbSallesActives) return 0;
+    return Math.round((d.nbSallesOccupeesAujourdhui / d.nbSallesActives) * 100);
   }
 }

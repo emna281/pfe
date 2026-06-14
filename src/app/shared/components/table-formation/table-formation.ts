@@ -1,8 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, OnInit,ChangeDetectorRef,AfterViewInit, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { Badge } from '../ui/badge/badge';
-import { Boutton } from '../button/boutton/boutton';
 import { FormationAdminDTO, FormationService } from '../../../services/formation-service';
 import { FormsModule } from '@angular/forms';
 import { FormulaireFormation } from '../formulaire-formation/formulaire-formation';
@@ -14,7 +12,7 @@ import { ConfirmationModal } from '../ui/confirmation-modal/confirmation-modal';
 
 @Component({
   selector: 'app-table-formation',
-  imports: [CommonModule,Badge,Boutton,FormsModule,FormulaireFormation,CommonModule,ConfirmationModal,RouterModule],
+  imports: [CommonModule,FormsModule,FormulaireFormation,CommonModule,ConfirmationModal,RouterModule],
   templateUrl: './table-formation.html',
   styleUrl: './table-formation.css',
 })

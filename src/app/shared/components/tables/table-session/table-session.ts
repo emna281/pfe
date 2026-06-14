@@ -1,7 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component,OnInit,ChangeDetectorRef } from '@angular/core';
-
-import { Boutton } from '../../button/boutton/boutton';
 import { FormsModule } from '@angular/forms';
 import { FormulaireSession } from '../../formulaires/formulaire-session/formulaire-session';
 import { SessionDTO,SessionService } from '../../../../services/session-service';
@@ -10,7 +8,7 @@ import { RouterModule ,Router} from '@angular/router';
 
 @Component({
   selector: 'app-table-session',
-  imports: [CommonModule,Boutton,FormsModule,FormulaireSession,ConfirmationModal,RouterModule],
+  imports: [CommonModule,FormsModule,FormulaireSession,ConfirmationModal,RouterModule],
   templateUrl: './table-session.html',
   styleUrl: './table-session.css',
 })

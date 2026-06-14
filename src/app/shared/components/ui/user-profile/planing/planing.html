@@ -1,8 +1,8 @@
-<div *ngIf="loading" class="flex justify-center py-12">
+<div *ngIf="loading()" class="flex justify-center py-12">
   <span class="text-gray-400 text-sm">Chargement...</span>
 </div>
 
-<div *ngIf="!loading" class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+<div *ngIf="!loading()" class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
   <!-- COLONNE GAUCHE -->
   <div class="lg:col-span-2 flex flex-col gap-4">
@@ -39,16 +39,12 @@
 
     <!-- Header + filtre -->
     <div class="flex items-center justify-between">
-      <h2 class="text-base font-semibold text-gray-800 dark:text-white">
-        Sessions de la semaine
-      </h2>
       <div class="flex items-center gap-3">
-        <span class="text-xs cursor-pointer hover:underline" style="color:#378ADD">
-          Voir tout le mois &rsaquo;
-        </span>
         <select
-          [(ngModel)]="filterStatut"
-          class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+          [ngModel]="filterStatut()"
+          (ngModelChange)="filterStatut.set($event)"
+          class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none
+                 focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
           <option *ngFor="let st of statuts" [value]="st">
             {{ st === 'TOUS' ? 'Tous les statuts' : st }}
           </option>
@@ -73,13 +69,13 @@
         <!-- Date pill bleue -->
         <div class="flex-shrink-0">
           <div class="rounded-lg text-center w-12 py-2 px-1" style="background:#E6F1FB">
-            <p class="text-xs font-semibold uppercase" text-gray-100 style=" letter-spacing:0.05em; line-height:1">
+            <p class="text-xs font-semibold uppercase" style="letter-spacing:0.05em; line-height:1">
               {{ s.dateDebut | date:'MMM' }}
             </p>
             <p class="font-semibold leading-tight mt-0.5" style="color:#0C447C; font-size:20px">
               {{ s.dateDebut | date:'dd' }}
             </p>
-            <p class="text-xs" text-gray-100 style="line-height:1; margin-top:2px">
+            <p class="text-xs" style="line-height:1; margin-top:2px">
               {{ s.heureDebut.slice(0,5) }}
             </p>
           </div>
@@ -87,20 +83,14 @@
 
         <!-- Infos session -->
         <div class="flex-1 min-w-0">
-
-          <!-- Track : NOM FORMATION / sous-catégorie -->
           <div class="flex items-center gap-1 mb-1">
             <span class="text-xs font-semibold uppercase tracking-wider" style="color:#296aab">
               {{ s.formationNom }}
             </span>
           </div>
-
-          <!-- Nom session -->
           <h3 class="font-semibold text-gray-800 dark:text-white" style="font-size:16px; line-height:1.3">
             {{ s.nom }}
           </h3>
-
-          <!-- Méta : horaire, lieu, nb séances -->
           <div class="flex flex-wrap gap-3 mt-1.5" style="font-size:11px; color:#9ca3af">
             <lucide-icon name="Clock" class="w-4 h-4"></lucide-icon>
             <span *ngIf="s.nombreSeances" class="flex items-center gap-1">
@@ -111,7 +101,7 @@
               <i class="ti ti-clock" style="font-size:11px"></i>
               {{ s.heureDebut.slice(0,5) }} – {{ s.heureFin.slice(0,5) }}
             </span>
-            <lucide-icon name="MapPin" class="w-4 h-4"></lucide-icon>           
+            <lucide-icon name="MapPin" class="w-4 h-4"></lucide-icon>
             <span *ngIf="s.mode !== 'DISTANCIEL'" class="flex items-center gap-1">
               <i class="ti ti-map-pin" style="font-size:11px"></i>
               {{ s.lieu }}
@@ -131,23 +121,23 @@
           </span>
           <button class="text-xs flex items-center gap-1" style="color:#378ADD">
             <i class="ti" style="font-size:12px"
-              [ngClass]="seancesOuvertes[s.id] ? 'ti-chevron-up' : 'ti-chevron-down'"></i>
-            {{ seancesOuvertes[s.id] ? 'Masquer' : 'Séances' }}
+              [ngClass]="seancesOuvertes()[s.id] ? 'ti-chevron-up' : 'ti-chevron-down'"></i>
+            {{ seancesOuvertes()[s.id] ? 'Masquer' : 'Séances' }}
           </button>
         </div>
 
       </div>
 
       <!-- ═══ Bloc séances dépliable ═══ -->
-      <div *ngIf="seancesOuvertes[s.id]">
+      <div *ngIf="seancesOuvertes()[s.id]">
 
         <!-- Chargement -->
-        <div *ngIf="seancesLoading[s.id]"
+        <div *ngIf="seancesLoading()[s.id]"
           class="text-xs px-4 py-3" style="color:#9ca3af; border-top:0.5px dashed #e5e7eb">
           Chargement des séances...
         </div>
 
-        <ng-container *ngIf="!seancesLoading[s.id]">
+        <ng-container *ngIf="!seancesLoading()[s.id]">
 
           <!-- Label en-tête séances -->
           <div class="flex items-center justify-between px-4 py-2"
@@ -157,35 +147,36 @@
               Séances programmées
             </p>
             <p class="text-xs" style="color:#9ca3af">
-              {{ seancesEffectuees(s.id) }}/{{ (seancesMap[s.id] ).length }} effectuées
+              {{ seancesEffectuees(s.id) }}/{{ seancesMap()[s.id].length }} effectuées
             </p>
           </div>
 
           <!-- Aucune séance -->
-          <div *ngIf="!seancesMap[s.id] || seancesMap[s.id].length === 0"
+          <div *ngIf="!seancesMap()[s.id] || seancesMap()[s.id].length === 0"
             class="px-4 py-3 text-xs" style="color:#9ca3af">
             Aucune séance programmée.
           </div>
 
           <!-- Ligne par séance -->
-          <div *ngFor="let seance of seancesMap[s.id]; let i = index"
+          <div *ngFor="let seance of seancesMap()[s.id]; let i = index"
             class="flex items-start gap-3 px-4 py-2.5 mx-3 mb-2 rounded-lg"
             style="background:#f8f9fa; border:0.5px solid #e5e7eb">
+
             <!-- Indicateur état -->
             <div class="flex-shrink-0 mt-0.5"
               style="width:22px; height:22px; border-radius:50%;
               display:flex; align-items:center; justify-content:center;
               font-size:10px; font-weight:500;"
               [ngStyle]="{
-                'background': isSeanceFaite(seance)    ? '#EAF3DE'
+                'background': isSeanceFaite(seance)    ? '#1D9E75'
                   : isSeanceCourante(seance) ? '#378ADD'
                   : '#ffffff',
-                'color':      isSeanceFaite(seance)    ? '#3B6D11'
+                'color':      isSeanceFaite(seance)    ? '#ffffff'
                   : isSeanceCourante(seance) ? '#ffffff'
                   : '#9ca3af',
                 'border':     isSeanceFuture(seance)   ? '0.5px solid #d1d5db' : 'none'
               }">
-              <i *ngIf="isSeanceFaite(seance)" class="ti ti-check" style="font-size:11px"></i>
+              <lucide-icon *ngIf="isSeanceFaite(seance)" name="Check" [size]="12"></lucide-icon>
               <span *ngIf="!isSeanceFaite(seance)">S{{ i + 1 }}</span>
             </div>
 
@@ -259,7 +250,7 @@
           style="border-bottom:0.5px solid rgba(255,255,255,0.07)">
           <span class="text-xs" style="color:#aaa">Inscriptions totales</span>
           <span class="text-sm font-semibold text-white">
-            {{ inscriptions.length.toString().padStart(2,'0') }}
+            {{ inscriptions().length.toString().padStart(2,'0') }}
           </span>
         </div>
         <div class="flex justify-between items-center py-2.5"
@@ -299,11 +290,11 @@
       <!-- Mini stats 2×2 -->
       <div class="grid grid-cols-2 gap-2 mt-4">
         <div class="rounded-lg p-3" style="background:rgba(255,255,255,0.05)">
-          <p class="text-base font-semibold text-white">{{ totalSeances }}</p>
+          <p class="text-base font-semibold text-white">{{ totalSeances() }}</p>
           <p class="text-xs mt-0.5" style="color:#888">Séances totales</p>
         </div>
         <div class="rounded-lg p-3" style="background:rgba(255,255,255,0.05)">
-          <p class="text-base font-semibold text-white">{{ assiduite }}%</p>
+          <p class="text-base font-semibold text-white">{{ assiduite() }}%</p>
           <p class="text-xs mt-0.5" style="color:#888">Assiduité</p>
         </div>
       </div>
@@ -321,10 +312,10 @@
 
 <!-- Panel détail -->
 <app-session-panel
-  [ouvert]="panelOuvert"
-  [session]="sessionSelectionnee"
-  [inscription]="inscriptionSelectionnee"
-  [facture]="factureSelectionnee"
+  [ouvert]="panelOuvert()"
+  [session]="sessionSelectionnee()"
+  [inscription]="inscriptionSelectionnee()"
+  [facture]="factureSelectionnee()"
   (fermer)="fermerPanel()"
   (notesSauvegardees)="notesSauvegardees()">
 </app-session-panel>

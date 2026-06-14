@@ -2,7 +2,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Badge } from '../../ui/badge/badge';
-import { Boutton } from '../../button/boutton/boutton';
 import { Router, RouterModule } from '@angular/router';
 import { ConfirmationModal } from '../../ui/confirmation-modal/confirmation-modal';
 import { FormulaireSalle } from '../../formulaires/formulaire-salle/formulaire-salle';
@@ -11,7 +10,7 @@ import { LucideAngularModule ,Pencil,Trash2} from 'lucide-angular';
 
 @Component({
   selector: 'app-table-salle',
-  imports: [CommonModule,FormsModule,Badge,Boutton,RouterModule,ConfirmationModal,FormulaireSalle,LucideAngularModule],
+  imports: [CommonModule,FormsModule,Badge,RouterModule,ConfirmationModal,FormulaireSalle,LucideAngularModule],
   templateUrl: './table-salle.html',
   styleUrl: './table-salle.css',
 })

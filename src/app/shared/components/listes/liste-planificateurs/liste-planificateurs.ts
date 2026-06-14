@@ -10,10 +10,11 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ExtraField } from '../../reutilisable/user-card/user-card';
 import { UtilisateurResponse } from '../../../../services/admin-service';
 import { FormulaireUtilisateur } from '../../formulaires/formulaire-utilisateur/formulaire-utilisateur';
+import { UserListHeader } from '../../reutilisable/user-list-header/user-list-header';
 
 @Component({
   selector: 'app-liste-planificateurs',
-  imports: [RouterModule,UserListPage,FormulaireUtilisateur,CommonModule],
+  imports: [RouterModule,UserListPage,UserListHeader,FormulaireUtilisateur,CommonModule],
   templateUrl: './liste-planificateurs.html',
   styleUrl: './liste-planificateurs.css',
 })

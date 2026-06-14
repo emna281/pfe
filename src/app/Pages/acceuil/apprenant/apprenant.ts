@@ -6,7 +6,7 @@ import { SessionDTO ,SessionService} from '../../../services/session-service';
 
 import { ConfirmationModal } from '../../../shared/components/ui/confirmation-modal/confirmation-modal';
 import { AuthService } from '../../../shared/services/auth.service';
-import { FormulaireSignup } from '../../../shared/components/formulaires/formulaire-signup/formulaire-signup';
+
 import { NavBar } from '../../../shared/layout/nav-bar/nav-bar';
 import { SignupFormAccueil } from '../../../shared/components/formulaires/signup-form-accueil/signup-form-accueil';
 
@@ -14,7 +14,7 @@ import { SignupFormAccueil } from '../../../shared/components/formulaires/signup
 @Component({
   selector: 'app-apprenant',
   standalone: true,
-  imports: [NgClass,RouterModule,FormulaireSignup,SignupFormAccueil ,ConfirmationModal,NavBar],
+  imports: [NgClass,RouterModule,SignupFormAccueil ,ConfirmationModal,NavBar],
   templateUrl: './apprenant.html',
   styleUrls: ['./apprenant.css'],
   host: { ngSkipHydration: 'true' }

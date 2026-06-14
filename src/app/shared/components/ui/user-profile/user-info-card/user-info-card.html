@@ -4,30 +4,26 @@
   <!-- En-tête -->
   <div class="flex items-start justify-between mb-4">
     <div class="flex items-center gap-3">
-      
-        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100">
-          <lucide-icon name="briefcase" class="w-5 h-5 text-blue-700"></lucide-icon>
-        </div>
-      
+      <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100">
+        <lucide-icon name="user" class="w-5 h-5 text-blue-700"></lucide-icon>
+      </div>
       <div>
         <h3 class="font-semibold text-gray-800 dark:text-white">
-          Parcours professionnel
+          Informations Personnelles
         </h3>
-
       </div>
     </div>
 
-    <button *ngIf="!editMode && !isAdminView"
-  (click)="startEdit()"
-  class="flex items-center gap-1.5 text-lg font-medium px-3 py-1.5 rounded-lg
-         border border-gray-300 text-gray-200
-         bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]
-         transition-all duration-300
-         hover:bg-gradient-to-br hover:from-[#0f3460] hover:via-[#16213e] hover:to-[#1a1a2e]">
-  
-  <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
-  Modifier
-</button>
+    <button *ngIf="!editMode && isAdminView"
+      (click)="startEdit()"
+      class="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg
+             border border-gray-300 text-gray-200
+             bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]
+             transition-all duration-300
+             hover:bg-gradient-to-br hover:from-[#0f3460] hover:via-[#16213e] hover:to-[#1a1a2e]">
+      <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
+      Modifier
+    </button>
 
     <div *ngIf="editMode" class="flex gap-2">
       <button (click)="cancelEdit()"
@@ -48,50 +44,31 @@
   <div *ngIf="success"
     class="flex items-center gap-2 text-xs px-3 py-2 rounded-lg mb-4"
     style="background:#EAF3DE; color:#3B6D11">
-    
     <i class="ti ti-circle-check" style="font-size:14px"></i>
     Informations mises à jour avec succès.
   </div>
 
-
-  <!-- ═══ FORMATEUR — Mode lecture ═══ -->
+  <!-- Mode lecture -->
   <div *ngIf="!editMode" class="grid grid-cols-2 gap-x-8 gap-y-4">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <p class="text-xs text-gray-500 mb-1">
-        Nom
-      </p>
-      <p class="font-semibold text-gray-800 dark:text-white">
-        {{ user.nom || '—' }}
-      </p>
+      <p class="text-xs text-gray-500 mb-1">Nom</p>
+      <p class="font-semibold text-gray-800 dark:text-white">{{ user.nom || '—' }}</p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <p class="text-xs text-gray-500 mb-1">
-        Prenom
-      </p>
-      <p class="font-semibold text-gray-800 dark:text-white">
-        {{ user.prenom  }} ans
-      </p>
+      <p class="text-xs text-gray-500 mb-1">Prénom</p>
+      <p class="font-semibold text-gray-800 dark:text-white">{{ user.prenom || '—' }}</p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <p class="text-xs text-gray-500 mb-1">
-        Email
-      </p>
-      <p class="font-semibold text-gray-800 dark:text-white">
-        {{ user.email  }} ans
-      </p>
+      <p class="text-xs text-gray-500 mb-1">Email</p>
+      <p class="font-semibold text-gray-800 dark:text-white">{{ user.email || '—' }}</p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <p class="text-xs text-gray-500 mb-1">
-        telephone
-      </p>
-      <p class="font-semibold text-gray-800 dark:text-white">
-        {{ user.telephone }} ans
-      </p>
+      <p class="text-xs text-gray-500 mb-1">Téléphone</p>
+      <p class="font-semibold text-gray-800 dark:text-white">{{ user.telephone || '—' }}</p>
     </div>
-    
   </div>
 
-  <!-- ═══ FORMATEUR — Mode édition ═══ -->
+  <!-- Mode édition -->
   <div *ngIf="editMode" class="grid grid-cols-2 gap-4">
     <div>
       <label class="text-xs font-medium text-gray-500 block mb-1">Nom</label>
@@ -101,22 +78,15 @@
                dark:bg-gray-700 dark:border-gray-600 dark:text-white">
     </div>
     <div>
-      <label class="text-xs font-medium text-gray-500 block mb-1">Prenom</label>
-      <input type="text" [(ngModel)]="form.prenom" min="0"
+      <label class="text-xs font-medium text-gray-500 block mb-1">Prénom</label>
+      <input type="text" [(ngModel)]="form.prenom"
         class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
                focus:outline-none focus:ring-2 focus:ring-blue-300
                dark:bg-gray-700 dark:border-gray-600 dark:text-white">
     </div>
     <div>
-      <label class="text-xs font-medium text-gray-500 block mb-1">telephone</label>
+      <label class="text-xs font-medium text-gray-500 block mb-1">Téléphone</label>
       <input type="text" [(ngModel)]="form.telephone"
-        class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
-               focus:outline-none focus:ring-2 focus:ring-blue-300
-               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-    </div>
-    <div>
-      <label class="text-xs font-medium text-gray-500 block mb-1">email</label>
-      <input type="email" [(ngModel)]="form.email" min="0"
         class="w-full text-sm rounded-lg px-3 py-2 border border-gray-200
                focus:outline-none focus:ring-2 focus:ring-blue-300
                dark:bg-gray-700 dark:border-gray-600 dark:text-white">
